@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from anthropos11.com/wp-content/uploads/le11/command-centre/command-centre.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 24 Aug 2026 18:13:09 GMT -->
+<head>
+<meta charset="UTF-8">
+<title>LE‑1.1 Intelligence Command Centre</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0d0d0d;
+        color: #f2f2f2;
+    }
+
+    header {
+        background: #111;
+        padding: 25px;
+        text-align: center;
+        border-bottom: 2px solid #d4af37;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 32px;
+        letter-spacing: 2px;
+        color: #d4af37;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 25px;
+        padding: 40px;
+        max-width: 1400px;
+        margin: auto;
+    }
+
+    .tile {
+        background: #1a1a1a;
+        border: 2px solid #333;
+        padding: 25px;
+        text-align: center;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .tile:hover {
+        border-color: #d4af37;
+        transform: translateY(-5px);
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .tile h2 {
+        margin-top: 0;
+        color: #d4af37;
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .tile p {
+        font-size: 14px;
+        color: #ccc;
+        margin-bottom: 20px;
+    }
+
+    iframe {
+        width: 100%;
+        height: 1200px;
+        border: none;
+        margin-top: 40px;
+    }
+
+    .module-frame {
+        max-width: 1400px;
+        margin: auto;
+        padding: 20px;
+    }
+</style>
+
+<script>
+    function loadModule(module) {
+        document.getElementById("moduleFrame").src =
+            "/wp-content/uploads/le11/modules/" + module + ".html";
+        window.scrollTo({ top: document.getElementById("moduleFrame").offsetTop, behavior: 'smooth' });
+    }
+</script>
+
+</head>
+<body>
+
+<header>
+    <h1>LE‑1.1 Intelligence Command Centre</h1>
+</header>
+
+<div class="grid">
+
+    <div class="tile" onclick="loadModule('energy-frontiers')">
+        <h2>Energy Frontiers</h2>
+        <p>Global energy stability, frontier signals, and Alberta nexus indicators.</p>
+    </div>
+
+    <div class="tile" onclick="loadModule('momentum-scanner')">
+        <h2>Momentum Scanner</h2>
+        <p>AI sector velocity, market acceleration, and trend inflection points.</p>
+    </div>
+
+    <div class="tile" onclick="loadModule('market-watch')">
+        <h2>Market Watch</h2>
+        <p>Macro signals, liquidity flows, and global positioning vectors.</p>
+    </div>
+
+    <div class="tile" onclick="loadModule('threat-matrix')">
+        <h2>Threat Matrix</h2>
+        <p>Risk topology, geopolitical stressors, and systemic fragility mapping.</p>
+    </div>
+
+    <div class="tile" onclick="loadModule('positioning-guidance')">
+        <h2>Positioning Guidance</h2>
+        <p>Strategic posture recommendations and intelligence‑aligned positioning.</p>
+    </div>
+
+    <div class="tile" onclick="loadModule('alberta-nexus')">
+        <h2>Alberta Nexus</h2>
+        <p>Provincial intelligence, economic signals, and regional stability vectors.</p>
+    </div>
+
+    <div class="tile" onclick="loadModule('ai-momentum')">
+        <h2>AI Momentum</h2>
+        <p>Anthropos II sector analysis and intelligence‑grade AI trajectory mapping.</p>
+    </div>
+
+</div>
+
+<div class="module-frame">
+    <iframe id="moduleFrame" src="#"></iframe>
+</div>
+
+</body>
+
+<!-- Mirrored from anthropos11.com/wp-content/uploads/le11/command-centre/command-centre.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 24 Aug 2026 18:13:09 GMT -->
+</html>

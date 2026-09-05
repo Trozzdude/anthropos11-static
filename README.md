@@ -6,7 +6,7 @@
     },
     {
       "route": "/anthropos11-logo.png",
-      "rewrite": "/anthropos11-logo (1).png"
+      "rewrite": "/Copilot_20260905_142600.png"
     }
   ]
 }

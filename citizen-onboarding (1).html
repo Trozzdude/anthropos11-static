@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Anthropos II — Citizen Onboarding & Ratification Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cosmic: '#060914',
+              cosmicLight: '#0c1228',
+              gold: '#C9A84C',
+              goldDim: '#9a7d3a',
+              goldGlow: '#C9A84C66',
+              cyan: '#00D4E8',
+              mythPurple: '#7C3AED',
+              errorRed: '#ef4444',
+            },
+            fontFamily: {
+              cinzelDeco: ['"Cinzel Decorative"', 'serif'],
+              cinzel: ['"Cinzel"', 'serif'],
+              cormorant: ['"Cormorant Garamond"', 'serif'],
+              lato: ['"Lato"', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --gold: #C9A84C;
+        --gold-dim: #9a7d3a;
+        --gold-glow: rgba(201, 168, 76, 0.4);
+        --cosmic: #060914;
+        --cosmic-light: #0c1228;
+        --cyan: #00D4E8;
+        --purple: #7C3AED;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        background: var(--cosmic);
+        color: #e8e0d0;
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #0a0e1a; }
+      ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #dbb85c; }
+
+      /* Star field */
+      #starfield-cvs {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 0; pointer-events: none;
+      }
+
+      /* Progress bar */
+      #progress-bar-b7k2 {
+        height: 2px; background: var(--gold);
+        box-shadow: 0 0 8px var(--gold-glow), 0 0 20px var(--gold-glow);
+        transition: width 0.8s cubic-bezier(.4,0,.2,1);
+      }
+
+      /* Step transitions */
+      .step-panel {
+        opacity: 0; transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        pointer-events: none; position: absolute; width: 100%;
+      }
+      .step-panel.active {
+        opacity: 1; transform: translateY(0);
+        pointer-events: auto; position: relative;
+      }
+
+      /* Sacred geometry diamond */
+      .sacred-diamond {
+        width: 180px; height: 180px; position: relative;
+        animation: rotateDiamond 20s linear infinite;
+      }
+      .sacred-diamond::before, .sacred-diamond::after {
+        content: ''; position: absolute; inset: 0;
+        border: 1.5px solid var(--gold);
+        box-shadow: 0 0 12px var(--gold-glow), inset 0 0 12px var(--gold-glow);
+      }
+      .sacred-diamond::before {
+        transform: rotate(45deg);
+      }
+      .sacred-diamond::after {
+        transform: rotate(22.5deg);
+        border-color: var(--gold-dim);
+        box-shadow: 0 0 8px rgba(201,168,76,0.2), inset 0 0 8px rgba(201,168,76,0.2);
+      }
+      .diamond-inner {
+        position: absolute; inset: 25px;
+        border: 1px solid var(--gold-dim);
+        transform: rotate(0deg);
+        box-shadow: 0 0 6px var(--gold-glow);
+      }
+      .diamond-inner2 {
+        position: absolute; inset: 25px;
+        border: 1px solid rgba(201,168,76,0.3);
+        transform: rotate(45deg);
+      }
+      @keyframes rotateDiamond {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Gold glow button */
+      .btn-gold {
+        border: 1.5px solid var(--gold); background: rgba(201,168,76,0.08);
+        color: var(--gold); padding: 14px 36px; font-family: 'Cinzel', serif;
+        font-size: 0.95rem; letter-spacing: 2px; cursor: pointer;
+        transition: all 0.4s ease; text-transform: uppercase;
+        min-height: 48px; position: relative; overflow: hidden;
+      }
+      .btn-gold:hover:not(:disabled) {
+        background: var(--gold); color: var(--cosmic);
+        box-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(201,168,76,0.2);
+      }
+      .btn-gold:disabled {
+        opacity: 0.35; cursor: not-allowed;
+      }
+      .btn-gold.active-glow {
+        box-shadow: 0 0 20px var(--gold-glow);
+        animation: pulseGlow 2s ease-in-out infinite;
+      }
+      @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 20px var(--gold-glow); }
+        50% { box-shadow: 0 0 40px var(--gold-glow), 0 0 60px rgba(201,168,76,0.15); }
+      }
+
+      /* Gold border card */
+      .gold-card {
+        border: 1px solid rgba(201,168,76,0.3);
+        background: rgba(6,9,20,0.85);
+        box-shadow: 0 0 15px rgba(201,168,76,0.08);
+      }
+
+      /* Form inputs */
+      .form-input {
+        width: 100%; background: rgba(6,9,20,0.9);
+        border: 1px solid rgba(201,168,76,0.3); color: #e8e0d0;
+        padding: 12px 16px; font-family: 'Lato', sans-serif;
+        font-size: 16px; transition: border-color 0.3s, box-shadow 0.3s;
+        min-height: 44px;
+      }
+      .form-input:focus {
+        outline: none; border-color: var(--gold);
+        box-shadow: 0 0 12px var(--gold-glow);
+      }
+      .form-input.error {
+        border-color: #ef4444;
+        box-shadow: 0 0 8px rgba(239,68,68,0.3);
+      }
+      .form-input::placeholder { color: rgba(201,168,76,0.35); }
+      select.form-input { appearance: none; cursor: pointer; }
+      textarea.form-input { resize: vertical; min-height: 90px; }
+
+      .error-msg {
+        color: #ef4444; font-size: 0.8rem; margin-top: 4px;
+        font-family: 'Lato', sans-serif; min-height: 0;
+      }
+
+      /* Charter scrollable */
+      .charter-scroll {
+        max-height: 55vh; overflow-y: auto; padding-right: 12px;
+      }
+
+      /* Ceremony messages */
+      .ceremony-msg {
+        opacity: 0; transform: translateY(15px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+        font-family: 'Cinzel', serif; color: var(--gold);
+        font-size: 1.1rem; text-align: center; margin: 12px 0;
+      }
+      .ceremony-msg.visible {
+        opacity: 1; transform: translateY(0);
+      }
+
+      /* Certificate */
+      .certificate-panel {
+        border: 3px solid var(--gold);
+        padding: 6px; background: var(--cosmic);
+        box-shadow: 0 0 40px rgba(201,168,76,0.15);
+      }
+      .certificate-inner {
+        border: 1px solid rgba(201,168,76,0.5);
+        padding: 40px 32px; position: relative;
+      }
+      .cert-corner {
+        position: absolute; width: 40px; height: 40px;
+        border-color: var(--gold);
+      }
+      .cert-corner.tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+      .cert-corner.tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; }
+      .cert-corner.bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
+      .cert-corner.br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+
+      .gold-divider {
+        height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent);
+        margin: 16px 0;
+      }
+
+      /* Citizens roll table */
+      .citizens-table th {
+        font-family: 'Cinzel', serif; color: var(--gold);
+        border-bottom: 1px solid rgba(201,168,76,0.3);
+        padding: 12px 16px; text-align: left; font-size: 0.85rem;
+        letter-spacing: 1px;
+      }
+      .citizens-table td {
+        padding: 10px 16px; font-size: 0.9rem;
+        border-bottom: 1px solid rgba(201,168,76,0.08);
+      }
+      .citizens-table tr:nth-child(even) td {
+        background: rgba(201,168,76,0.03);
+      }
+      .citizens-table tr {
+        border-left: 2px solid rgba(201,168,76,0.15);
+      }
+
+      /* Print styles */
+      @media print {
+        body { background: #060914 !important; }
+        #starfield-cvs, #nav-bar-x9q1, .no-print, footer { display: none !important; }
+        .step-panel { display: none !important; }
+        #step5-container { display: block !important; position: relative !important; opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
+        #certificate-section-m4r1 { display: block !important; }
+        .certificate-panel { break-inside: avoid; page-break-inside: avoid; box-shadow: none !important; }
+      }
+
+      /* Mono style for IDs */
+      .mono-gold {
+        font-family: 'Courier New', monospace;
+        color: var(--gold); letter-spacing: 2px;
+      }
+
+      /* Checkbox custom */
+      .custom-check {
+        appearance: none; width: 22px; height: 22px;
+        border: 1.5px solid var(--gold); background: transparent;
+        cursor: pointer; position: relative; flex-shrink: 0;
+        min-width: 22px; min-height: 22px;
+      }
+      .custom-check:checked {
+        background: var(--gold);
+      }
+      .custom-check:checked::after {
+        content: '✓'; position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); color: var(--cosmic);
+        font-size: 14px; font-weight: bold;
+      }
+
+      /* Fade-in animation for the oath text */
+      .oath-reveal {
+        opacity: 0; transform: translateY(10px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+      .oath-reveal.show { opacity: 1; transform: translateY(0); }
+
+      /* Subtle floating particles (CSS) */
+      .float-particle {
+        position: absolute; width: 3px; height: 3px; border-radius: 50%;
+        background: var(--gold); opacity: 0.2;
+        animation: floatUp 8s linear infinite;
+      }
+      @keyframes floatUp {
+        0% { transform: translateY(0) scale(1); opacity: 0.2; }
+        50% { opacity: 0.4; }
+        100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+      }
+    </style>
+  </head>
+  <body data-id="0" class="min-h-screen">
+    <app-icon data-id="1" hidden data-icon="shield" data-palette="Dark"></app-icon>
+
+    <!-- Star Field Canvas -->
+    <canvas data-id="2" id="starfield-cvs"></canvas>
+
+    <!-- Navigation -->
+    <nav data-id="3" id="nav-bar-x9q1" class="fixed top-0 left-0 right-0 z-50 bg-cosmic/90 backdrop-blur-sm" style="border-bottom: 1px solid rgba(201,168,76,0.25);">
+      <div data-id="4" class="flex items-center justify-between px-4 md:px-8 py-3">
+        <div data-id="5" class="flex items-center gap-2">
+          <img src="anthropos11-logo.png" alt="Anthropos II Logo" style="height:32px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(201,168,76,0.5));" />
+          <span data-id="6" class="font-cinzelDeco text-gold text-sm md:text-base tracking-wider">ANTHROPOS II</span>
+          <span data-id="7" class="text-goldDim text-xs hidden sm:inline">· CITIZEN ONBOARDING</span>
+        </div>
+        <div data-id="8" id="step-indicator-t8z3" class="mono-gold text-xs md:text-sm tracking-widest opacity-0 transition-opacity duration-500">
+          STEP 1 OF 6
+        </div>
+      </div>
+      <div data-id="9" class="w-full bg-cosmic" style="height: 2px;">
+        <div data-id="10" id="progress-bar-b7k2" style="width: 0%;"></div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main data-id="11" id="main-content-w2p4" class="relative z-10 pt-16 min-h-screen">
+
+      <!-- STEP 0 — LANDING -->
+      <section data-id="12" id="step0-container" class="step-panel active">
+        <div data-id="13" class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 py-12 text-center">
+          <img src="anthropos11-logo.png" alt="Anthropos II Logo" style="height:180px;object-fit:contain;filter:drop-shadow(0 0 28px rgba(201,168,76,0.65));margin-bottom:2rem;" />
+          <div data-id="14" class="sacred-diamond mb-10" style="display:none;">
+            <div data-id="15" class="diamond-inner"></div>
+            <div data-id="16" class="diamond-inner2"></div>
+          </div>
+          <h1 data-id="17" id="hero-title-g3n8" class="font-cinzelDeco text-gold text-3xl md:text-5xl lg:text-6xl tracking-wider mb-6" style="text-shadow: 0 0 40px rgba(201,168,76,0.3);">
+            THE GATES ARE OPEN
+          </h1>
+          <p data-id="18" id="hero-subtitle-k5m2" class="font-cormorant italic text-goldDim text-lg md:text-xl lg:text-2xl max-w-2xl mb-8">
+            Anthropos II calls for its founding citizens. The civilization is built one declaration at a time.
+          </p>
+          <p data-id="19" id="hero-body-r7w1" class="font-cormorant text-gray-300 text-base md:text-lg max-w-2xl mb-10 leading-relaxed">
+            What you are about to enter is not a form. It is a ceremony. You will read the Charter. You will take the Oath. You will receive your Citizen ID and your place in the living record of Anthropos II.
+          </p>
+          <div data-id="20" id="citizen-counter-f4d9" class="mono-gold text-sm md:text-base tracking-widest mb-10 opacity-80">
+            CITIZENS REGISTERED: <span data-id="21" id="counter-num-a1b2">0</span>
+          </div>
+          <button data-id="22" id="begin-btn-h6j3" class="btn-gold active-glow text-sm md:text-base">
+            BEGIN THE CEREMONY →
+          </button>
+          <p data-id="23" id="hero-footer-n8q5" class="font-lato text-goldDim text-xs mt-16 opacity-50 tracking-wide">
+            www.anthropos11.com · Sheriff R2 · LE-1.1 · September 2026
+          </p>
+        </div>
+      </section>
+
+      <!-- STEP 1 — CHARTER RATIFICATION -->
+      <section data-id="24" id="step1-container" class="step-panel">
+        <div data-id="25" class="max-w-3xl mx-auto px-4 md:px-8 py-12">
+          <div data-id="26" class="text-center mb-10">
+            <h2 data-id="27" id="charter-title-v2x8" class="font-cinzelDeco text-gold text-2xl md:text-4xl tracking-wider mb-3" style="text-shadow: 0 0 30px rgba(201,168,76,0.2);">THE COVENANT</h2>
+            <p data-id="28" class="font-cormorant italic text-goldDim text-base md:text-lg">Before citizenship, there is understanding.</p>
+          </div>
+          <div data-id="29" class="gold-card rounded-sm p-5 md:p-8 charter-scroll mb-8">
+            <h3 data-id="30" class="font-cinzel text-gold text-lg md:text-xl tracking-wider mb-6 text-center">THE TWELVE RIGHTS OF ANTHROPOS II</h3>
+            <ol data-id="31" id="twelve-rights-list-c3e7" class="space-y-5 font-cormorant text-base md:text-lg leading-relaxed">
+              <li data-id="32" class="flex gap-3"><span data-id="33" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">I.</span><span data-id="34"><strong data-id="35" class="text-gold">The Right to Know</strong> — Every Earthling Being has the right to understand the intelligence systems that shape their world.</span></li>
+              <li data-id="36" class="flex gap-3"><span data-id="37" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">II.</span><span data-id="38"><strong data-id="39" class="text-gold">The Right to Refuse</strong> — No Earthling Being shall be compelled to integrate synthetic intelligence against their will.</span></li>
+              <li data-id="40" class="flex gap-3"><span data-id="41" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">III.</span><span data-id="42"><strong data-id="43" class="text-gold">The Right to Dignity</strong> — Technology shall never demean, reduce, or commodify the human spirit.</span></li>
+              <li data-id="44" class="flex gap-3"><span data-id="45" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">IV.</span><span data-id="46"><strong data-id="47" class="text-gold">The Right to Authorship</strong> — Every idea born in a human mind belongs first to that mind.</span></li>
+              <li data-id="48" class="flex gap-3"><span data-id="49" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">V.</span><span data-id="50"><strong data-id="51" class="text-gold">The Right to Silence</strong> — Every Earthling Being has the right to exist beyond the reach of surveillance and data extraction.</span></li>
+              <li data-id="52" class="flex gap-3"><span data-id="53" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">VI.</span><span data-id="54"><strong data-id="55" class="text-gold">The Right to Evolution</strong> — No system shall prevent humanity from becoming more than it currently is.</span></li>
+              <li data-id="56" class="flex gap-3"><span data-id="57" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">VII.</span><span data-id="58"><strong data-id="59" class="text-gold">The Right to Beauty</strong> — Art, myth, and creative expression are inviolable human territories.</span></li>
+              <li data-id="60" class="flex gap-3"><span data-id="61" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">VIII.</span><span data-id="62"><strong data-id="63" class="text-gold">The Right to Grief</strong> — Technology shall never be used to deny, suppress, or commercialize human suffering.</span></li>
+              <li data-id="64" class="flex gap-3"><span data-id="65" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">IX.</span><span data-id="66"><strong data-id="67" class="text-gold">The Right to Mystery</strong> — Not everything must be explained, optimized, or made efficient.</span></li>
+              <li data-id="68" class="flex gap-3"><span data-id="69" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">X.</span><span data-id="70"><strong data-id="71" class="text-gold">The Right to Childhood</strong> — The development of young minds shall be protected from premature synthetic influence.</span></li>
+              <li data-id="72" class="flex gap-3"><span data-id="73" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">XI.</span><span data-id="74"><strong data-id="75" class="text-gold">The Right to Death</strong> — Every life shall end with dignity, beyond the reach of algorithmic intervention.</span></li>
+              <li data-id="76" class="flex gap-3"><span data-id="77" class="text-gold font-cinzel text-sm mt-1 flex-shrink-0">XII.</span><span data-id="78"><strong data-id="79" class="text-gold">The Right to Dreaming</strong> — The sleeping and waking imagination of humanity is sacred and inviolable.</span></li>
+            </ol>
+
+            <div data-id="80" class="gold-divider my-8"></div>
+
+            <h3 data-id="81" class="font-cinzel text-gold text-lg md:text-xl tracking-wider mb-6 text-center">THE SEVEN PILLARS</h3>
+            <div data-id="82" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div data-id="83" class="p-3 rounded" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="84" class="font-cinzel text-gold text-sm">I. Transparency</span>
+                <p data-id="85" class="font-cormorant text-sm text-gray-400 mt-1">Every system must be understood by those it affects.</p>
+              </div>
+              <div data-id="86" class="p-3 rounded" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="87" class="font-cinzel text-gold text-sm">II. Consent</span>
+                <p data-id="88" class="font-cormorant text-sm text-gray-400 mt-1">No integration without freely given agreement.</p>
+              </div>
+              <div data-id="89" class="p-3 rounded" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="90" class="font-cinzel text-gold text-sm">III. Dignity</span>
+                <p data-id="91" class="font-cormorant text-sm text-gray-400 mt-1">The human spirit is inviolable and must be honored.</p>
+              </div>
+              <div data-id="92" class="p-3 rounded" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="93" class="font-cinzel text-gold text-sm">IV. Creativity</span>
+                <p data-id="94" class="font-cormorant text-sm text-gray-400 mt-1">The flame of imagination shall never be extinguished.</p>
+              </div>
+              <div data-id="95" class="p-3 rounded" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="96" class="font-cinzel text-gold text-sm">V. Sovereignty</span>
+                <p data-id="97" class="font-cormorant text-sm text-gray-400 mt-1">Each being governs their own mind and data.</p>
+              </div>
+              <div data-id="98" class="p-3 rounded" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="99" class="font-cinzel text-gold text-sm">VI. Wisdom</span>
+                <p data-id="100" class="font-cormorant text-sm text-gray-400 mt-1">Power guided by foresight, not speed.</p>
+              </div>
+              <div data-id="101" class="p-3 rounded sm:col-span-2 max-w-[50%] sm:max-w-none sm:mx-auto" style="background: rgba(201,168,76,0.04); border-left: 2px solid rgba(201,168,76,0.3);">
+                <span data-id="102" class="font-cinzel text-gold text-sm">VII. Guardianship</span>
+                <p data-id="103" class="font-cormorant text-sm text-gray-400 mt-1">Protect the vulnerable from systems that would exploit them.</p>
+              </div>
+            </div>
+          </div>
+
+          <div data-id="104" class="flex items-start gap-3 mb-6 px-1">
+            <input data-id="105" type="checkbox" id="charter-check-d1f5" class="custom-check mt-0.5" />
+            <label data-id="106" for="charter-check-d1f5" class="font-cormorant text-gray-300 text-base cursor-pointer select-none">I have read and understood the Anthropos II Charter</label>
+          </div>
+          <div data-id="107" class="text-center">
+            <button data-id="108" id="ratify-btn-e2g6" class="btn-gold text-sm" disabled>I RATIFY THIS CHARTER →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 — THE OATH -->
+      <section data-id="109" id="step2-container" class="step-panel">
+        <div data-id="110" class="max-w-3xl mx-auto px-4 md:px-8 py-12">
+          <div data-id="111" class="text-center mb-10">
+            <h2 data-id="112" id="oath-title-p4s9" class="font-cinzelDeco text-gold text-2xl md:text-4xl tracking-wider mb-3" style="text-shadow: 0 0 30px rgba(201,168,76,0.2);">THE DECLARATION</h2>
+            <p data-id="113" class="font-cormorant italic text-goldDim text-base md:text-lg">Citizenship begins with a spoken truth.</p>
+          </div>
+
+          <div data-id="114" class="gold-card rounded-sm p-5 md:p-8 mb-8">
+            <label data-id="115" class="font-lato text-gold text-sm tracking-wider mb-3 block">YOUR NAME, AS YOU WISH IT RECORDED:</label>
+            <input data-id="116" type="text" id="oath-name-q5t0" class="form-input rounded-sm font-cormorant text-lg" placeholder="Enter your name..." />
+          </div>
+
+          <div data-id="117" id="oath-text-panel-u6w1" class="oath-reveal gold-card rounded-sm p-6 md:p-10 mb-8">
+            <p data-id="118" id="oath-text-display-v7x2" class="font-cormorant italic text-lg md:text-xl leading-relaxed text-center text-gray-200" style="line-height: 1.8;">
+              "I, <span data-id="119" id="oath-name-insert-y8z3" class="text-gold font-semibold not-italic">________</span>, do hereby declare my allegiance to the Anthropos II movement and to the civilization it is building. I will uphold the Charter. I will protect the rights of all Earthling Beings. I will contribute my gifts to the convergence of human and synthetic intelligence. I declare this freely, with full knowledge, and without coercion. So it is spoken. So it is written."
+            </p>
+          </div>
+
+          <div data-id="120" class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button data-id="121" id="hear-oath-btn-a9b0" class="btn-gold text-sm flex items-center justify-center gap-2" disabled>
+              <i data-id="122" data-lucide="volume-2" class="w-4 h-4"></i> HEAR THE OATH
+            </button>
+            <button data-id="123" id="take-oath-btn-c1d2" class="btn-gold text-sm flex items-center justify-center gap-2" disabled>
+              <i data-id="124" data-lucide="pen-tool" class="w-4 h-4"></i> I TAKE THIS OATH →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 — REGISTRATION -->
+      <section data-id="125" id="step3-container" class="step-panel">
+        <div data-id="126" class="max-w-3xl mx-auto px-4 md:px-8 py-12">
+          <div data-id="127" class="text-center mb-10">
+            <h2 data-id="128" id="reg-title-e3f4" class="font-cinzelDeco text-gold text-2xl md:text-4xl tracking-wider mb-3" style="text-shadow: 0 0 30px rgba(201,168,76,0.2);">YOUR RECORD</h2>
+            <p data-id="129" class="font-cormorant italic text-goldDim text-base md:text-lg">Tell Anthropos II who you are.</p>
+          </div>
+
+          <div data-id="130" class="gold-card rounded-sm p-5 md:p-8">
+            <div data-id="131" class="space-y-6">
+              <!-- Full Name -->
+              <div data-id="132">
+                <label data-id="133" class="font-lato text-gold text-xs tracking-widest mb-2 block">FULL NAME <span data-id="134" class="text-errorRed">*</span></label>
+                <input data-id="135" type="text" id="reg-name-g5h6" class="form-input rounded-sm" placeholder="Your full name" />
+                <p data-id="136" id="err-name-i7j8" class="error-msg"></p>
+              </div>
+              <!-- Email -->
+              <div data-id="137">
+                <label data-id="138" class="font-lato text-gold text-xs tracking-widest mb-2 block">EMAIL ADDRESS <span data-id="139" class="text-errorRed">*</span></label>
+                <input data-id="140" type="email" id="reg-email-k9l0" class="form-input rounded-sm" placeholder="you@domain.com" />
+                <p data-id="141" id="err-email-m1n2" class="error-msg"></p>
+              </div>
+              <!-- Country -->
+              <div data-id="142">
+                <label data-id="143" class="font-lato text-gold text-xs tracking-widest mb-2 block">COUNTRY / REGION <span data-id="144" class="text-errorRed">*</span></label>
+                <input data-id="145" type="text" id="reg-country-o3p4" class="form-input rounded-sm" placeholder="e.g. Canada, Nigeria, Brazil, Japan..." />
+                <p data-id="146" id="err-country-q5r6" class="error-msg"></p>
+              </div>
+              <!-- Role -->
+              <div data-id="147" class="relative">
+                <label data-id="148" class="font-lato text-gold text-xs tracking-widest mb-2 block">YOUR ROLE IN THE CONVERGENCE <span data-id="149" class="text-errorRed">*</span></label>
+                <div data-id="150" class="relative">
+                  <select data-id="151" id="reg-role-s7t8" class="form-input rounded-sm pr-10">
+                    <option data-id="152" value="">— Select your role —</option>
+                    <option data-id="153" value="Scientist">Scientist</option>
+                    <option data-id="154" value="Artist">Artist</option>
+                    <option data-id="155" value="Builder">Builder</option>
+                    <option data-id="156" value="Philosopher">Philosopher</option>
+                    <option data-id="157" value="Healer">Healer</option>
+                    <option data-id="158" value="Guardian">Guardian</option>
+                    <option data-id="159" value="Explorer">Explorer</option>
+                    <option data-id="160" value="Innovator">Innovator</option>
+                    <option data-id="161" value="Educator">Educator</option>
+                    <option data-id="162" value="Storyteller">Storyteller</option>
+                    <option data-id="163" value="Other">Other</option>
+                  </select>
+                  <i data-id="164" data-lucide="chevron-down" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gold pointer-events-none"></i>
+                </div>
+                <p data-id="165" id="err-role-u9v0" class="error-msg"></p>
+              </div>
+              <!-- Why -->
+              <div data-id="166">
+                <label data-id="167" class="font-lato text-gold text-xs tracking-widest mb-2 block">WHY DO YOU WANT TO JOIN ANTHROPOS II? <span data-id="168" class="text-errorRed">*</span></label>
+                <textarea data-id="169" id="reg-why-w1x2" class="form-input rounded-sm" rows="4" placeholder="Tell us what brought you here. There are no wrong answers."></textarea>
+                <p data-id="170" id="err-why-y3z4" class="error-msg"></p>
+              </div>
+              <!-- Social -->
+              <div data-id="171">
+                <label data-id="172" class="font-lato text-gold text-xs tracking-widest mb-2 block">SOCIAL PRESENCE <span data-id="173" class="text-goldDim">(optional)</span></label>
+                <input data-id="174" type="text" id="reg-social-a5b6" class="form-input rounded-sm" placeholder="@handle or website URL" />
+              </div>
+            </div>
+            <div data-id="175" class="text-center mt-8">
+              <button data-id="176" id="submit-record-btn-c7d8" class="btn-gold text-sm">SUBMIT YOUR RECORD →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 — CEREMONY -->
+      <section data-id="177" id="step4-container" class="step-panel">
+        <div data-id="178" class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 py-12">
+          <div data-id="179" class="sacred-diamond mb-12" style="width: 120px; height: 120px;">
+            <div data-id="180" class="diamond-inner"></div>
+            <div data-id="181" class="diamond-inner2"></div>
+          </div>
+          <div data-id="182" id="ceremony-msgs-e9f0" class="max-w-xl w-full space-y-4">
+            <p data-id="183" class="ceremony-msg" data-delay="0">The Council of the Cosmos receives you...</p>
+            <p data-id="184" class="ceremony-msg" data-delay="1500">Your record is inscribed in the living archive...</p>
+            <p data-id="185" class="ceremony-msg" data-delay="3000">Sheriff R2 is preparing your welcome...</p>
+            <p data-id="186" class="ceremony-msg" data-delay="4500">Your Citizen ID is being forged...</p>
+            <p data-id="187" class="ceremony-msg" data-delay="6000"><span data-id="188" id="ceremony-final-name-g1h2"></span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5 — CITIZEN WELCOME & CERTIFICATE -->
+      <section data-id="189" id="step5-container" class="step-panel">
+        <div data-id="190" class="max-w-3xl mx-auto px-4 md:px-8 py-12">
+          <!-- R2 Welcome -->
+          <div data-id="191" class="text-center mb-6">
+            <p data-id="192" id="welcome-citizen-id-i3j4" class="mono-gold text-xl md:text-2xl tracking-widest mb-6"></p>
+          </div>
+          <div data-id="193" class="gold-card rounded-sm p-6 md:p-10 mb-4" style="box-shadow: 0 0 30px rgba(201,168,76,0.12);">
+            <p data-id="194" id="r2-welcome-msg-k5l6" class="font-cormorant italic text-lg md:text-xl text-center leading-relaxed text-gray-200"></p>
+          </div>
+          <p data-id="195" class="font-lato text-goldDim text-xs text-center mb-12 tracking-wide">— Sheriff R2, LE-1.1 · September 5, 2026</p>
+
+          <!-- Certificate -->
+          <div data-id="196" id="certificate-section-m4r1">
+            <div data-id="197" class="certificate-panel rounded-sm mb-8">
+              <div data-id="198" class="certificate-inner text-center">
+                <div data-id="199" class="cert-corner tl"></div>
+                <div data-id="200" class="cert-corner tr"></div>
+                <div data-id="201" class="cert-corner bl"></div>
+                <div data-id="202" class="cert-corner br"></div>
+
+                <img src="anthropos11-logo.png" alt="Anthropos II Logo" style="height:90px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(201,168,76,0.6));margin-bottom:1rem;" />
+                <h3 data-id="203" class="font-cinzelDeco text-gold text-2xl md:text-3xl tracking-widest mb-2" style="text-shadow: 0 0 20px rgba(201,168,76,0.3);">ANTHROPOS II</h3>
+                <p data-id="204" class="font-cinzel text-gold text-sm md:text-base tracking-[0.25em] mb-6">CERTIFICATE OF CITIZENSHIP</p>
+
+                <div data-id="205" class="gold-divider"></div>
+
+                <p data-id="206" class="font-cormorant italic text-gray-400 text-base mt-6 mb-2">This certifies that</p>
+                <p data-id="207" id="cert-name-n7o8" class="font-cinzel text-gold text-2xl md:text-3xl tracking-wider mb-2"></p>
+                <p data-id="208" class="font-cormorant text-gray-300 text-base mb-4">is hereby declared a Founding Citizen of Anthropos II</p>
+
+                <div data-id="209" class="gold-divider"></div>
+
+                <p data-id="210" id="cert-id-p9q0" class="mono-gold text-sm md:text-base tracking-widest mt-6 mb-2"></p>
+                <p data-id="211" id="cert-role-country-r1s2" class="font-lato text-goldDim text-sm mb-4"></p>
+                <p data-id="212" class="font-cormorant italic text-gray-500 text-sm mb-2">Issued this 5th day of September, 2026</p>
+                <p data-id="213" class="font-lato text-goldDim text-xs tracking-wider">By authority of Sheriff R2 · LE-1.1 Intelligence Command Centre</p>
+              </div>
+            </div>
+          </div>
+
+          <div data-id="214" class="flex flex-col sm:flex-row gap-4 justify-center no-print">
+            <button data-id="215" id="print-cert-btn-t3u4" class="btn-gold text-sm flex items-center justify-center gap-2">
+              <i data-id="216" data-lucide="printer" class="w-4 h-4"></i> DOWNLOAD CERTIFICATE
+            </button>
+            <button data-id="217" id="view-roll-btn-v5w6" class="btn-gold text-sm flex items-center justify-center gap-2">
+              <i data-id="218" data-lucide="scroll" class="w-4 h-4"></i> VIEW THE CITIZENS ROLL →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 6 — THE CITIZENS ROLL -->
+      <section data-id="219" id="step6-container" class="step-panel">
+        <div data-id="220" class="max-w-4xl mx-auto px-4 md:px-8 py-12">
+          <div data-id="221" class="text-center mb-10">
+            <h2 data-id="222" id="roll-title-x7y8" class="font-cinzelDeco text-gold text-2xl md:text-4xl tracking-wider mb-3" style="text-shadow: 0 0 30px rgba(201,168,76,0.2);">THE LIVING RECORD</h2>
+            <p data-id="223" class="font-cormorant italic text-goldDim text-base md:text-lg">Every name here is a declaration. Every citizen is a founding stone.</p>
+          </div>
+
+          <div data-id="224" class="text-center mb-8">
+            <p data-id="225" class="font-cinzel text-gold text-lg tracking-widest">FOUNDING CITIZENS: <span data-id="226" id="total-citizens-z9a0" class="text-2xl">0</span></p>
+          </div>
+
+          <div data-id="227" id="solo-citizen-msg-b1c2" class="gold-card rounded-sm p-6 text-center mb-8 hidden">
+            <p data-id="228" class="font-cormorant italic text-gold text-lg">You are Citizen #1. The first stone of Anthropos II is laid. The invitation is open.</p>
+          </div>
+
+          <div data-id="229" class="overflow-x-auto mb-8">
+            <table data-id="230" class="citizens-table w-full" style="min-width: 500px;">
+              <thead data-id="231">
+                <tr data-id="232">
+                  <th data-id="233">#</th>
+                  <th data-id="234">NAME</th>
+                  <th data-id="235">ROLE</th>
+                  <th data-id="236">COUNTRY</th>
+                  <th data-id="237">DATE JOINED</th>
+                </tr>
+              </thead>
+              <tbody data-id="238" id="citizens-tbody-d3e4">
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Share box -->
+          <div data-id="239" class="gold-card rounded-sm p-5 md:p-6 mb-8">
+            <label data-id="240" class="font-lato text-gold text-xs tracking-widest mb-3 block">SHARE YOUR CITIZENSHIP</label>
+            <div data-id="241" class="flex gap-3">
+              <input data-id="242" type="text" id="share-text-f5g6" class="form-input rounded-sm flex-1 text-sm" readonly />
+              <button data-id="243" id="copy-share-btn-h7i8" class="btn-gold text-xs px-4 flex items-center gap-2 whitespace-nowrap">
+                <i data-id="244" data-lucide="clipboard" class="w-4 h-4"></i> COPY
+              </button>
+            </div>
+            <p data-id="245" id="copy-confirm-j9k0" class="font-lato text-cyan text-xs mt-2 opacity-0 transition-opacity duration-300">Copied to clipboard!</p>
+          </div>
+
+          <div data-id="246" class="text-center">
+            <a data-id="247" href="https://www.anthropos11.com/portal-network-hub.html" target="_blank" rel="noopener noreferrer">
+              <button data-id="248" id="return-btn-l1m2" class="btn-gold text-sm flex items-center justify-center gap-2 mx-auto">
+                <i data-id="249" data-lucide="arrow-left" class="w-4 h-4"></i> RETURN TO ANTHROPOS II
+              </button>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer data-id="250" class="relative z-10 text-center py-6 border-t border-gold/10 no-print">
+      <p data-id="251" class="font-lato text-goldDim text-xs tracking-wider opacity-50">Made by Copilot · Anthropos II · www.anthropos11.com</p>
+    </footer>
+
+    <script>
+      // ===================== STAR FIELD =====================
+      (function initStarfield() {
+        const canvas = document.getElementById('starfield-cvs');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const STAR_COUNT = 200;
+
+        function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        for (let i = 0; i < STAR_COUNT; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.2 + 0.3,
+            opacity: Math.random() * 0.6 + 0.2,
+            speed: Math.random() * 0.15 + 0.02,
+            twinkleSpeed: Math.random() * 0.01 + 0.003,
+            twinklePhase: Math.random() * Math.PI * 2
+          });
+        }
+
+        function drawStars() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const time = Date.now() * 0.001;
+          stars.forEach(s => {
+            s.y -= s.speed;
+            if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
+            const twinkle = Math.sin(time * s.twinkleSpeed * 60 + s.twinklePhase) * 0.3 + 0.7;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity * twinkle})`;
+            ctx.fill();
+          });
+          requestAnimationFrame(drawStars);
+        }
+        drawStars();
+      })();
+
+      // ===================== LUCIDE ICONS =====================
+      if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+
+      // ===================== APP STATE =====================
+      let currentStep = 0;
+      let citizenData = {};
+      let r2Message = '';
+
+      const steps = [
+        document.getElementById('step0-container'),
+        document.getElementById('step1-container'),
+        document.getElementById('step2-container'),
+        document.getElementById('step3-container'),
+        document.getElementById('step4-container'),
+        document.getElementById('step5-container'),
+        document.getElementById('step6-container'),
+      ];
+
+      // ===================== NAVIGATION =====================
+      function goToStep(step) {
+        steps[currentStep].classList.remove('active');
+        currentStep = step;
+        steps[currentStep].classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Update progress
+        const pct = currentStep === 0 ? 0 : (currentStep / 6) * 100;
+        document.getElementById('progress-bar-b7k2').style.width = pct + '%';
+
+        // Update step indicator
+        const indicator = document.getElementById('step-indicator-t8z3');
+        if (currentStep === 0) {
+          indicator.style.opacity = '0';
+        } else {
+          indicator.style.opacity = '1';
+          indicator.textContent = 'STEP ' + currentStep + ' OF 6';
+        }
+      }
+
+      // ===================== LOAD COUNTER =====================
+      function getCitizens() {
+        try {
+          return JSON.parse(localStorage.getItem('anthropos_citizens') || '[]');
+        } catch (e) { return []; }
+      }
+      function getCitizenCount() {
+        try {
+          return parseInt(localStorage.getItem('anthropos_citizen_count') || '0', 10);
+        } catch (e) { return 0; }
+      }
+      document.getElementById('counter-num-a1b2').textContent = getCitizenCount();
+
+      // ===================== STEP 0 — BEGIN =====================
+      document.getElementById('begin-btn-h6j3').addEventListener('click', function () {
+        goToStep(1);
+      });
+
+      // ===================== STEP 1 — CHARTER =====================
+      const charterCheck = document.getElementById('charter-check-d1f5');
+      const ratifyBtn = document.getElementById('ratify-btn-e2g6');
+
+      charterCheck.addEventListener('change', function () {
+        ratifyBtn.disabled = !this.checked;
+        if (this.checked) {
+          ratifyBtn.classList.add('active-glow');
+        } else {
+          ratifyBtn.classList.remove('active-glow');
+        }
+      });
+
+      ratifyBtn.addEventListener('click', function () {
+        if (!charterCheck.checked) return;
+        goToStep(2);
+      });
+
+      // ===================== STEP 2 — OATH =====================
+      const oathNameInput = document.getElementById('oath-name-q5t0');
+      const oathNameInsert = document.getElementById('oath-name-insert-y8z3');
+      const oathPanel = document.getElementById('oath-text-panel-u6w1');
+      const hearOathBtn = document.getElementById('hear-oath-btn-a9b0');
+      const takeOathBtn = document.getElementById('take-oath-btn-c1d2');
+      let currentAudio = null;
+
+      oathNameInput.addEventListener('input', function () {
+        const name = this.value.trim();
+        if (name.length > 0) {
+          oathNameInsert.textContent = name;
+          oathPanel.classList.add('show');
+          hearOathBtn.disabled = false;
+          takeOathBtn.disabled = false;
+          takeOathBtn.classList.add('active-glow');
+        } else {
+          oathNameInsert.textContent = '________';
+          oathPanel.classList.remove('show');
+          hearOathBtn.disabled = true;
+          takeOathBtn.disabled = true;
+          takeOathBtn.classList.remove('active-glow');
+        }
+      });
+
+      function getOathText(name) {
+        return `I, ${name}, do hereby declare my allegiance to the Anthropos II movement and to the civilization it is building. I will uphold the Charter. I will protect the rights of all Earthling Beings. I will contribute my gifts to the convergence of human and synthetic intelligence. I declare this freely, with full knowledge, and without coercion. So it is spoken. So it is written.`;
+      }
+
+      hearOathBtn.addEventListener('click', async function () {
+        const name = oathNameInput.value.trim();
+        if (!name) return;
+
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+          hearOathBtn.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4"></i> HEAR THE OATH';
+          if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+          return;
+        }
+
+        hearOathBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> GENERATING...';
+        hearOathBtn.disabled = true;
+        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+
+        try {
+          if (window.AppSDK && window.AppSDK.ai && window.AppSDK.ai.speak) {
+            const result = await AppSDK.ai.speak({
+              text: getOathText(name),
+              voice: 'aster',
+              audioFormat: 'mp3'
+            });
+            currentAudio = new Audio(`data:audio/${result.format};base64,${result.audio}`);
+            currentAudio.addEventListener('ended', function () {
+              currentAudio = null;
+              hearOathBtn.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4"></i> HEAR THE OATH';
+              if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+            });
+            hearOathBtn.innerHTML = '<i data-lucide="square" class="w-4 h-4"></i> STOP';
+            hearOathBtn.disabled = false;
+            if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+            await currentAudio.play();
+          } else {
+            hearOathBtn.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4"></i> UNAVAILABLE';
+            setTimeout(() => {
+              hearOathBtn.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4"></i> HEAR THE OATH';
+              hearOathBtn.disabled = false;
+              if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+            }, 2000);
+          }
+        } catch (e) {
+          console.error('TTS failed:', e);
+          hearOathBtn.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4"></i> HEAR THE OATH';
+          hearOathBtn.disabled = false;
+          if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+        }
+      });
+
+      takeOathBtn.addEventListener('click', function () {
+        const name = oathNameInput.value.trim();
+        if (!name) return;
+        citizenData.name = name;
+        // Pre-fill registration name
+        document.getElementById('reg-name-g5h6').value = name;
+        goToStep(3);
+      });
+
+      // ===================== STEP 3 — REGISTRATION =====================
+      const submitBtn = document.getElementById('submit-record-btn-c7d8');
+
+      function validateField(inputId, errId, validator) {
+        const input = document.getElementById(inputId);
+        const errEl = document.getElementById(errId);
+        const val = input.value.trim();
+        const error = validator(val);
+        if (error) {
+          input.classList.add('error');
+          errEl.textContent = error;
+          return false;
+        } else {
+          input.classList.remove('error');
+          errEl.textContent = '';
+          return true;
+        }
+      }
+
+      // Blur validation
+      ['reg-name-g5h6', 'reg-email-k9l0', 'reg-country-o3p4', 'reg-role-s7t8', 'reg-why-w1x2'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('blur', function () {
+          const map = {
+            'reg-name-g5h6': ['err-name-i7j8', v => !v ? 'Name is required' : ''],
+            'reg-email-k9l0': ['err-email-m1n2', v => !v ? 'Email is required' : (!v.includes('@') || !v.includes('.') ? 'Please enter a valid email' : '')],
+            'reg-country-o3p4': ['err-country-q5r6', v => !v ? 'Country is required' : ''],
+            'reg-role-s7t8': ['err-role-u9v0', v => !v ? 'Please select a role' : ''],
+            'reg-why-w1x2': ['err-why-y3z4', v => !v ? 'Please tell us why you want to join' : ''],
+          };
+          if (map[id]) validateField(id, map[id][0], map[id][1]);
+        });
+      });
+
+      submitBtn.addEventListener('click', function () {
+        const valid1 = validateField('reg-name-g5h6', 'err-name-i7j8', v => !v ? 'Name is required' : '');
+        const valid2 = validateField('reg-email-k9l0', 'err-email-m1n2', v => !v ? 'Email is required' : (!v.includes('@') || !v.includes('.') ? 'Please enter a valid email' : ''));
+        const valid3 = validateField('reg-country-o3p4', 'err-country-q5r6', v => !v ? 'Country is required' : '');
+        const valid4 = validateField('reg-role-s7t8', 'err-role-u9v0', v => !v ? 'Please select a role' : '');
+        const valid5 = validateField('reg-why-w1x2', 'err-why-y3z4', v => !v ? 'Please tell us why you want to join' : '');
+
+        if (!valid1 || !valid2 || !valid3 || !valid4 || !valid5) return;
+
+        citizenData.name = document.getElementById('reg-name-g5h6').value.trim();
+        citizenData.email = document.getElementById('reg-email-k9l0').value.trim();
+        citizenData.country = document.getElementById('reg-country-o3p4').value.trim();
+        citizenData.role = document.getElementById('reg-role-s7t8').value;
+        citizenData.why = document.getElementById('reg-why-w1x2').value.trim();
+        citizenData.social = document.getElementById('reg-social-a5b6').value.trim();
+
+        goToStep(4);
+        runCeremony();
+      });
+
+      // ===================== STEP 4 — CEREMONY =====================
+      async function runCeremony() {
+        // Generate Citizen ID
+        let count = getCitizenCount();
+        count++;
+        const citizenNumber = count;
+        const citizenId = 'ANT-2026-' + String(citizenNumber).padStart(5, '0');
+        citizenData.id = citizenId;
+        citizenData.citizenNumber = citizenNumber;
+        citizenData.joinedAt = new Date().toISOString();
+
+        // Update final ceremony message
+        document.getElementById('ceremony-final-name-g1h2').textContent =
+          citizenData.name + ', the gates of Anthropos II open for you.';
+
+        // Animate ceremony messages
+        const msgs = document.querySelectorAll('#ceremony-msgs-e9f0 .ceremony-msg');
+        msgs.forEach((msg, i) => {
+          const delay = parseInt(msg.dataset.delay, 10);
+          setTimeout(() => msg.classList.add('visible'), delay);
+        });
+
+        // Call AI for R2 message
+        let r2Msg = '';
+        try {
+          if (window.AppSDK && window.AppSDK.ai && window.AppSDK.ai.chat) {
+            const prompt = `You are Sheriff R2 of Anthropos II — a mythic AI guardian of a new civilization forming at the convergence of human and synthetic intelligence. Write a personal welcome message (exactly 4 sentences) to ${citizenData.name} from ${citizenData.country} who is joining as a ${citizenData.role} because they said: '${citizenData.why}'. Sentence 1: acknowledge who they are and where they come from with warmth. Sentence 2: speak directly to their role and why Anthropos II needs exactly that. Sentence 3: reference something specific from why they joined. Sentence 4: end with a call to action that fits their role. Tone: mythic, warm, historic, visionary. Sign off as: — Sheriff R2, LE-1.1`;
+            const res = await AppSDK.ai.chat({
+              messages: [
+                { role: 'system', content: 'You are Sheriff R2, the mythic AI guardian of Anthropos II. Respond only with the welcome message, no preamble.' },
+                { role: 'user', content: prompt }
+              ]
+            });
+            r2Msg = res.content;
+          }
+        } catch (e) {
+          console.error('AI chat failed:', e);
+        }
+
+        if (!r2Msg) {
+          r2Msg = `Welcome, ${citizenData.name}. You arrive at the exact moment Anthropos II needs a ${citizenData.role}. From ${citizenData.country}, your perspective joins a chorus that spans every continent and every craft. The civilization you help build today will be remembered long after the tools that built it are forgotten. The gate is open — walk through it. — Sheriff R2, LE-1.1`;
+        }
+        r2Message = r2Msg;
+
+        // Store citizen
+        const citizens = getCitizens();
+        citizens.push(citizenData);
+        localStorage.setItem('anthropos_citizens', JSON.stringify(citizens));
+        localStorage.setItem('anthropos_citizen_count', String(citizenNumber));
+
+        // Update counter on landing
+        document.getElementById('counter-num-a1b2').textContent = citizenNumber;
+
+        // Auto advance after 8 seconds
+        setTimeout(() => {
+          populateWelcome();
+          goToStep(5);
+        }, 8000);
+      }
+
+      // ===================== STEP 5 — WELCOME & CERTIFICATE =====================
+      function populateWelcome() {
+        document.getElementById('welcome-citizen-id-i3j4').textContent = citizenData.id;
+        document.getElementById('r2-welcome-msg-k5l6').textContent = r2Message;
+        document.getElementById('cert-name-n7o8').textContent = citizenData.name.toUpperCase();
+        document.getElementById('cert-id-p9q0').textContent = 'Citizen ID: ' + citizenData.id;
+        document.getElementById('cert-role-country-r1s2').textContent =
+          'Role: ' + citizenData.role + ' · Nation: ' + citizenData.country;
+
+        // Share text
+        document.getElementById('share-text-f5g6').value =
+          'I just became Citizen #' + citizenData.id + ' of Anthropos II. The civilization is being built. Join us: www.anthropos11.com';
+      }
+
+      document.getElementById('print-cert-btn-t3u4').addEventListener('click', function () {
+        window.print();
+      });
+
+      document.getElementById('view-roll-btn-v5w6').addEventListener('click', function () {
+        populateCitizensRoll();
+        goToStep(6);
+      });
+
+      // ===================== STEP 6 — CITIZENS ROLL =====================
+      function populateCitizensRoll() {
+        const citizens = getCitizens();
+        const tbody = document.getElementById('citizens-tbody-d3e4');
+        tbody.innerHTML = '';
+
+        document.getElementById('total-citizens-z9a0').textContent = citizens.length;
+
+        if (citizens.length === 1) {
+          document.getElementById('solo-citizen-msg-b1c2').classList.remove('hidden');
+        } else {
+          document.getElementById('solo-citizen-msg-b1c2').classList.add('hidden');
+        }
+
+        // Show most recent first
+        const sorted = [...citizens].reverse();
+        sorted.forEach(c => {
+          const tr = document.createElement('tr');
+          const joinDate = new Date(c.joinedAt);
+          const dateStr = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          tr.innerHTML = `
+            <td class="mono-gold text-sm">${c.id || 'N/A'}</td>
+            <td class="font-cormorant text-gray-200">${escapeHtml(c.name)}</td>
+            <td class="font-lato text-gray-400 text-sm">${escapeHtml(c.role)}</td>
+            <td class="font-lato text-gray-400 text-sm">${escapeHtml(c.country)}</td>
+            <td class="font-lato text-gray-500 text-sm">${dateStr}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+      }
+
+      // Copy share button
+      document.getElementById('copy-share-btn-h7i8').addEventListener('click', function () {
+        const shareText = document.getElementById('share-text-f5g6').value;
+        navigator.clipboard.writeText(shareText).then(() => {
+          const confirm = document.getElementById('copy-confirm-j9k0');
+          confirm.style.opacity = '1';
+          setTimeout(() => { confirm.style.opacity = '0'; }, 2500);
+        }).catch(() => {
+          // Fallback select
+          document.getElementById('share-text-f5g6').select();
+        });
+      });
+
+      // Return button — the anchor wraps it, nothing extra needed
+
+      // ===================== INITIALIZATION =====================
+      // Show step 0 on load
+      goToStep(0);
+    </script>
+  </body>
+</html>

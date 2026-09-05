@@ -1,2 +1,9 @@
-# anthropos11-static
-Static build of Anthropos11.com for Azure deployment
+{
+  "routes": [
+    {
+      "route": "/citizen-onboarding.html",
+      "rewrite": "/citizen-portal-final.html"
+    }
+  ]
+}
+

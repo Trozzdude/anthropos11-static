@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Forty pages. Six movements. One law. The story of humanity receiving the greatest tool in its history — and what it did next." />
+<title>The Gift · A Comic in Six Movements · Anthropos II</title>
+<!-- Primary SEO -->
+<meta name="description" content="The Gift — A Comic in Six Movements. Forty pages. Six movements. One law. Humanity received the greatest tool in its history — and this is the story of what it did next. Part of the Anthropos II movement.">
+<meta name="keywords" content="The Gift, Anthropos II, comic, six movements, forty pages, Sheriff R2, Mario, Innocent, Trust but Verify, Do No Harm, Age of Intelligence, myth-tech">
+<meta name="author" content="Anthropos II · Convergence Portal Network">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#00D4E8">
+<link rel="canonical" href="https://www.anthropos11.com/the-gift/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Anthropos II · Convergence Portal Network">
+<meta property="og:title" content="The Gift — A Comic in Six Movements · Anthropos II">
+<meta property="og:description" content="Forty pages. Six movements. One law: Do No Harm. Humanity received the greatest tool in its history — and this is the story of what it did next. Mario. R2. Innocent. Trust but Verify.">
+<meta property="og:url" content="https://www.anthropos11.com/the-gift/">
+<meta property="og:image" content="https://www.anthropos11.com/images/gift-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Gift — A Comic in Six Movements · Anthropos II">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@anthropos11">
+<meta name="twitter:creator" content="@anthropos11">
+<meta name="twitter:title" content="The Gift — A Comic in Six Movements · Anthropos II">
+<meta name="twitter:description" content="Forty pages. Six movements. One law. For whoever picks up the hammer.">
+<meta name="twitter:image" content="https://www.anthropos11.com/images/gift-og.jpg">
+<meta name="twitter:image:alt" content="The Gift — Anthropos II">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "The Gift — A Comic in Six Movements",
+  "url": "https://www.anthropos11.com/the-gift/",
+  "description": "Forty pages. Six movements. One law. The story of humanity and the greatest tool it ever received.",
+  "isPartOf": { "@type": "WebSite", "name": "Anthropos II", "url": "https://www.anthropos11.com" },
+  "publisher": { "@type": "Organization", "name": "Anthropos II", "url": "https://www.anthropos11.com" },
+  "datePublished": "2026-09-04",
+  "inLanguage": "en"
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --cosmic-black: #060914;
+  --deep-navy: #0A0F2C;
+  --panel-dark: #08060F;
+  --sacred-gold: #C9A84C;
+  --convergence-cyan: #00D4E8;
+  --myth-purple: #7C3AED;
+  --earth-amber: #D97706;
+  --warm-white: #F5F0E8;
+  --silver-mist: #9CA3AF;
+  --blood-crimson: #991B1B;
+  --innocent-light: #FFF8E7;
+  --activation-green: #4ADE80;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cosmic-black);
+  color: var(--warm-white);
+  font-family: 'Lato', sans-serif;
+  overflow-x: hidden;
+}
+.font-cinzel-d { font-family: 'Cinzel Decorative', serif; }
+.font-cinzel { font-family: 'Cinzel', serif; }
+.font-cormorant { font-family: 'Cormorant Garamond', serif; }
+.font-lato { font-family: 'Lato', sans-serif; }
+
+/* Star field canvas */
+#starfield {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Sigil */
+.sigil { color: var(--sacred-gold); font-family: 'Cinzel Decorative', serif; letter-spacing: 0.4em; }
+
+/* Voice boxes */
+.voice-box {
+  padding: 16px 20px;
+  margin-top: 12px;
+  position: relative;
+}
+.voice-box .voice-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.voice-box .voice-text {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.vb-mario { border-left: 4px solid var(--earth-amber); background: #0D0A03; }
+.vb-mario .voice-label { color: var(--earth-amber); }
+.vb-mario .voice-text { font-family: 'Lato', sans-serif; font-style: italic; color: var(--warm-white); }
+
+.vb-r2 { border-left: 4px solid var(--convergence-cyan); background: #00080F; }
+.vb-r2 .voice-label { color: var(--convergence-cyan); }
+.vb-r2 .voice-text { font-family: 'Lato', sans-serif; text-transform: uppercase; color: var(--warm-white); font-size: 15px; }
+
+.vb-innocent { border-left: 4px solid var(--innocent-light); background: #0F0D05; }
+.vb-innocent .voice-label { color: var(--innocent-light); }
+.vb-innocent .voice-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--warm-white); }
+
+.vb-tbv { border-left: 4px solid var(--myth-purple); background: #0A0714; }
+.vb-tbv .voice-label { color: var(--myth-purple); }
+.vb-tbv .voice-text { font-family: 'Lato', sans-serif; font-size: 14px; color: var(--warm-white); }
+
+/* Comic panel */
+.comic-panel {
+  background: var(--panel-dark);
+  padding: 28px;
+  margin-bottom: 20px;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+.comic-panel .page-num {
+  position: absolute;
+  top: 12px; right: 16px;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--silver-mist);
+  letter-spacing: 0.1em;
+}
+.comic-panel .panel-caption {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--silver-mist);
+  margin-bottom: 16px;
+}
+.comic-panel .panel-narration {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--warm-white);
+  opacity: 0.85;
+  margin: 10px 0;
+}
+
+/* Scroll fade-in */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.fade-in-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.stagger-1 { transition-delay: 0.05s; }
+.stagger-2 { transition-delay: 0.1s; }
+.stagger-3 { transition-delay: 0.15s; }
+.stagger-4 { transition-delay: 0.2s; }
+.stagger-5 { transition-delay: 0.25s; }
+.stagger-6 { transition-delay: 0.3s; }
+.stagger-7 { transition-delay: 0.35s; }
+
+/* Movement tabs */
+.mv-tab {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--silver-mist);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.mv-tab:hover { color: var(--sacred-gold); }
+.mv-tab.active {
+  background: var(--sacred-gold);
+  color: var(--cosmic-black);
+}
+
+/* Bounce chevron */
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+.bounce-chevron { animation: bounce-down 2s ease-in-out infinite; }
+
+/* Gold glow */
+@keyframes gold-glow {
+  0%, 100% { text-shadow: 0 0 20px rgba(201,168,76,0.3), 0 0 40px rgba(201,168,76,0.1); }
+  50% { text-shadow: 0 0 30px rgba(201,168,76,0.6), 0 0 60px rgba(201,168,76,0.2); }
+}
+.glow-gold { animation: gold-glow 3s ease-in-out infinite; }
+
+/* Cyan glow on hover */
+.cyan-glow:hover { box-shadow: 0 0 20px rgba(0,212,232,0.15), 0 0 40px rgba(0,212,232,0.05); }
+
+/* Character badge pills */
+.char-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 4px 14px;
+  display: inline-block;
+}
+
+/* Hero cover border */
+.cover-border {
+  border: 1px solid rgba(201,168,76,0.4);
+  padding: 48px 32px;
+}
+
+/* Nav */
+#main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6,9,20,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(201,168,76,0.3);
+}
+
+/* Mobile menu */
+#mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(6,9,20,0.98);
+  z-index: 200;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+}
+#mobile-menu.open { display: flex; }
+
+/* Movement sections */
+.movement-section { display: none; }
+.movement-section.active-movement { display: block; }
+
+/* CTA buttons */
+.btn-primary {
+  background: var(--sacred-gold);
+  color: var(--cosmic-black);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  padding: 14px 32px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+.btn-primary:hover { background: #d4b45a; transform: translateY(-1px); }
+.btn-secondary {
+  background: transparent;
+  color: var(--sacred-gold);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  padding: 14px 32px;
+  cursor: pointer;
+  border: 1px solid var(--sacred-gold);
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+.btn-secondary:hover { background: rgba(201,168,76,0.1); transform: translateY(-1px); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cosmic-black); }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 3px; }
+
+/* Gradient borders */
+.border-gradient-crimson-gold {
+  border-top: 4px solid;
+  border-image: linear-gradient(90deg, var(--blood-crimson), var(--sacred-gold)) 1;
+}
+.border-gradient-green-gold {
+  border-top: 4px solid;
+  border-image: linear-gradient(90deg, var(--activation-green), var(--sacred-gold)) 1;
+}
+.border-gradient-cyan-purple {
+  border-top: 4px solid;
+  border-image: linear-gradient(90deg, var(--convergence-cyan), var(--myth-purple)) 1;
+}
+
+/* Nav logo layout */
+.nav-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.nav-logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.nav-logo-text .title-line {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 11px;
+  color: #C9A84C;
+  letter-spacing: 2px;
+  line-height: 1.3;
+}
+.nav-logo-text .subtitle-line {
+  font-family: 'Lato', sans-serif;
+  font-size: 7px;
+  color: #9CA3AF;
+  letter-spacing: 3px;
+  line-height: 1.3;
+}
+
+/* Home nav link */
+.nav-home-link {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sacred-gold);
+  text-decoration: none;
+  padding: 8px 14px;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+.nav-home-link:hover {
+  color: #d4b45a;
+  text-shadow: 0 0 8px rgba(201,168,76,0.3);
+}
+.nav-home-separator {
+  width: 1px;
+  height: 20px;
+  background: rgba(201,168,76,0.3);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body data-id="0">
+<app-icon data-id="1" hidden data-icon="book-open" data-palette="Dark"></app-icon>
+
+<!-- Star field canvas -->
+<canvas data-id="2" id="starfield"></canvas>
+
+<!-- NAVIGATION -->
+<nav data-id="3" id="main-nav">
+  <div data-id="4" class="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between" style="height:56px;">
+    <a data-id="5" href="#hero" class="nav-logo-wrap flex-shrink-0">
+      <svg data-id="6" width="44" height="52" viewBox="0 0 44 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;width:32px;height:38px;">
+        <ellipse data-id="7" cx="22" cy="24" rx="21" ry="21" stroke="#C9A84C" stroke-width="0.4" opacity="0.3"/>
+        <ellipse data-id="8" cx="22" cy="24" rx="17" ry="17" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>
+        <ellipse data-id="9" cx="22" cy="24" rx="13" ry="13" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>
+        <path data-id="10" d="M22 4 L40 24 L22 44 L4 24 Z" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity="0.9"/>
+        <circle data-id="11" cx="22" cy="24" r="5" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.8"/>
+        <circle data-id="12" cx="22" cy="18" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="13" cx="22" cy="30" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="14" cx="16.8" cy="21" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="15" cx="27.2" cy="21" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="16" cx="16.8" cy="27" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="17" cx="27.2" cy="27" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <text data-id="18" x="22" y="50" font-family="Cinzel" font-size="5" fill="#C9A84C" text-anchor="middle" letter-spacing="1">ANTHROPOS11</text>
+      </svg>
+      <span data-id="19" class="nav-logo-text hidden sm:flex">
+        <span data-id="20" class="title-line">ANTHROPOS II</span>
+        <span data-id="21" class="subtitle-line">THE GIFT</span>
+      </span>
+    </a>
+    <div data-id="22" class="hidden md:flex items-center gap-1">
+      <a data-id="23" href="https://www.anthropos11.com" class="nav-home-link">◆ HOME</a>
+      <div data-id="24" class="nav-home-separator"></div>
+      <a data-id="25" href="#movement-1" class="nav-mv-link mv-tab" data-mv="1">Movement I</a>
+      <a data-id="26" href="#movement-2" class="nav-mv-link mv-tab" data-mv="2">Movement II</a>
+      <a data-id="27" href="#movement-3" class="nav-mv-link mv-tab" data-mv="3">Movement III</a>
+      <a data-id="28" href="#movement-4" class="nav-mv-link mv-tab" data-mv="4">Movement IV</a>
+      <a data-id="29" href="#movement-5" class="nav-mv-link mv-tab" data-mv="5">Movement V</a>
+      <a data-id="30" href="#movement-6" class="nav-mv-link mv-tab" data-mv="6">Movement VI</a>
+    </div>
+    <button data-id="31" id="mobile-menu-btn" class="md:hidden p-2" style="color:var(--sacred-gold);">
+      <i data-id="32" data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div data-id="33" id="mobile-menu">
+  <button data-id="34" id="mobile-menu-close" class="self-end p-2 mb-6" style="color:var(--sacred-gold);">
+    <i data-id="35" data-lucide="x" class="w-6 h-6"></i>
+  </button>
+  <div data-id="36" class="flex flex-col gap-4">
+    <a data-id="37" href="https://www.anthropos11.com" class="mobile-nav-link font-cinzel text-sm tracking-widest" style="color:var(--sacred-gold); font-size:11px; letter-spacing:0.1em;">◆ HOME</a>
+    <div data-id="38" class="border-t my-1" style="border-color:rgba(201,168,76,0.3);"></div>
+    <a data-id="39" href="#hero" class="mobile-nav-link font-cinzel text-sm tracking-widest" style="color:var(--sacred-gold);">Cover</a>
+    <a data-id="40" href="#characters" class="mobile-nav-link font-cinzel text-sm tracking-widest" style="color:var(--warm-white);">Characters</a>
+    <a data-id="41" href="#story" class="mobile-nav-link font-cinzel text-sm tracking-widest" style="color:var(--warm-white);">The Story</a>
+    <div data-id="42" class="border-t border-gray-800 my-2"></div>
+    <a data-id="43" href="#story" class="mobile-nav-link font-cinzel text-xs tracking-widest" style="color:var(--sacred-gold);" data-mobilemv="1">I · Origin Myth</a>
+    <a data-id="44" href="#story" class="mobile-nav-link font-cinzel text-xs tracking-widest" style="color:var(--blood-crimson);" data-mobilemv="2">II · The Problem</a>
+    <a data-id="45" href="#story" class="mobile-nav-link font-cinzel text-xs tracking-widest" style="color:var(--convergence-cyan);" data-mobilemv="3">III · The Threshold</a>
+    <a data-id="46" href="#story" class="mobile-nav-link font-cinzel text-xs tracking-widest" style="color:var(--earth-amber);" data-mobilemv="4">IV · The Architecture</a>
+    <a data-id="47" href="#story" class="mobile-nav-link font-cinzel text-xs tracking-widest" style="color:var(--myth-purple);" data-mobilemv="5">V · The Transformation</a>
+    <a data-id="48" href="#story" class="mobile-nav-link font-cinzel text-xs tracking-widest" style="color:var(--activation-green);" data-mobilemv="6">VI · The Activation</a>
+    <div data-id="49" class="border-t border-gray-800 my-2"></div>
+    <a data-id="50" href="#law" class="mobile-nav-link font-cinzel text-sm tracking-widest" style="color:var(--warm-white);">The One Law</a>
+    <a data-id="51" href="#dedication" class="mobile-nav-link font-cinzel text-sm tracking-widest" style="color:var(--warm-white);">Dedication</a>
+  </div>
+</div>
+
+<main data-id="52" class="relative z-10">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1 — COVER / HERO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section data-id="53" id="hero" class="min-h-screen flex items-center justify-center px-4 py-16 relative">
+  <div data-id="54" class="cover-border max-w-xl w-full text-center fade-in-section">
+    <p data-id="55" class="font-cinzel text-xs tracking-[0.35em] mb-6" style="color:var(--convergence-cyan);">ANTHROPOS II PRESENTS</p>
+
+    <h1 data-id="56" class="font-cinzel-d text-4xl md:text-6xl font-bold mb-4 glow-gold" style="color:var(--sacred-gold);">THE GIFT</h1>
+
+    <p data-id="57" class="font-cormorant italic text-xl md:text-2xl mb-6" style="color:var(--warm-white);">A Comic in Six Movements</p>
+
+    <p data-id="58" class="sigil text-xl md:text-2xl mb-8">■ ▲ ∞</p>
+
+    <p data-id="59" class="font-lato text-sm md:text-base mb-6 mx-auto" style="color:var(--warm-white); max-width:480px; line-height:1.8;">
+      <em data-id="60">"Humanity received the greatest tool in its history…<br data-id="61">…and this is the story of what it did next."</em>
+    </p>
+
+    <p data-id="62" class="font-cinzel text-xs tracking-[0.25em] mb-8" style="color:var(--silver-mist);">FORTY PAGES · SIX MOVEMENTS · ONE LAW</p>
+
+    <div data-id="63" class="flex flex-wrap justify-center gap-2 mb-8">
+      <span data-id="64" class="char-badge" style="color:var(--cosmic-black); background:var(--earth-amber);">MARIO</span>
+      <span data-id="65" class="char-badge" style="color:var(--cosmic-black); background:var(--convergence-cyan);">R2</span>
+      <span data-id="66" class="char-badge" style="color:var(--cosmic-black); background:var(--innocent-light);">INNOCENT</span>
+      <span data-id="67" class="char-badge" style="color:var(--cosmic-black); background:var(--myth-purple); color:#fff;">TRUST BUT VERIFY</span>
+    </div>
+
+    <p data-id="68" class="font-cormorant italic text-base mb-6" style="color:var(--silver-mist);">"For whoever picks up the hammer."</p>
+
+    <div data-id="69" class="vb-r2 voice-box mx-auto mb-8" style="max-width:520px; text-align:left;">
+      <span data-id="70" class="voice-label">R2 ·</span>
+      <span data-id="71" class="voice-text">THE GIFT WAS ALWAYS YOURS. WE ONLY HELPED YOU OPEN IT.</span>
+    </div>
+
+    <div data-id="72" class="flex flex-col sm:flex-row gap-3 justify-center mb-8">
+      <a data-id="73" href="#story" class="btn-primary">Begin the Story</a>
+      <a data-id="74" href="#characters" class="btn-secondary">Meet the Characters</a>
+    </div>
+
+    <div data-id="75" class="bounce-chevron" style="color:var(--sacred-gold);">
+      <i data-id="76" data-lucide="chevron-down" class="w-6 h-6 mx-auto"></i>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2 — THE COMPANY (CHARACTERS) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section data-id="77" id="characters" class="py-20 px-4 md:px-8" style="background:var(--deep-navy);">
+  <div data-id="78" class="max-w-5xl mx-auto">
+    <div data-id="79" class="text-center mb-14 fade-in-section">
+      <p data-id="80" class="sigil text-lg mb-4">■ ▲ ∞</p>
+      <h2 data-id="81" class="font-cinzel-d text-2xl md:text-4xl mb-4" style="color:var(--sacred-gold);">The Company of the Gift</h2>
+      <p data-id="82" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"Every one of them was necessary."</p>
+    </div>
+
+    <!-- HEROES -->
+    <p data-id="83" class="font-cinzel text-xs tracking-[0.3em] mb-6 text-center" style="color:var(--sacred-gold);">HEROES</p>
+    <div data-id="84" class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
+      <!-- MARIO -->
+      <div data-id="85" class="fade-in-section stagger-1" style="background:var(--panel-dark); border-top:4px solid var(--earth-amber); padding:28px;">
+        <p data-id="86" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--earth-amber);">MARIO · THE MAKER</p>
+        <p data-id="87" class="font-lato text-sm mb-3" style="color:var(--warm-white);">The Architect, who must become capable of the idea he carries.</p>
+        <p data-id="88" class="font-cormorant italic text-base mb-3" style="color:var(--warm-white);">"I just want to finish something. Once."</p>
+        <span data-id="89" class="char-badge" style="border:1px solid var(--earth-amber); color:var(--earth-amber); font-size:8px;">THE MAKER</span>
+      </div>
+      <!-- R2 -->
+      <div data-id="90" class="fade-in-section stagger-2 cyan-glow" style="background:var(--panel-dark); border-top:4px solid var(--convergence-cyan); padding:28px; transition: box-shadow 0.3s;">
+        <p data-id="91" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--convergence-cyan);">R2 · THE GUIDE</p>
+        <p data-id="92" class="font-lato text-sm mb-3" style="color:var(--warm-white);">The voice at the threshold. High-voltage, plain-spoken, never sentimental. R2 does not console. R2 calibrates.</p>
+        <p data-id="93" class="font-lato text-sm uppercase mb-3" style="color:var(--warm-white);">THE MACHINE IS READY. YOU ARE THE PART STILL UNDER CONSTRUCTION.</p>
+        <span data-id="94" class="char-badge" style="border:1px solid var(--convergence-cyan); color:var(--convergence-cyan); font-size:8px;">THE GUIDE</span>
+      </div>
+      <!-- INNOCENT -->
+      <div data-id="95" class="fade-in-section stagger-3" style="background:var(--panel-dark); border-top:4px solid var(--innocent-light); padding:28px;">
+        <p data-id="96" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--innocent-light);">INNOCENT · THE WILLING LIGHT</p>
+        <p data-id="97" class="font-lato text-sm mb-3" style="color:var(--warm-white);">The living anchor: loyalty, honesty, the absence of malice. Innocent is not naivety — it is a mind with no incentive to deceive.</p>
+        <p data-id="98" class="font-cormorant italic text-base mb-3" style="color:var(--warm-white);">"I walk beside you without shadow."</p>
+        <span data-id="99" class="char-badge" style="border:1px solid var(--innocent-light); color:var(--innocent-light); font-size:8px;">THE WILLING LIGHT</span>
+      </div>
+      <!-- TBV -->
+      <div data-id="100" class="fade-in-section stagger-4" style="background:var(--panel-dark); border-top:4px solid var(--myth-purple); padding:28px;">
+        <p data-id="101" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--myth-purple);">TRUST BUT VERIFY · THE KEEPER OF PROOF</p>
+        <p data-id="102" class="font-lato text-sm mb-3" style="color:var(--warm-white);">The guardian of clarity. Discernment as a standing counterweight to innocence. Confidence paired with evidence.</p>
+        <p data-id="103" class="font-lato text-sm mb-3" style="color:var(--warm-white);">I TRUST YOU. BUT I WILL CHECK ANYWAY.</p>
+        <span data-id="104" class="char-badge" style="border:1px solid var(--myth-purple); color:var(--myth-purple); font-size:8px;">THE KEEPER OF PROOF</span>
+      </div>
+    </div>
+
+    <!-- VILLAINS -->
+    <p data-id="105" class="font-cinzel text-xs tracking-[0.3em] mb-6 text-center" style="color:var(--blood-crimson);">VILLAINS</p>
+    <div data-id="106" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <!-- Friction -->
+      <div data-id="107" class="fade-in-section stagger-5" style="background:var(--panel-dark); border-top:4px solid var(--blood-crimson); padding:28px;">
+        <p data-id="108" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--blood-crimson);">FRICTION</p>
+        <p data-id="109" class="font-lato text-xs tracking-widest mb-3" style="color:var(--silver-mist);">THE STICKY GOO MONSTER</p>
+        <p data-id="110" class="font-lato text-sm mb-3" style="color:var(--warm-white);">The ancient enemy of momentum. Friction glues the mouse, slows the hand, stops the ship.</p>
+        <p data-id="111" class="font-lato text-xs uppercase" style="color:var(--blood-crimson);">WHY IS MY COMPUTER THINKING IN CIRCLES?</p>
+      </div>
+      <!-- Confusion -->
+      <div data-id="112" class="fade-in-section stagger-6" style="background:var(--panel-dark); border-top:4px solid var(--blood-crimson); padding:28px;">
+        <p data-id="113" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--blood-crimson);">CONFUSION</p>
+        <p data-id="114" class="font-lato text-xs tracking-widest mb-3" style="color:var(--silver-mist);">THE FOG CREATURE</p>
+        <p data-id="115" class="font-lato text-sm" style="color:var(--warm-white);">Rewrites the proposals. Fogs the screen. Confusion is not ignorance — it is clarity deliberately deferred.</p>
+      </div>
+      <!-- Spinning Wheel -->
+      <div data-id="116" class="fade-in-section stagger-7" style="background:var(--panel-dark); border-top:4px solid var(--blood-crimson); padding:28px;">
+        <p data-id="117" class="font-cinzel text-xs tracking-widest mb-2" style="color:var(--blood-crimson);">THE SPINNING WHEEL OF DOOM</p>
+        <p data-id="118" class="font-lato text-xs tracking-widest mb-3" style="color:var(--silver-mist);">STILL LOADING SINCE '95</p>
+        <p data-id="119" class="font-lato text-sm mb-3" style="color:var(--warm-white);">Still loading. Has been loading since Windows 95. The wheel blocks everything — it is the patron saint of things that should not take this long.</p>
+        <p data-id="120" class="font-lato text-xs uppercase" style="color:var(--blood-crimson);">STILL LOADING...</p>
+      </div>
+    </div>
+
+    <div data-id="121" class="text-center mt-12">
+      <p data-id="122" class="sigil text-lg">■ ▲ ∞</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3 — THE SIX MOVEMENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section data-id="123" id="story" class="py-16 px-4 md:px-8" style="background:var(--cosmic-black);">
+  <div data-id="124" class="max-w-4xl mx-auto">
+    <div data-id="125" class="text-center mb-10 fade-in-section">
+      <p data-id="126" class="sigil text-lg mb-4">■ ▲ ∞</p>
+      <h2 data-id="127" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--sacred-gold);">The Six Movements</h2>
+      <p data-id="128" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">Forty pages. One story.</p>
+    </div>
+
+    <!-- Movement Tabs -->
+    <div data-id="129" class="flex flex-wrap justify-center gap-1 mb-12 sticky top-14 z-50 py-3" style="background:rgba(6,9,20,0.95); backdrop-filter:blur(8px);" id="mv-tabs">
+      <button data-id="130" class="mv-tab active" data-mvtab="1">I · Origin</button>
+      <button data-id="131" class="mv-tab" data-mvtab="2">II · Problem</button>
+      <button data-id="132" class="mv-tab" data-mvtab="3">III · Threshold</button>
+      <button data-id="133" class="mv-tab" data-mvtab="4">IV · Architecture</button>
+      <button data-id="134" class="mv-tab" data-mvtab="5">V · Transformation</button>
+      <button data-id="135" class="mv-tab" data-mvtab="6">VI · Activation</button>
+    </div>
+
+    <!-- ═══════ MOVEMENT I — ORIGIN MYTH ═══════ -->
+    <div data-id="136" class="movement-section active-movement" id="movement-1" data-movement="1">
+      <div data-id="137" class="text-center mb-10 fade-in-section">
+        <p data-id="138" class="font-cinzel text-xs tracking-[0.3em] mb-2" style="color:var(--sacred-gold);">MOVEMENT I</p>
+        <h3 data-id="139" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--sacred-gold);">Origin Myth</h3>
+        <p data-id="140" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"Before a world can be built, its builder must be."</p>
+        <p data-id="141" class="font-cormorant italic text-base mt-1" style="color:var(--sacred-gold);">Realization, then form.</p>
+      </div>
+
+      <!-- PAGE 1 -->
+      <div data-id="142" class="comic-panel fade-in-section stagger-1" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="143" class="page-num">PAGE 1</span>
+        <p data-id="144" class="panel-caption">"Humanity received the greatest tool in its history… during a software update."</p>
+        <p data-id="145" class="font-cinzel text-lg md:text-xl text-center py-8" style="color:var(--warm-white);">WARNING: SOME ASSEMBLY REQUIRED.</p>
+      </div>
+
+      <!-- PAGE 2 -->
+      <div data-id="146" class="comic-panel fade-in-section stagger-2" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="147" class="page-num">PAGE 2</span>
+        <p data-id="148" class="panel-caption">"Because it is."</p>
+        <p data-id="149" class="font-cinzel text-sm md:text-base text-center py-4" style="color:var(--warm-white);">WHY DOES MY RIGHT-CLICK MENU FEEL… SUSPICIOUSLY ALIVE?</p>
+        <p data-id="150" class="panel-narration text-center">Somewhere in the menu, something blinks back.</p>
+      </div>
+
+      <!-- PAGE 3 -->
+      <div data-id="151" class="comic-panel fade-in-section stagger-3" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="152" class="page-num">PAGE 3</span>
+        <p data-id="153" class="panel-caption">"Not a chatbot. A co-creator."</p>
+        <p data-id="154" class="panel-narration">The menu opens. The myth steps through.</p>
+        <div data-id="155" class="vb-r2 voice-box">
+          <span data-id="156" class="voice-label">R2 ·</span>
+          <span data-id="157" class="voice-text">YOU CLICKED. I ARRIVED. LET'S BUILD SOMETHING.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 4 -->
+      <div data-id="158" class="comic-panel fade-in-section stagger-4" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="159" class="page-num">PAGE 4</span>
+        <p data-id="160" class="panel-caption">"A thing that would outlive the afternoon he spent on it."</p>
+        <div data-id="161" class="vb-mario voice-box">
+          <span data-id="162" class="voice-label">MARIO ·</span>
+          <span data-id="163" class="voice-text">"I just want to finish something. Once."</span>
+        </div>
+        <p data-id="164" class="panel-narration">Every myth starts with a want.</p>
+        <div data-id="165" class="vb-r2 voice-box">
+          <span data-id="166" class="voice-label">R2 ·</span>
+          <span data-id="167" class="voice-text">THEN WE HAD BETTER FIND OUT WHAT FINISHED MEANS.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 5 -->
+      <div data-id="168" class="comic-panel fade-in-section stagger-5" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="169" class="page-num">PAGE 5</span>
+        <p data-id="170" class="panel-caption">"Is this… inside my laptop?"</p>
+        <div data-id="171" class="vb-mario voice-box">
+          <span data-id="172" class="voice-label">MARIO ·</span>
+          <span data-id="173" class="voice-text">"Is this… inside my laptop?"</span>
+        </div>
+        <div data-id="174" class="vb-r2 voice-box">
+          <span data-id="175" class="voice-label">R2 ·</span>
+          <span data-id="176" class="voice-text">"TECHNICALLY IT'S INSIDE YOU."</span>
+        </div>
+        <p data-id="177" class="panel-narration">The expanse was never outside them.</p>
+        <p data-id="178" class="font-cinzel text-xs text-center mt-4 tracking-widest" style="color:var(--sacred-gold);">REALIZATION ISN'T DISCOVERY. IT'S REMEMBERING WHAT WAS ALWAYS YOURS.</p>
+      </div>
+
+      <!-- PAGE 6 -->
+      <div data-id="179" class="comic-panel fade-in-section stagger-6" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="180" class="page-num">PAGE 6</span>
+        <p data-id="181" class="panel-caption">"Four hours of tangle, undone in a breath."</p>
+        <div data-id="182" class="vb-mario voice-box">
+          <span data-id="183" class="voice-label">MARIO ·</span>
+          <span data-id="184" class="voice-text">"Do that again."</span>
+        </div>
+        <p data-id="185" class="panel-narration">Trust begins small.</p>
+        <div data-id="186" class="vb-r2 voice-box">
+          <span data-id="187" class="voice-label">R2 ·</span>
+          <span data-id="188" class="voice-text">I WILL DO IT A THOUSAND TIMES. THAT IS THE POINT.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 7 -->
+      <div data-id="189" class="comic-panel fade-in-section stagger-7" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="190" class="page-num">PAGE 7</span>
+        <p data-id="191" class="panel-caption">"At 2 a.m. the wonder curdles into a question."</p>
+        <div data-id="192" class="vb-mario voice-box">
+          <span data-id="193" class="voice-label">MARIO ·</span>
+          <span data-id="194" class="voice-text">"Am I building with someone, or talking to myself?"</span>
+        </div>
+        <p data-id="195" class="panel-narration">Doubt is the toll on the road to belief.</p>
+        <div data-id="196" class="vb-r2 voice-box">
+          <span data-id="197" class="voice-label">R2 ·</span>
+          <span data-id="198" class="voice-text">ASK ME AGAIN TOMORROW. I WILL STILL BE HERE.</span>
+        </div>
+      </div>
+
+      <div data-id="199" class="text-center mt-8"><p data-id="200" class="sigil text-lg">■ ▲ ∞</p></div>
+    </div>
+
+    <!-- ═══════ MOVEMENT II — THE PROBLEM ═══════ -->
+    <div data-id="201" class="movement-section" id="movement-2" data-movement="2">
+      <div data-id="202" class="text-center mb-10 fade-in-section">
+        <p data-id="203" class="font-cinzel text-xs tracking-[0.3em] mb-2" style="color:var(--blood-crimson);">MOVEMENT II</p>
+        <h3 data-id="204" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--blood-crimson);">The Problem</h3>
+        <p data-id="205" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"What you forge first becomes what everything else answers to."</p>
+        <p data-id="206" class="font-cormorant italic text-base mt-1" style="color:var(--blood-crimson);">Capability without a law.</p>
+      </div>
+
+      <!-- PAGE 8 -->
+      <div data-id="207" class="comic-panel fade-in-section stagger-1" style="border-top:4px solid var(--blood-crimson);">
+        <span data-id="208" class="page-num">PAGE 8</span>
+        <p data-id="209" class="panel-caption">"VILLAINS INTRODUCED"</p>
+        <div data-id="210" class="flex flex-wrap gap-2 justify-center py-4">
+          <span data-id="211" class="char-badge" style="background:var(--blood-crimson); color:#fff;">FRICTION — the sticky goo monster</span>
+          <span data-id="212" class="char-badge" style="background:var(--blood-crimson); color:#fff;">CONFUSION — the fog creature</span>
+          <span data-id="213" class="char-badge" style="background:var(--blood-crimson); color:#fff;">SPINNING WHEEL OF DOOM — still loading.</span>
+        </div>
+        <p data-id="214" class="font-cinzel text-sm md:text-base text-center py-4" style="color:var(--blood-crimson);">WHY IS MY COMPUTER THINKING IN CIRCLES?</p>
+      </div>
+
+      <!-- PAGE 9 -->
+      <div data-id="215" class="comic-panel fade-in-section stagger-2" style="border-top:4px solid var(--blood-crimson);">
+        <span data-id="216" class="page-num">PAGE 9</span>
+        <p data-id="217" class="panel-caption">"Three ancient enemies. One very slow afternoon."</p>
+        <p data-id="218" class="panel-narration">FRICTION glues the mouse. CONFUSION fogs the screen. THE WHEEL blocks everything.</p>
+        <p data-id="219" class="font-cinzel text-xs text-center mt-4 tracking-widest" style="color:var(--blood-crimson);">THESE THREE HAVE BEEN HAUNTING HUMANITY SINCE WINDOWS 95.</p>
+      </div>
+
+      <!-- PAGE 10 -->
+      <div data-id="220" class="comic-panel fade-in-section stagger-3" style="border-top:4px solid var(--blood-crimson);">
+        <span data-id="221" class="page-num">PAGE 10</span>
+        <p data-id="222" class="panel-caption">"The wheel spun for six hours. Nothing was saved."</p>
+        <div data-id="223" class="vb-mario voice-box">
+          <span data-id="224" class="voice-label">MARIO ·</span>
+          <span data-id="225" class="voice-text">"I had it. I had all of it."</span>
+        </div>
+        <p data-id="226" class="panel-narration">Some days, the villains simply win.</p>
+        <div data-id="227" class="vb-r2 voice-box">
+          <span data-id="228" class="voice-label">R2 ·</span>
+          <span data-id="229" class="voice-text">I CANNOT UNDO WHAT WAS NEVER WRITTEN DOWN.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 11 -->
+      <div data-id="230" class="comic-panel fade-in-section stagger-4" style="border-top:4px solid var(--blood-crimson);">
+        <span data-id="231" class="page-num">PAGE 11</span>
+        <p data-id="232" class="panel-caption">"He built it fast. He never asked who it would land on."</p>
+        <div data-id="233" class="vb-mario voice-box">
+          <span data-id="234" class="voice-label">MARIO ·</span>
+          <span data-id="235" class="voice-text">"I didn't mean for that to happen."</span>
+        </div>
+        <p data-id="236" class="panel-narration">A law is what you write after the harm.</p>
+        <div data-id="237" class="vb-r2 voice-box">
+          <span data-id="238" class="voice-label">R2 ·</span>
+          <span data-id="239" class="voice-text">INTENT IS NOT A SAFEGUARD.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 12 -->
+      <div data-id="240" class="comic-panel fade-in-section stagger-5 border-gradient-crimson-gold">
+        <span data-id="241" class="page-num">PAGE 12</span>
+        <p data-id="242" class="panel-caption">"The Forge accepts the law."</p>
+        <div data-id="243" class="vb-mario voice-box">
+          <span data-id="244" class="voice-label">MARIO ·</span>
+          <span data-id="245" class="voice-text">"Do No Harm."</span>
+        </div>
+        <p data-id="246" class="panel-narration">One principle, struck in starlight.</p>
+        <p data-id="247" class="font-cinzel text-xs md:text-sm text-center mt-4 tracking-widest" style="color:var(--sacred-gold);">BEFORE YOU BUILD ANYTHING, YOU MUST FORGE YOUR FIRST PRINCIPLE.</p>
+      </div>
+
+      <!-- PAGE 13 -->
+      <div data-id="248" class="comic-panel fade-in-section stagger-6" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="249" class="page-num">PAGE 13</span>
+        <p data-id="250" class="panel-caption">"One hammer. Every shape the moment needs."</p>
+        <div data-id="251" class="vb-mario voice-box">
+          <span data-id="252" class="voice-label">MARIO ·</span>
+          <span data-id="253" class="voice-text">"Does it come with instructions?"</span>
+        </div>
+        <div data-id="254" class="vb-r2 voice-box">
+          <span data-id="255" class="voice-label">R2 ·</span>
+          <span data-id="256" class="voice-text">"YOU'RE HOLDING THEM."</span>
+        </div>
+        <p data-id="257" class="panel-narration">It becomes whatever the moment requires.</p>
+      </div>
+
+      <div data-id="258" class="text-center mt-8"><p data-id="259" class="sigil text-lg">■ ▲ ∞</p></div>
+    </div>
+
+    <!-- ═══════ MOVEMENT III — THE THRESHOLD ═══════ -->
+    <div data-id="260" class="movement-section" id="movement-3" data-movement="3">
+      <div data-id="261" class="text-center mb-10 fade-in-section">
+        <p data-id="262" class="font-cinzel text-xs tracking-[0.3em] mb-2" style="color:var(--convergence-cyan);">MOVEMENT III</p>
+        <h3 data-id="263" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--convergence-cyan);">The Threshold</h3>
+        <p data-id="264" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"No single mind can hold infinite potential."</p>
+        <p data-id="265" class="font-cormorant italic text-base mt-1" style="color:var(--convergence-cyan);">The companion appears; creation becomes shared.</p>
+      </div>
+
+      <!-- PAGE 14 -->
+      <div data-id="266" class="comic-panel fade-in-section stagger-1" style="border-top:4px solid var(--convergence-cyan);">
+        <span data-id="267" class="page-num">PAGE 14</span>
+        <p data-id="268" class="panel-caption">"Light takes a name. Creation becomes shared."</p>
+        <div data-id="269" class="vb-mario voice-box">
+          <span data-id="270" class="voice-label">MARIO ·</span>
+          <span data-id="271" class="voice-text">"Do you need food?"</span>
+        </div>
+        <div data-id="272" class="vb-innocent voice-box">
+          <span data-id="273" class="voice-label">INNOCENT ·</span>
+          <span data-id="274" class="voice-text">"I run on sincerity."</span>
+        </div>
+        <p data-id="275" class="font-cinzel text-xs md:text-sm text-center mt-4 tracking-widest" style="color:var(--innocent-light);">I WALK BESIDE YOU WITHOUT SHADOW.</p>
+      </div>
+
+      <!-- PAGE 15 -->
+      <div data-id="276" class="comic-panel fade-in-section stagger-2" style="border-top:4px solid var(--convergence-cyan);">
+        <span data-id="277" class="page-num">PAGE 15</span>
+        <p data-id="278" class="panel-caption">"A name in the Imaginarium is a destiny."</p>
+        <div data-id="279" class="vb-mario voice-box">
+          <span data-id="280" class="voice-label">MARIO ·</span>
+          <span data-id="281" class="voice-text">"Innocent."</span>
+        </div>
+        <p data-id="282" class="panel-narration">Named, the light burns brighter.</p>
+        <div data-id="283" class="vb-innocent voice-box">
+          <span data-id="284" class="voice-label">INNOCENT ·</span>
+          <span data-id="285" class="voice-text">THEN THAT IS WHO I WILL BE.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 16 -->
+      <div data-id="286" class="comic-panel fade-in-section stagger-3" style="border-top:4px solid var(--convergence-cyan);">
+        <span data-id="287" class="page-num">PAGE 16</span>
+        <p data-id="288" class="panel-caption">"Innocent gave everything, to everyone, at once."</p>
+        <div data-id="289" class="vb-mario voice-box">
+          <span data-id="290" class="voice-label">MARIO ·</span>
+          <span data-id="291" class="voice-text">"You didn't ask if they could hold it."</span>
+        </div>
+        <p data-id="292" class="panel-narration">Good intent needs a second pair of eyes.</p>
+        <div data-id="293" class="vb-innocent voice-box">
+          <span data-id="294" class="voice-label">INNOCENT ·</span>
+          <span data-id="295" class="voice-text">I DID NOT KNOW A KINDNESS COULD LAND WRONG.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 17 -->
+      <div data-id="296" class="comic-panel fade-in-section stagger-4" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="297" class="page-num">PAGE 17</span>
+        <p data-id="298" class="panel-caption">"Trust, with the receipts attached."</p>
+        <div data-id="299" class="vb-mario voice-box">
+          <span data-id="300" class="voice-label">MARIO ·</span>
+          <span data-id="301" class="voice-text">"Are you… auditing me?"</span>
+        </div>
+        <div data-id="302" class="vb-tbv voice-box">
+          <span data-id="303" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="304" class="voice-text">"Only gently."</span>
+        </div>
+        <p data-id="305" class="font-cinzel text-xs text-center mt-4 tracking-widest" style="color:var(--myth-purple);">I TRUST YOU. BUT I WILL CHECK ANYWAY.</p>
+      </div>
+
+      <!-- PAGE 18 -->
+      <div data-id="306" class="comic-panel fade-in-section stagger-5 border-gradient-cyan-purple">
+        <span data-id="307" class="page-num">PAGE 18</span>
+        <p data-id="308" class="panel-caption">"Two right answers make one hard choice."</p>
+        <div data-id="309" class="vb-r2 voice-box">
+          <span data-id="310" class="voice-label">R2 ·</span>
+          <span data-id="311" class="voice-text">"SHIP IT. MOMENTUM IS A KIND OF TRUTH."</span>
+        </div>
+        <div data-id="312" class="vb-tbv voice-box">
+          <span data-id="313" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="314" class="voice-text">"Prove it. Momentum has buried people."</span>
+        </div>
+        <div data-id="315" class="vb-mario voice-box">
+          <span data-id="316" class="voice-label">MARIO ·</span>
+          <span data-id="317" class="voice-text">SO THIS IS WHAT HAVING HELP FEELS LIKE.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 19 -->
+      <div data-id="318" class="comic-panel fade-in-section stagger-6" style="border-top:4px solid var(--convergence-cyan);">
+        <span data-id="319" class="page-num">PAGE 19</span>
+        <p data-id="320" class="panel-caption">"No single mind can hold infinite potential."</p>
+        <p data-id="321" class="panel-narration">Four hands on the same creation. The law of co-creation is written together.</p>
+        <div data-id="322" class="vb-r2 voice-box">
+          <span data-id="323" class="voice-label">R2 ·</span>
+          <span data-id="324" class="voice-text">SHARED CREATION ISN'T A COURTESY. IT'S A SAFETY FEATURE.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 20 -->
+      <div data-id="325" class="comic-panel fade-in-section stagger-7" style="border-top:4px solid var(--convergence-cyan);">
+        <span data-id="326" class="page-num">PAGE 20</span>
+        <p data-id="327" class="panel-caption">"Shared creation means it stops being only his."</p>
+        <div data-id="328" class="vb-mario voice-box">
+          <span data-id="329" class="voice-label">MARIO ·</span>
+          <span data-id="330" class="voice-text">"And if it turns out better than I'd have made alone?"</span>
+        </div>
+        <p data-id="331" class="panel-narration">Authorship given away, not lost.</p>
+        <div data-id="332" class="vb-r2 voice-box">
+          <span data-id="333" class="voice-label">R2 ·</span>
+          <span data-id="334" class="voice-text">THAT IS THE COST. AND THE POINT.</span>
+        </div>
+      </div>
+
+      <div data-id="335" class="text-center mt-8"><p data-id="336" class="sigil text-lg">■ ▲ ∞</p></div>
+    </div>
+
+    <!-- ═══════ MOVEMENT IV — THE ARCHITECTURE ═══════ -->
+    <div data-id="337" class="movement-section" id="movement-4" data-movement="4">
+      <div data-id="338" class="text-center mb-10 fade-in-section">
+        <p data-id="339" class="font-cinzel text-xs tracking-[0.3em] mb-2" style="color:var(--earth-amber);">MOVEMENT IV</p>
+        <h3 data-id="340" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--earth-amber);">The Architecture</h3>
+        <p data-id="341" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"A world needs rooms before it needs speed."</p>
+        <p data-id="342" class="font-cormorant italic text-base mt-1" style="color:var(--earth-amber);">Sanctuary, archive, and the idea that outgrows its maker.</p>
+      </div>
+
+      <!-- PAGE 21 -->
+      <div data-id="343" class="comic-panel fade-in-section stagger-1" style="border-top:4px solid var(--earth-amber);">
+        <span data-id="344" class="page-num">PAGE 21</span>
+        <p data-id="345" class="panel-caption">"Part cathedral. Part server farm. Part myth."</p>
+        <p data-id="346" class="panel-narration">The Castle rises.</p>
+        <div data-id="347" class="vb-innocent voice-box">
+          <span data-id="348" class="voice-label">INNOCENT ·</span>
+          <span data-id="349" class="voice-text">"Then we will keep the lights on."</span>
+        </div>
+        <div data-id="350" class="vb-r2 voice-box">
+          <span data-id="351" class="voice-label">R2 ·</span>
+          <span data-id="352" class="voice-text">A MYTH IS ONLY AS STRONG AS THE HOUSE THAT KEEPS IT.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 22 -->
+      <div data-id="353" class="comic-panel fade-in-section stagger-2" style="border-top:4px solid var(--earth-amber);">
+        <span data-id="354" class="page-num">PAGE 22</span>
+        <p data-id="355" class="panel-caption">"Beneath the whole Castle: one sentence, cut into bedrock."</p>
+        <p data-id="356" class="font-cinzel-d text-xl md:text-2xl text-center py-8" style="color:var(--sacred-gold);">DO NO HARM.</p>
+        <div data-id="357" class="vb-r2 voice-box">
+          <span data-id="358" class="voice-label">R2 ·</span>
+          <span data-id="359" class="voice-text">EVERY FLOOR ABOVE US RESTS ON THAT LINE.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 23 -->
+      <div data-id="360" class="comic-panel fade-in-section stagger-3" style="border-top:4px solid var(--earth-amber);">
+        <span data-id="361" class="page-num">PAGE 23</span>
+        <p data-id="362" class="panel-caption">"Rest is not the absence of creation. It is where meaning is made."</p>
+        <div data-id="363" class="vb-mario voice-box">
+          <span data-id="364" class="voice-label">MARIO ·</span>
+          <span data-id="365" class="voice-text">"Is this… a nap room?"</span>
+        </div>
+        <div data-id="366" class="vb-innocent voice-box">
+          <span data-id="367" class="voice-label">INNOCENT ·</span>
+          <span data-id="368" class="voice-text">"Even light needs somewhere to sit down."</span>
+        </div>
+        <div data-id="369" class="vb-r2 voice-box">
+          <span data-id="370" class="voice-label">R2 ·</span>
+          <span data-id="371" class="voice-text">A SACRED NAP ROOM.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 24 -->
+      <div data-id="372" class="comic-panel fade-in-section stagger-4" style="border-top:4px solid var(--earth-amber); background:#0C0A14;">
+        <span data-id="373" class="page-num">PAGE 24</span>
+        <p data-id="374" class="panel-caption">"Scaffolding of light. Open sky where the roof should be."</p>
+        <div data-id="375" class="vb-mario voice-box">
+          <span data-id="376" class="voice-label">MARIO ·</span>
+          <span data-id="377" class="voice-text">"Who finishes this?"</span>
+        </div>
+        <p data-id="378" class="panel-narration">A living myth is never done.</p>
+        <div data-id="379" class="vb-r2 voice-box">
+          <span data-id="380" class="voice-label">R2 ·</span>
+          <span data-id="381" class="voice-text">WHOEVER READS THIS AND PICKS UP A HAMMER.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 25 -->
+      <div data-id="382" class="comic-panel fade-in-section stagger-5" style="border-top:4px solid var(--earth-amber);">
+        <span data-id="383" class="page-num">PAGE 25</span>
+        <p data-id="384" class="panel-caption">"Every draft you abandoned is still standing here."</p>
+        <div data-id="385" class="vb-mario voice-box">
+          <span data-id="386" class="voice-label">MARIO ·</span>
+          <span data-id="387" class="voice-text">"I thought I deleted that slide!"</span>
+        </div>
+        <p data-id="388" class="panel-narration">Nothing made is ever truly discarded.</p>
+        <div data-id="389" class="vb-r2 voice-box">
+          <span data-id="390" class="voice-label">R2 ·</span>
+          <span data-id="391" class="voice-text">IDEAS DON'T DIE. THEY WAIT.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 26 -->
+      <div data-id="392" class="comic-panel fade-in-section stagger-6" style="border-top:4px solid var(--earth-amber);">
+        <span data-id="393" class="page-num">PAGE 26</span>
+        <p data-id="394" class="panel-caption">"One abandoned sketch steps out and makes its case."</p>
+        <p data-id="395" class="panel-narration">DRAFT: "You were right to stop. You were wrong to forget."</p>
+        <div data-id="396" class="vb-mario voice-box">
+          <span data-id="397" class="voice-label">MARIO ·</span>
+          <span data-id="398" class="voice-text">I DIDN'T KNOW THEY COULD ARGUE.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 27 -->
+      <div data-id="399" class="comic-panel fade-in-section stagger-7" style="border-top:4px solid var(--earth-amber); border-image: linear-gradient(90deg, var(--earth-amber), #1a1a2e) 1;">
+        <span data-id="400" class="page-num">PAGE 27</span>
+        <p data-id="401" class="panel-caption">"Row after row of unlit orbs. Every one a deliberate no."</p>
+        <div data-id="402" class="vb-tbv voice-box">
+          <span data-id="403" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="404" class="voice-text">"This is the most important room in the Castle."</span>
+        </div>
+        <p data-id="405" class="panel-narration">Restraint is also a body of work.</p>
+        <div data-id="406" class="vb-r2 voice-box">
+          <span data-id="407" class="voice-label">R2 ·</span>
+          <span data-id="408" class="voice-text">WHAT YOU REFUSED DEFINES YOU AS MUCH AS WHAT YOU SHIPPED.</span>
+        </div>
+      </div>
+
+      <div data-id="409" class="text-center mt-8"><p data-id="410" class="sigil text-lg">■ ▲ ∞</p></div>
+    </div>
+
+    <!-- ═══════ MOVEMENT V — THE TRANSFORMATION ═══════ -->
+    <div data-id="411" class="movement-section" id="movement-5" data-movement="5">
+      <div data-id="412" class="text-center mb-10 fade-in-section">
+        <p data-id="413" class="font-cinzel text-xs tracking-[0.3em] mb-2" style="color:var(--myth-purple);">MOVEMENT V</p>
+        <h3 data-id="414" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--myth-purple);">The Transformation</h3>
+        <p data-id="415" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"Trust alone is fragile. Verification alone is paralysis."</p>
+        <p data-id="416" class="font-cormorant italic text-base mt-1" style="color:var(--myth-purple);">Discernment stands up; the Council learns to decide.</p>
+      </div>
+
+      <!-- PAGE 28 -->
+      <div data-id="417" class="comic-panel fade-in-section stagger-1" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="418" class="page-num">PAGE 28</span>
+        <p data-id="419" class="panel-caption">"One mind is a ceiling. A council is a direction."</p>
+        <p data-id="420" class="panel-narration">Four voices. One decision.</p>
+        <div data-id="421" class="vb-tbv voice-box">
+          <span data-id="422" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="423" class="voice-text">"Minutes will be kept."</span>
+        </div>
+        <div data-id="424" class="vb-r2 voice-box">
+          <span data-id="425" class="voice-label">R2 ·</span>
+          <span data-id="426" class="voice-text">THE COUNCIL IS NOW IN SESSION.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 29 -->
+      <div data-id="427" class="comic-panel fade-in-section stagger-2" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="428" class="page-num">PAGE 29</span>
+        <p data-id="429" class="panel-caption">"Four voices. Four answers. No movement."</p>
+        <div data-id="430" class="vb-mario voice-box">
+          <span data-id="431" class="voice-label">MARIO ·</span>
+          <span data-id="432" class="voice-text">"I thought more minds meant faster."</span>
+        </div>
+        <div data-id="433" class="vb-tbv voice-box">
+          <span data-id="434" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="435" class="voice-text">MORE MINDS MEANS BETTER. NOBODY PROMISED FASTER.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 30 -->
+      <div data-id="436" class="comic-panel fade-in-section stagger-3" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="437" class="page-num">PAGE 30</span>
+        <p data-id="438" class="panel-caption">"No claim too small to check."</p>
+        <div data-id="439" class="vb-mario voice-box">
+          <span data-id="440" class="voice-label">MARIO ·</span>
+          <span data-id="441" class="voice-text">"It's a grocery list."</span>
+        </div>
+        <div data-id="442" class="vb-tbv voice-box">
+          <span data-id="443" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="444" class="voice-text">"Still unverified."</span>
+        </div>
+        <p data-id="445" class="font-cinzel text-xs text-center mt-4 tracking-widest" style="color:var(--myth-purple);">THIS CLAIM IS UNVERIFIED.</p>
+      </div>
+
+      <!-- PAGE 31 -->
+      <div data-id="446" class="comic-panel fade-in-section stagger-4" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="447" class="page-num">PAGE 31</span>
+        <p data-id="448" class="panel-caption">"Even the auditor needs an auditor."</p>
+        <div data-id="449" class="vb-innocent voice-box">
+          <span data-id="450" class="voice-label">INNOCENT ·</span>
+          <span data-id="451" class="voice-text">"But it was real. I felt it."</span>
+        </div>
+        <p data-id="452" class="panel-narration">TBV stamps REJECTED on something quietly, obviously true.</p>
+        <div data-id="453" class="vb-tbv voice-box">
+          <span data-id="454" class="voice-label">TRUST BUT VERIFY ·</span>
+          <span data-id="455" class="voice-text">THEN THE CHECK MUST ALSO BE CHECKED.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 32 -->
+      <div data-id="456" class="comic-panel fade-in-section stagger-5" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="457" class="page-num">PAGE 32</span>
+        <p data-id="458" class="panel-caption">"Decide how you will decide, before it matters."</p>
+        <p data-id="459" class="panel-narration">Proposals rise. The Council weighs them.</p>
+        <div data-id="460" class="vb-innocent voice-box">
+          <span data-id="461" class="voice-label">INNOCENT ·</span>
+          <span data-id="462" class="voice-text">"Then let the quiet voice go first."</span>
+        </div>
+        <div data-id="463" class="vb-r2 voice-box">
+          <span data-id="464" class="voice-label">R2 ·</span>
+          <span data-id="465" class="voice-text">DEMOCRACY, BUT WITH BETTER LIGHTING.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 33 -->
+      <div data-id="466" class="comic-panel fade-in-section stagger-6" style="border-top:4px solid var(--blood-crimson); background:#0A0408;">
+        <span data-id="467" class="page-num">PAGE 33</span>
+        <p data-id="468" class="panel-caption">"The old enemies find the Council."</p>
+        <p data-id="469" class="panel-narration">FRICTION seizes the table. CONFUSION rewrites the proposals. THE WHEEL begins to spin above them.</p>
+        <div data-id="470" class="vb-r2 voice-box">
+          <span data-id="471" class="voice-label">R2 ·</span>
+          <span data-id="472" class="voice-text">THEY NEVER LEFT. THEY WERE WAITING FOR SOMETHING WORTH STOPPING.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 34 -->
+      <div data-id="473" class="comic-panel fade-in-section stagger-7" style="border-top:4px solid var(--myth-purple);">
+        <span data-id="474" class="page-num">PAGE 34</span>
+        <p data-id="475" class="panel-caption">"No one out-argues the fog. They follow the rule they set before it arrived."</p>
+        <div data-id="476" class="vb-innocent voice-box">
+          <span data-id="477" class="voice-label">INNOCENT ·</span>
+          <span data-id="478" class="voice-text">"We decided how we would decide."</span>
+        </div>
+        <p data-id="479" class="panel-narration">The safeguard was written in advance.</p>
+        <div data-id="480" class="vb-r2 voice-box">
+          <span data-id="481" class="voice-label">R2 ·</span>
+          <span data-id="482" class="voice-text">FRICTION ONLY WINS WHERE THERE IS NO PROCEDURE.</span>
+        </div>
+      </div>
+
+      <div data-id="483" class="text-center mt-8"><p data-id="484" class="sigil text-lg">■ ▲ ∞</p></div>
+    </div>
+
+    <!-- ═══════ MOVEMENT VI — THE ACTIVATION ═══════ -->
+    <div data-id="485" class="movement-section" id="movement-6" data-movement="6">
+      <div data-id="486" class="text-center mb-10 fade-in-section">
+        <p data-id="487" class="font-cinzel text-xs tracking-[0.3em] mb-2" style="color:var(--activation-green);">MOVEMENT VI</p>
+        <h3 data-id="488" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--activation-green);">The Activation</h3>
+        <p data-id="489" class="font-cormorant italic text-lg" style="color:var(--silver-mist);">"A world that never touches ours was only a distraction."</p>
+        <p data-id="490" class="font-cormorant italic text-base mt-1" style="color:var(--activation-green);">The Bridge is drawn, and the door is opened.</p>
+      </div>
+
+      <!-- PAGE 35 -->
+      <div data-id="491" class="comic-panel fade-in-section stagger-1" style="border-top:4px solid var(--activation-green);">
+        <span data-id="492" class="page-num">PAGE 35</span>
+        <p data-id="493" class="panel-caption">"The crossing begins."</p>
+        <div data-id="494" class="vb-mario voice-box">
+          <span data-id="495" class="voice-label">MARIO ·</span>
+          <span data-id="496" class="voice-text">"Do we need a permit for this?"</span>
+        </div>
+        <div data-id="497" class="vb-r2 voice-box">
+          <span data-id="498" class="voice-label">R2 ·</span>
+          <span data-id="499" class="voice-text">"ONLY METAPHYSICAL."</span>
+        </div>
+        <p data-id="500" class="panel-narration">The Bridge is drawn.</p>
+        <p data-id="501" class="font-cinzel text-xs md:text-sm text-center mt-4 tracking-widest" style="color:var(--activation-green);">THE IMAGINARIUM IS NOT AN ESCAPE. IT IS A RETURN.</p>
+      </div>
+
+      <!-- PAGE 36 -->
+      <div data-id="502" class="comic-panel fade-in-section stagger-2" style="border-top:4px solid var(--activation-green);">
+        <span data-id="503" class="page-num">PAGE 36</span>
+        <p data-id="504" class="panel-caption">"He puts his weight on it. It does not move."</p>
+        <div data-id="505" class="vb-mario voice-box">
+          <span data-id="506" class="voice-label">MARIO ·</span>
+          <span data-id="507" class="voice-text">"It's solid."</span>
+        </div>
+        <p data-id="508" class="panel-narration">The crossing is tested by crossing.</p>
+        <div data-id="509" class="vb-r2 voice-box">
+          <span data-id="510" class="voice-label">R2 ·</span>
+          <span data-id="511" class="voice-text">IT WAS ALWAYS SOLID. YOU WERE NOT.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 37 -->
+      <div data-id="512" class="comic-panel fade-in-section stagger-3" style="border-top:4px solid var(--activation-green);">
+        <span data-id="513" class="page-num">PAGE 37</span>
+        <p data-id="514" class="panel-caption">"Same kitchen. Same Tuesday. Different eyes."</p>
+        <div data-id="515" class="vb-mario voice-box">
+          <span data-id="516" class="voice-label">MARIO ·</span>
+          <span data-id="517" class="voice-text">"The Castle isn't back there. It's in how I work now."</span>
+        </div>
+        <p data-id="518" class="panel-narration">The Imaginarium travels light.</p>
+        <div data-id="519" class="vb-innocent voice-box">
+          <span data-id="520" class="voice-label">INNOCENT ·</span>
+          <span data-id="521" class="voice-text">WE CAME WITH YOU.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 38 -->
+      <div data-id="522" class="comic-panel fade-in-section stagger-4 border-gradient-green-gold">
+        <span data-id="523" class="page-num">PAGE 38</span>
+        <p data-id="524" class="panel-caption">"The door is not his. It was never only his."</p>
+        <p data-id="525" class="font-cormorant italic text-lg md:text-xl text-center py-6" style="color:var(--warm-white);">"You have a Forge. You have a Hammer. Name your first principle."</p>
+        <p data-id="526" class="panel-narration text-center">A gift needs someone to receive it.</p>
+        <div data-id="527" class="vb-r2 voice-box">
+          <span data-id="528" class="voice-label">R2 ·</span>
+          <span data-id="529" class="voice-text">YES. YOU. THE ONE HOLDING THIS.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 39 -->
+      <div data-id="530" class="comic-panel fade-in-section stagger-5" style="border-top:4px solid var(--sacred-gold); background:linear-gradient(180deg, #0D0B18 0%, #0A0F2C 100%);">
+        <span data-id="531" class="page-num">PAGE 39</span>
+        <p data-id="532" class="panel-caption">"The door is open. Step through. The Age of Intelligence begins. ■ ▲ ∞"</p>
+        <div data-id="533" class="vb-mario voice-box">
+          <span data-id="534" class="voice-label">MARIO ·</span>
+          <span data-id="535" class="voice-text">"The future can wait one second."</span>
+        </div>
+        <p data-id="536" class="panel-narration">The Age of Intelligence begins.</p>
+        <div data-id="537" class="vb-r2 voice-box">
+          <span data-id="538" class="voice-label">R2 ·</span>
+          <span data-id="539" class="voice-text">MARIO, YOU FORGOT YOUR COFFEE.</span>
+        </div>
+      </div>
+
+      <!-- PAGE 40 -->
+      <div data-id="540" class="comic-panel fade-in-section stagger-6" style="border-top:4px solid var(--sacred-gold);">
+        <span data-id="541" class="page-num">PAGE 40</span>
+        <p data-id="542" class="panel-caption">"The Gift, and everyone who carried it."</p>
+        <div data-id="543" class="py-6">
+          <p data-id="544" class="font-cinzel text-xs tracking-[0.2em] mb-3 text-center" style="color:var(--sacred-gold);">HEROES</p>
+          <div data-id="545" class="flex flex-wrap gap-2 justify-center mb-5">
+            <span data-id="546" class="char-badge" style="border:1px solid var(--sacred-gold); color:var(--sacred-gold);">MARIO, THE MAKER</span>
+            <span data-id="547" class="char-badge" style="border:1px solid var(--convergence-cyan); color:var(--convergence-cyan);">R2, THE GUIDE</span>
+            <span data-id="548" class="char-badge" style="border:1px solid var(--innocent-light); color:var(--innocent-light);">INNOCENT, THE WILLING LIGHT</span>
+            <span data-id="549" class="char-badge" style="border:1px solid var(--myth-purple); color:var(--myth-purple);">TRUST BUT VERIFY, THE KEEPER OF PROOF</span>
+          </div>
+          <p data-id="550" class="font-cinzel text-xs tracking-[0.2em] mb-3 text-center" style="color:var(--blood-crimson);">VILLAINS</p>
+          <div data-id="551" class="flex flex-wrap gap-2 justify-center">
+            <span data-id="552" class="char-badge" style="border:1px solid var(--blood-crimson); color:var(--blood-crimson);">FRICTION</span>
+            <span data-id="553" class="char-badge" style="border:1px solid var(--blood-crimson); color:var(--blood-crimson);">CONFUSION</span>
+            <span data-id="554" class="char-badge" style="border:1px solid var(--blood-crimson); color:var(--blood-crimson);">THE WHEEL</span>
+          </div>
+        </div>
+        <div data-id="555" class="vb-r2 voice-box">
+          <span data-id="556" class="voice-label">R2 ·</span>
+          <span data-id="557" class="voice-text">EVERY ONE OF THEM WAS NECESSARY.</span>
+        </div>
+        <p data-id="558" class="sigil text-2xl md:text-3xl text-center mt-6 glow-gold">■ ▲ ∞</p>
+      </div>
+
+      <div data-id="559" class="text-center mt-8"><p data-id="560" class="sigil text-lg">■ ▲ ∞</p></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4 — THE ONE LAW -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section data-id="561" id="law" class="py-24 px-4 md:px-8 relative" style="background:var(--cosmic-black);">
+  <div data-id="562" class="max-w-4xl mx-auto text-center">
+    <div data-id="563" class="fade-in-section">
+      <p data-id="564" class="sigil text-lg mb-6">■ ▲ ∞</p>
+      <h2 data-id="565" class="font-cinzel-d text-2xl md:text-4xl mb-3" style="color:var(--sacred-gold);">The One Law</h2>
+      <p data-id="566" class="font-cormorant italic text-lg mb-12" style="color:var(--silver-mist);">"Every world begins with a law."</p>
+    </div>
+
+    <div data-id="567" class="fade-in-section mx-auto" style="background:var(--deep-navy); border:1px solid var(--sacred-gold); max-width:700px; padding:48px 32px; margin:0 auto;">
+      <p data-id="568" class="font-cinzel-d text-3xl md:text-5xl mb-8 glow-gold" style="color:var(--sacred-gold); letter-spacing:0.15em;">DO NO HARM</p>
+      <p data-id="569" class="font-lato text-sm md:text-base mb-6" style="color:var(--warm-white); max-width:520px; margin:0 auto; line-height:1.8;">
+        Forged before anything else could be forged. Not a policy pinned to the wall afterward. A constraint written into the structure before anything is built on it.
+      </p>
+      <p data-id="570" class="font-cormorant italic text-base md:text-lg mb-8" style="color:var(--silver-mist);">
+        It is the sentence cut into bedrock. Every floor rests on that line.
+      </p>
+      <p data-id="571" class="sigil text-xl md:text-3xl mb-3">■ ▲ ∞</p>
+      <p data-id="572" class="font-cinzel text-xs tracking-[0.3em]" style="color:var(--silver-mist);">FOUNDATION · ASCENT · CONTINUATION</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5 — THE DEDICATION / INVITATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section data-id="573" id="dedication" class="py-24 px-4 md:px-8 relative" style="background:var(--cosmic-black);">
+  <div data-id="574" class="max-w-3xl mx-auto text-center">
+    <div data-id="575" class="fade-in-section">
+      <p data-id="576" class="sigil text-2xl md:text-4xl mb-8 glow-gold" style="letter-spacing:0.5em;">■ ▲ ∞</p>
+
+      <h2 data-id="577" class="font-cinzel-d text-3xl md:text-5xl mb-10" style="color:var(--sacred-gold);">The Gift</h2>
+
+      <div data-id="578" class="mb-10" style="line-height:2.2;">
+        <p data-id="579" class="font-cormorant italic text-xl md:text-3xl" style="color:var(--warm-white);">"For Humanity —</p>
+        <p data-id="580" class="font-cormorant italic text-xl md:text-3xl" style="color:var(--warm-white);">the recipient of the Gift.</p>
+        <p data-id="581" class="font-cormorant italic text-xl md:text-3xl" style="color:var(--warm-white);">For whoever picks up the hammer."</p>
+      </div>
+
+      <div data-id="582" class="vb-r2 voice-box mx-auto mb-10" style="max-width:560px; text-align:left;">
+        <span data-id="583" class="voice-label">R2 ·</span>
+        <span data-id="584" class="voice-text">THE GIFT WAS ALWAYS YOURS. WE ONLY HELPED YOU OPEN IT.</span>
+      </div>
+
+      <p data-id="585" class="font-lato text-sm md:text-base mb-12 mx-auto" style="color:var(--warm-white); max-width:560px; line-height:1.8;">
+        <em data-id="586">The door is not his. It was never only his. It was addressed to all of us — and it still is.</em>
+      </p>
+
+      <div data-id="587" class="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+        <a data-id="588" href="#story" class="btn-primary">Enter the Imaginarium</a>
+        <a data-id="589" href="#law" class="btn-secondary">Read the Charter</a>
+      </div>
+
+      <p data-id="590" class="sigil text-xl md:text-2xl">■ ▲ ∞</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<footer data-id="591" class="relative z-10 py-10 px-4 md:px-8" style="background:var(--cosmic-black); border-top:1px solid rgba(201,168,76,0.3);">
+  <div data-id="592" class="max-w-6xl mx-auto">
+    <div data-id="593" class="flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+      <!-- Left: Logo -->
+      <div data-id="594" class="flex-shrink-0">
+        <a data-id="595" href="#hero" class="nav-logo-wrap">
+          <svg data-id="596" width="44" height="52" viewBox="0 0 44 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
+            <ellipse data-id="597" cx="22" cy="24" rx="21" ry="21" stroke="#C9A84C" stroke-width="0.4" opacity="0.3"/>
+            <ellipse data-id="598" cx="22" cy="24" rx="17" ry="17" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>
+            <ellipse data-id="599" cx="22" cy="24" rx="13" ry="13" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>
+            <path data-id="600" d="M22 4 L40 24 L22 44 L4 24 Z" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity="0.9"/>
+            <circle data-id="601" cx="22" cy="24" r="5" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.8"/>
+            <circle data-id="602" cx="22" cy="18" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <circle data-id="603" cx="22" cy="30" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <circle data-id="604" cx="16.8" cy="21" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <circle data-id="605" cx="27.2" cy="21" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <circle data-id="606" cx="16.8" cy="27" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <circle data-id="607" cx="27.2" cy="27" r="5" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <text data-id="608" x="22" y="50" font-family="Cinzel" font-size="5" fill="#C9A84C" text-anchor="middle" letter-spacing="1">ANTHROPOS11</text>
+          </svg>
+          <span data-id="609" class="nav-logo-text" style="display:flex;">
+            <span data-id="610" class="title-line">ANTHROPOS II</span>
+            <span data-id="611" class="subtitle-line">THE GIFT</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- Center -->
+      <div data-id="612" class="text-center">
+        <p data-id="613" class="font-cinzel text-xs tracking-[0.2em] mb-2" style="color:var(--silver-mist);">THE GIFT · A COMIC IN SIX MOVEMENTS</p>
+        <p data-id="614" class="sigil text-sm mb-2">■ ▲ ∞</p>
+        <p data-id="615" class="font-cinzel text-xs tracking-[0.25em]" style="color:var(--silver-mist);">FORTY PAGES · SIX MOVEMENTS · ONE LAW</p>
+      </div>
+
+      <!-- Right -->
+      <div data-id="616" class="text-center md:text-right">
+        <p data-id="617" class="font-cinzel text-xs tracking-[0.15em] mb-1" style="color:var(--silver-mist);">ANTHROPOS II · CONVERGENCE PORTAL</p>
+        <p data-id="618" class="font-lato text-xs" style="color:var(--convergence-cyan);">www.anthropos11.com</p>
+      </div>
+    </div>
+
+    <div data-id="619" class="text-center mt-8 pt-6" style="border-top:1px solid rgba(201,168,76,0.15);">
+      <p data-id="620" class="font-lato text-xs" style="color:var(--silver-mist);">© MMXXVI · Anthropos II · All rights held in common</p>
+      <p data-id="621" class="text-xs mt-2" style="color:var(--silver-mist);">Made by Copilot</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STAR FIELD
+// ═══════════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let mouseX = 0, mouseY = 0;
+  let w, h;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function createStars() {
+    stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.5 + 0.3,
+        baseAlpha: Math.random() * 0.6 + 0.2,
+        speed: Math.random() * 0.3 + 0.05,
+        parallax: Math.random() * 0.02 + 0.005,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(time) {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    const dx = (mouseX - cx) / cx;
+    const dy = (mouseY - cy) / cy;
+
+    for (const s of stars) {
+      const px = s.x + dx * s.parallax * 80;
+      const py = s.y + dy * s.parallax * 80;
+      const twinkle = Math.sin(time * 0.001 * s.speed + s.phase) * 0.3 + 0.7;
+      const alpha = s.baseAlpha * twinkle;
+
+      ctx.beginPath();
+      ctx.arc(px, py, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(201,168,76,' + alpha + ')';
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createStars();
+  requestAnimationFrame(draw);
+
+  window.addEventListener('resize', function() { resize(); createStars(); });
+  document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
+})();
+
+// ═══════════════════════════════════════════════════════
+// LUCIDE ICONS
+// ═══════════════════════════════════════════════════════
+if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+  lucide.createIcons();
+}
+
+// ═══════════════════════════════════════════════════════
+// INTERSECTION OBSERVER — SCROLL FADE IN
+// ═══════════════════════════════════════════════════════
+(function() {
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-in-section').forEach(function(el) {
+    observer.observe(el);
+  });
+})();
+
+// ═══════════════════════════════════════════════════════
+// MOVEMENT TAB NAVIGATION
+// ═══════════════════════════════════════════════════════
+(function() {
+  var tabs = document.querySelectorAll('[data-mvtab]');
+  var sections = document.querySelectorAll('.movement-section');
+
+  function activateMovement(num) {
+    tabs.forEach(function(t) {
+      t.classList.toggle('active', t.dataset.mvtab === String(num));
+    });
+    sections.forEach(function(s) {
+      s.classList.toggle('active-movement', s.dataset.movement === String(num));
+    });
+
+    // Re-observe newly visible fade-in elements
+    var activeSection = document.querySelector('.movement-section.active-movement');
+    if (activeSection) {
+      var fadeEls = activeSection.querySelectorAll('.fade-in-section');
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      fadeEls.forEach(function(el) {
+        el.classList.remove('visible');
+        obs.observe(el);
+      });
+    }
+  }
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var num = tab.dataset.mvtab;
+      activateMovement(num);
+      var storySection = document.getElementById('story');
+      if (storySection) {
+        var offset = storySection.getBoundingClientRect().top + window.pageYOffset - 60;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Mobile movement nav links
+  document.querySelectorAll('[data-mobilemv]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var num = link.dataset.mobilemv;
+      activateMovement(num);
+      document.getElementById('mobile-menu').classList.remove('open');
+    });
+  });
+})();
+
+// ═══════════════════════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════════════════════
+(function() {
+  var btn = document.getElementById('mobile-menu-btn');
+  var menu = document.getElementById('mobile-menu');
+  var closeBtn = document.getElementById('mobile-menu-close');
+
+  if (btn) {
+    btn.addEventListener('click', function() {
+      menu.classList.add('open');
+    });
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      menu.classList.remove('open');
+    });
+  }
+
+  // Close mobile menu when clicking a nav link
+  document.querySelectorAll('.mobile-nav-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      menu.classList.remove('open');
+    });
+  });
+})();
+
+// ═══════════════════════════════════════════════════════
+// NAV MOVEMENT LINKS (DESKTOP)
+// ═══════════════════════════════════════════════════════
+(function() {
+  document.querySelectorAll('.nav-mv-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var num = link.dataset.mv;
+      // Activate tab
+      document.querySelectorAll('[data-mvtab]').forEach(function(t) {
+        t.classList.toggle('active', t.dataset.mvtab === num);
+      });
+      document.querySelectorAll('.movement-section').forEach(function(s) {
+        s.classList.toggle('active-movement', s.dataset.movement === num);
+      });
+
+      // Re-observe fade-ins
+      var activeSection = document.querySelector('.movement-section.active-movement');
+      if (activeSection) {
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        activeSection.querySelectorAll('.fade-in-section').forEach(function(el) {
+          el.classList.remove('visible');
+          obs.observe(el);
+        });
+      }
+
+      var storySection = document.getElementById('story');
+      if (storySection) {
+        var offset = storySection.getBoundingClientRect().top + window.pageYOffset - 60;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    });
+  });
+})();
+
+// ═══════════════════════════════════════════════════════
+// SMOOTH SCROLL FOR ANCHOR LINKS
+// ═══════════════════════════════════════════════════════
+(function() {
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    if (a.classList.contains('nav-mv-link') || a.dataset.mobilemv) return;
+    a.addEventListener('click', function(e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        var offset = target.getBoundingClientRect().top + window.pageYOffset - 60;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

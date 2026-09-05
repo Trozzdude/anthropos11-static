@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Energy Frontiers Explorer — Anthropos II</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <style>
+    :root {
+      --void: #00010A;
+      --gold: #D4A857;
+      --ember: #FFB45A;
+      --nebula: #1A2E5F;
+      --solar: #F8F8F2;
+      --blood: #CC2200;
+      --grin-start: #000000;
+      --grin-end: #D4A857;
+      --purple-black: #0D001A;
+      --cyan-accent: #00D4E8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--void);
+      color: var(--solar);
+      font-family: 'Lato', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .font-cinzel-dec { font-family: 'Cinzel Decorative', serif; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+    .font-lato { font-family: 'Lato', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* NAV */
+    .main-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(0,1,10,0.95);
+      border-bottom: 1px solid rgba(212,168,87,0.4);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 60px;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-left svg { flex-shrink: 0; }
+    .nav-title {
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--gold); font-size: 13px; letter-spacing: 2px;
+      white-space: nowrap;
+    }
+    .nav-center { display: flex; gap: 24px; align-items: center; }
+    .nav-link {
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+      color: rgba(212,168,87,0.7); text-decoration: none;
+      text-transform: uppercase; transition: color 0.3s;
+      cursor: pointer;
+    }
+    .nav-link:hover { color: var(--gold); }
+    .nav-link-home {
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.1em;
+      color: var(--gold); text-decoration: none;
+      text-transform: uppercase; transition: color 0.3s, opacity 0.3s;
+      cursor: pointer; white-space: nowrap;
+    }
+    .nav-link-home:hover { opacity: 0.8; }
+    .nav-home-separator {
+      width: 1px; height: 20px;
+      background: rgba(212,168,87,0.3);
+      flex-shrink: 0;
+    }
+    .nav-right { position: relative; }
+    .portal-btn {
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px;
+      color: var(--gold); background: none; border: 1px solid rgba(212,168,87,0.3);
+      padding: 6px 16px; cursor: pointer; text-transform: uppercase;
+      display: flex; align-items: center; gap: 6px; transition: all 0.3s;
+    }
+    .portal-btn:hover { border-color: var(--gold); background: rgba(212,168,87,0.08); }
+    .portal-dropdown {
+      display: none; position: absolute; top: 100%; right: 0; margin-top: 4px;
+      background: rgba(0,1,10,0.97); border: 1px solid rgba(212,168,87,0.3);
+      min-width: 240px; z-index: 100;
+    }
+    .portal-dropdown.open { display: block; }
+    .portal-dropdown a {
+      display: block; padding: 10px 16px; color: rgba(248,248,242,0.7);
+      text-decoration: none; font-family: 'Cinzel', serif; font-size: 11px;
+      letter-spacing: 1px; transition: all 0.3s; border-bottom: 1px solid rgba(212,168,87,0.1);
+    }
+    .portal-dropdown a:hover { background: rgba(212,168,87,0.1); color: var(--gold); }
+    .portal-dropdown a.current { color: var(--gold); background: rgba(212,168,87,0.05); }
+
+    /* MOBILE NAV */
+    .hamburger {
+      display: none; background: none; border: none; color: var(--gold);
+      font-size: 28px; cursor: pointer; padding: 4px;
+    }
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; background: rgba(0,1,10,0.98);
+      z-index: 2000; flex-direction: column; padding: 20px; align-items: center;
+      justify-content: center; gap: 24px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold);
+      text-decoration: none; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .mobile-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: var(--gold); font-size: 32px; cursor: pointer;
+    }
+    .mobile-home-separator {
+      width: 60px; height: 1px;
+      background: rgba(212,168,87,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .nav-center, .nav-right { display: none; }
+      .hamburger { display: block; }
+      .nav-title { font-size: 10px; }
+    }
+
+    /* STARFIELD CANVAS */
+    #starfield {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* SECTIONS */
+    .section-wrap {
+      position: relative; z-index: 1;
+    }
+    section {
+      position: relative; z-index: 1;
+      padding: 100px 24px; max-width: 1200px; margin: 0 auto;
+    }
+    .section-title {
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--gold); font-size: clamp(22px, 4vw, 36px);
+      text-align: center; margin-bottom: 12px; letter-spacing: 3px;
+    }
+    .section-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; color: rgba(248,248,242,0.6);
+      text-align: center; font-size: clamp(14px, 2vw, 18px);
+      max-width: 700px; margin: 0 auto 48px;
+    }
+    .gold-separator {
+      width: 40px; height: 2px; background: var(--gold);
+      margin: 24px auto; opacity: 0.5;
+    }
+    .diamond-glyph {
+      text-align: center; color: var(--gold); font-size: 14px;
+      margin: 16px 0; opacity: 0.6;
+    }
+
+    /* FADE IN ANIMATIONS */
+    .fade-in {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    .fade-in.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    .slide-up {
+      opacity: 0; transform: translateY(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .slide-up.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* BREATHING GLOW */
+    @keyframes breathe {
+      0%, 100% { box-shadow: 0 0 15px rgba(212,168,87,0.15); }
+      50% { box-shadow: 0 0 30px rgba(212,168,87,0.3); }
+    }
+    @keyframes breathe-ember {
+      0%, 100% { box-shadow: 0 0 15px rgba(255,180,90,0.2); }
+      50% { box-shadow: 0 0 30px rgba(255,180,90,0.4); }
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding-top: 80px; text-align: center;
+    }
+
+    /* RING */
+    .ring-container {
+      position: relative; width: 320px; height: 320px;
+      margin: 0 auto 32px; cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      .ring-container { width: 240px; height: 240px; }
+    }
+    .ring-svg { width: 100%; height: 100%; }
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .orbit-group { animation: orbit 20s linear infinite; transform-origin: center; }
+
+    @keyframes ring-pulse-amber {
+      0%, 100% { filter: drop-shadow(0 0 12px rgba(255,180,90,0.4)); }
+      50% { filter: drop-shadow(0 0 28px rgba(255,180,90,0.7)); }
+    }
+    @keyframes ring-pulse-gold {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(212,168,87,0.3)); }
+      50% { filter: drop-shadow(0 0 20px rgba(212,168,87,0.5)); }
+    }
+    @keyframes ring-pulse-red {
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(204,34,0,0.5)); }
+      50% { filter: drop-shadow(0 0 35px rgba(204,34,0,0.8)); }
+    }
+    @keyframes ring-shake {
+      0%, 100% { transform: translate(0,0); }
+      10% { transform: translate(-2px, 1px); }
+      30% { transform: translate(2px, -1px); }
+      50% { transform: translate(-1px, 2px); }
+      70% { transform: translate(1px, -2px); }
+      90% { transform: translate(-2px, -1px); }
+    }
+    .ring-state-amber .ring-svg { animation: ring-pulse-amber 3s ease-in-out infinite; }
+    .ring-state-gold .ring-svg { animation: ring-pulse-gold 3s ease-in-out infinite; }
+    .ring-state-red .ring-svg { animation: ring-pulse-red 1.5s ease-in-out infinite; }
+    .ring-state-red .ring-container { animation: ring-shake 0.4s ease-in-out infinite; }
+    .ring-state-grin .ring-svg {
+      animation: ring-pulse-gold 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(212,168,87,0.6));
+    }
+
+    .ring-label {
+      font-family: 'Cinzel', serif; font-size: 11px;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+    .ring-state-text {
+      font-family: 'Lato', sans-serif; font-size: 18px;
+      font-weight: 700; letter-spacing: 4px; margin-top: 4px;
+    }
+    .ring-anomaly {
+      font-family: 'Lato', sans-serif; font-size: 12px;
+      color: var(--solar); margin-top: 8px; letter-spacing: 2px;
+    }
+
+    .hero-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; color: rgba(248,248,242,0.5);
+      font-size: 15px; max-width: 500px; margin: 16px auto 32px;
+    }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
+    .btn-gold {
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+      color: var(--gold); background: none;
+      border: 1px solid rgba(212,168,87,0.5); padding: 10px 24px;
+      cursor: pointer; text-transform: uppercase; transition: all 0.3s;
+    }
+    .btn-gold:hover { background: rgba(212,168,87,0.12); border-color: var(--gold); }
+    .btn-gold-filled {
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+      color: var(--void); background: var(--gold);
+      border: 1px solid var(--gold); padding: 10px 24px;
+      cursor: pointer; text-transform: uppercase; transition: all 0.3s;
+    }
+    .btn-gold-filled:hover { background: #e0b96a; }
+
+    .hero-nav-links { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+    .hero-nav-link {
+      font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px;
+      color: rgba(212,168,87,0.5); text-decoration: none; cursor: pointer;
+      transition: color 0.3s; text-transform: uppercase;
+    }
+    .hero-nav-link:hover { color: var(--gold); }
+
+    /* DATA CARDS */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
+
+    .data-card {
+      background: var(--nebula); border: 1px solid rgba(212,168,87,0.25);
+      padding: 28px; position: relative; animation: breathe 3s ease-in-out infinite;
+    }
+    .data-card h3 {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 13px; letter-spacing: 2px; margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .data-card .metric {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0; border-bottom: 1px solid rgba(212,168,87,0.1);
+      font-size: 13px;
+    }
+    .data-card .metric:last-child { border-bottom: none; }
+    .metric-label { color: rgba(248,248,242,0.6); }
+    .metric-value { color: var(--solar); font-weight: 700; }
+    .metric-value.amber { color: var(--ember); }
+    .metric-value.gold { color: var(--gold); }
+    .metric-value.red { color: var(--blood); }
+    .metric-value.green { color: #44cc66; }
+
+    /* TECH CARDS */
+    .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 900px) { .tech-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .tech-grid { grid-template-columns: 1fr; } }
+
+    .tech-card {
+      background: var(--nebula); border-top: 3px solid var(--gold);
+      padding: 28px; transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .tech-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(212,168,87,0.15);
+    }
+    .tech-symbol {
+      font-size: 40px; color: var(--gold); margin-bottom: 12px;
+      line-height: 1;
+    }
+    .tech-card h3 {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 14px; letter-spacing: 2px; margin-bottom: 16px;
+    }
+    .tech-detail {
+      display: flex; justify-content: space-between;
+      padding: 5px 0; font-size: 12px;
+      border-bottom: 1px solid rgba(212,168,87,0.1);
+    }
+    .tech-detail:last-child { border-bottom: none; }
+
+    /* THREAT MAP */
+    .threat-map-container {
+      position: relative; width: 100%; max-width: 900px;
+      margin: 0 auto 40px; overflow: hidden;
+    }
+    .threat-map-container svg { width: 100%; height: auto; }
+    @keyframes node-pulse {
+      0%, 100% { r: 6; opacity: 0.6; }
+      50% { r: 10; opacity: 1; }
+    }
+    .threat-node { animation: node-pulse 2s ease-in-out infinite; }
+
+    .layer-toggles {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 24px 0;
+    }
+    .layer-toggle {
+      font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px;
+      color: rgba(212,168,87,0.5); background: none;
+      border: 1px solid rgba(212,168,87,0.3); padding: 8px 16px;
+      cursor: pointer; text-transform: uppercase; transition: all 0.3s;
+    }
+    .layer-toggle.active {
+      color: var(--void); background: var(--gold); border-color: var(--gold);
+    }
+    .layer-desc {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      text-align: center; color: rgba(248,248,242,0.5);
+      font-size: 14px; min-height: 40px; margin-top: 16px;
+    }
+
+    /* TIMELINE */
+    .timeline-container {
+      position: relative; width: 100%; overflow-x: auto;
+      padding: 20px 0;
+    }
+    .timeline-svg { width: 100%; min-width: 700px; height: 260px; }
+    @keyframes diamond-pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; filter: drop-shadow(0 0 6px var(--gold)); }
+    }
+    .critical-diamond { animation: diamond-pulse 2s ease-in-out infinite; }
+    .timeline-desc {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-top: 32px;
+    }
+    .timeline-item {
+      padding: 12px; border-left: 2px solid rgba(212,168,87,0.3);
+    }
+    .timeline-year {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 16px; font-weight: 700;
+    }
+    .timeline-text { font-size: 13px; color: rgba(248,248,242,0.7); margin-top: 4px; }
+    .timeline-critical { border-left-color: var(--gold); }
+    .timeline-critical .timeline-year::before {
+      content: '◆ '; color: var(--gold);
+    }
+
+    /* ENVIRONMENT */
+    .env-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    @media (max-width: 600px) { .env-grid { grid-template-columns: 1fr; } }
+    .env-card {
+      padding: 28px; border: 1px solid rgba(212,168,87,0.2);
+      position: relative; overflow: hidden;
+    }
+    .env-card.gold-card { background: rgba(212,168,87,0.08); }
+    .env-card.ember-card { background: var(--nebula); border-color: rgba(255,180,90,0.4); animation: breathe-ember 3s ease-in-out infinite; }
+    .env-card.navy-card { background: rgba(26,46,95,0.8); }
+    .env-card.dim-gold-card { background: rgba(212,168,87,0.04); }
+    .env-card h3 {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 13px; letter-spacing: 2px; margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .env-card p { font-size: 13px; color: rgba(248,248,242,0.6); }
+
+    .instability-control {
+      max-width: 500px; margin: 40px auto; text-align: center;
+    }
+    .instability-label {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 12px; letter-spacing: 2px; margin-bottom: 12px;
+    }
+    .instability-slider {
+      width: 100%; -webkit-appearance: none; appearance: none;
+      height: 4px; background: rgba(212,168,87,0.3); outline: none;
+      border-radius: 2px;
+    }
+    .instability-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px;
+      background: var(--gold); border-radius: 50%; cursor: pointer;
+    }
+    .instability-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      background: var(--gold); border-radius: 50%; cursor: pointer; border: none;
+    }
+    .env-warning {
+      display: none; background: rgba(204,34,0,0.15);
+      border: 1px solid rgba(204,34,0,0.4); padding: 12px 20px;
+      text-align: center; font-family: 'Cinzel', serif;
+      color: var(--ember); font-size: 12px; letter-spacing: 2px;
+      margin-bottom: 24px; position: fixed; top: 60px; left: 0; right: 0;
+      z-index: 999;
+    }
+    .env-warning.visible { display: block; }
+
+    /* DIAGNOSTIC OVERLAY */
+    .diagnostic-overlay {
+      display: none; position: fixed; inset: 0; z-index: 3000;
+      background: rgba(0,1,10,0.95);
+      overflow-y: auto; padding: 60px 24px;
+    }
+    .diagnostic-overlay.open { display: block; }
+    .diag-inner {
+      max-width: 800px; margin: 0 auto;
+    }
+    .diag-close {
+      position: absolute; top: 20px; right: 24px;
+      background: none; border: 1px solid rgba(212,168,87,0.4);
+      color: var(--gold); font-size: 20px; width: 40px; height: 40px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .diag-close:hover { background: rgba(212,168,87,0.15); }
+    .diag-title {
+      font-family: 'Cinzel Decorative', serif; color: var(--gold);
+      font-size: clamp(24px, 4vw, 36px); text-align: center;
+      margin-bottom: 8px; letter-spacing: 3px;
+    }
+    .diag-subtitle {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: rgba(248,248,242,0.5); text-align: center;
+      font-size: 15px; max-width: 600px; margin: 0 auto 32px;
+    }
+    .diag-badge {
+      text-align: center; font-family: 'Cinzel', serif;
+      font-size: 13px; letter-spacing: 3px; margin-bottom: 24px;
+      padding: 8px 20px; display: inline-block;
+      border: 1px solid rgba(255,180,90,0.4);
+    }
+    .diag-columns {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0;
+    }
+    @media (max-width: 600px) { .diag-columns { grid-template-columns: 1fr; } }
+    .diag-panel {
+      padding: 24px;
+    }
+    .diag-panel.overlay-panel {
+      background: var(--nebula); border-left: 3px solid var(--gold);
+    }
+    .diag-panel.anomaly-panel {
+      background: rgba(26,46,95,0.4); border-left: 3px solid var(--ember);
+    }
+    .diag-panel h3 {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 12px; letter-spacing: 2px; margin-bottom: 16px;
+    }
+    .diag-panel li {
+      list-style: none; padding: 6px 0; font-size: 13px;
+      color: rgba(248,248,242,0.7); border-bottom: 1px solid rgba(212,168,87,0.08);
+    }
+    .diag-panel li:last-child { border-bottom: none; }
+
+    .threshold-section {
+      text-align: center; margin: 40px 0 20px;
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 13px; letter-spacing: 2px;
+    }
+    .threshold-sub {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: rgba(248,248,242,0.4); font-size: 14px; margin-top: 4px;
+    }
+    .progress-bar-container {
+      position: relative; width: 100%; max-width: 500px;
+      margin: 20px auto; height: 12px;
+      background: rgba(212,168,87,0.1); border-radius: 6px; overflow: visible;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--gold), var(--ember));
+      border-radius: 6px; transition: width 0.5s;
+    }
+    .threshold-marker {
+      position: absolute; top: -6px; width: 2px; height: 24px;
+      background: var(--blood); left: 74%;
+    }
+    .threshold-marker-label {
+      position: absolute; top: -22px; left: 74%; transform: translateX(-50%);
+      font-size: 10px; color: var(--blood); font-family: 'Lato', sans-serif;
+    }
+    .anomaly-slider {
+      width: 100%; max-width: 500px; margin: 16px auto; display: block;
+      -webkit-appearance: none; appearance: none;
+      height: 4px; background: rgba(212,168,87,0.3); outline: none;
+    }
+    .anomaly-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px;
+      background: var(--gold); border-radius: 50%; cursor: pointer;
+    }
+    .anomaly-slider::-moz-range-thumb {
+      width: 18px; height: 18px;
+      background: var(--gold); border-radius: 50%; cursor: pointer; border: none;
+    }
+    .anomaly-readout {
+      text-align: center; font-family: 'Lato', sans-serif;
+      color: var(--solar); font-size: 14px; letter-spacing: 1px; margin-top: 8px;
+    }
+
+    /* GRIN SECTION */
+    .grin-section { position: relative; }
+    .grin-title {
+      text-shadow: 0 0 20px rgba(204,34,0,0.3);
+    }
+    .grin-visual {
+      width: 200px; height: 200px; margin: 32px auto;
+      position: relative;
+    }
+    .grin-svg { width: 100%; height: 100%; }
+    .grin-eye { transition: opacity 1.5s ease; }
+    .grin-smile { transition: opacity 1.5s ease; }
+    .council-glyph-bg { transition: opacity 3s ease; }
+
+    .grin-conditions {
+      background: var(--nebula); border: 1px solid rgba(212,168,87,0.2);
+      padding: 24px; max-width: 500px; margin: 0 auto 32px;
+    }
+    .grin-conditions h3 {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 12px; letter-spacing: 2px; margin-bottom: 12px;
+    }
+    .grin-conditions li {
+      list-style: none; padding: 4px 0; font-size: 13px;
+      color: rgba(248,248,242,0.6);
+    }
+    .grin-conditions li::before { content: '• '; color: var(--ember); }
+
+    .grin-warning {
+      display: none; background: rgba(204,34,0,0.1);
+      border: 1px solid rgba(204,34,0,0.5); padding: 16px 24px;
+      text-align: center; font-family: 'Cinzel', serif; color: var(--blood);
+      font-size: 12px; letter-spacing: 2px; max-width: 600px;
+      margin: 24px auto;
+    }
+    .grin-warning.visible { display: block; }
+
+    .r2-message {
+      display: none; background: var(--purple-black);
+      border-left: 3px solid var(--cyan-accent); padding: 20px 24px;
+      max-width: 600px; margin: 24px auto;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: rgba(248,248,242,0.8); font-size: 16px;
+    }
+    .r2-message.visible { display: block; }
+
+    .shadow-mode {
+      display: none; text-align: center; padding: 32px;
+      margin: 24px auto; max-width: 600px;
+      border: 1px solid rgba(212,168,87,0.1);
+      background: rgba(0,1,10,0.8);
+    }
+    .shadow-mode.visible { display: block; }
+    .shadow-mode-label {
+      font-family: 'Cinzel', serif; color: var(--ember);
+      font-size: 12px; letter-spacing: 3px; margin-bottom: 8px;
+    }
+    .shadow-mode-text {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: rgba(248,248,242,0.4); font-size: 14px;
+    }
+
+    /* GRIN ACTIVE STATE */
+    .grin-active-dim {
+      transition: filter 2s ease;
+    }
+    body.grin-active .grin-active-dim {
+      filter: brightness(0.5);
+    }
+
+    /* COUNCIL */
+    .council-section {
+      text-align: center; padding: 120px 24px;
+    }
+    .council-glyph-container {
+      width: 120px; height: 120px; margin: 0 auto 32px;
+    }
+    @keyframes slow-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .council-rotate { animation: slow-rotate 30s linear infinite; transform-origin: center; }
+
+    .council-text {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--solar); font-size: clamp(15px, 2.5vw, 20px);
+      line-height: 2; max-width: 600px; margin: 0 auto 32px;
+    }
+    .council-sig {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 13px; letter-spacing: 3px;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid rgba(212,168,87,0.3);
+      background: var(--void); padding: 40px 24px 24px;
+      position: relative; z-index: 1;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-links {
+      display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    }
+    .footer-links a {
+      font-family: 'Cinzel', serif; font-size: 10px; color: rgba(212,168,87,0.5);
+      text-decoration: none; letter-spacing: 1px; transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-url {
+      font-family: 'Cinzel', serif; font-size: 10px;
+      color: var(--gold); letter-spacing: 1px;
+    }
+    .footer-bottom {
+      text-align: center; margin-top: 24px;
+      font-family: 'Lato', sans-serif; font-size: 11px;
+      color: rgba(248,248,242,0.3); letter-spacing: 1px;
+    }
+    .footer-copilot {
+      text-align: center; margin-top: 12px;
+      font-size: 11px; color: rgba(248,248,242,0.25);
+    }
+
+    /* Constellation overlay */
+    .constellation-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+      opacity: 0.05; transition: opacity 1s;
+    }
+    .constellation-overlay line {
+      stroke: var(--gold); stroke-width: 0.5;
+    }
+  </style>
+</head>
+<body data-id="0">
+  <app-icon data-id="1" hidden data-icon="zap" data-palette="Dark"></app-icon>
+
+  <!-- STARFIELD CANVAS -->
+  <canvas data-id="2" id="starfield"></canvas>
+
+  <!-- CONSTELLATION OVERLAY -->
+  <svg data-id="3" class="constellation-overlay" id="constellationOverlay" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <line data-id="4" x1="200" y1="100" x2="400" y2="250" /><line data-id="5" x1="400" y1="250" x2="600" y2="180" />
+    <line data-id="6" x1="600" y1="180" x2="800" y2="300" /><line data-id="7" x1="800" y1="300" x2="1000" y2="200" />
+    <line data-id="8" x1="1000" y1="200" x2="1200" y2="350" /><line data-id="9" x1="1200" y1="350" x2="1400" y2="280" />
+    <line data-id="10" x1="300" y1="500" x2="500" y2="600" /><line data-id="11" x1="500" y1="600" x2="700" y2="520" />
+    <line data-id="12" x1="700" y1="520" x2="900" y2="650" /><line data-id="13" x1="900" y1="650" x2="1100" y2="580" />
+    <line data-id="14" x1="150" y1="700" x2="350" y2="800" /><line data-id="15" x1="350" y2="800" x2="550" y2="750" />
+    <line data-id="16" x1="550" y1="750" x2="750" y2="850" /><line data-id="17" x1="1050" y1="400" x2="1250" y2="500" />
+  </svg>
+
+  <!-- ENV WARNING -->
+  <div data-id="18" class="env-warning" id="envWarning">⚠ ENVIRONMENTAL PRESSURE CRITICAL — COUNCIL REVIEWING</div>
+
+  <!-- NAVIGATION -->
+  <nav data-id="19" class="main-nav">
+    <div data-id="20" class="nav-left">
+      <svg data-id="21" width="44" height="52" viewBox="0 0 44 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse data-id="22" cx="22" cy="24" rx="21" ry="21" stroke="#D4A857" stroke-width="0.4" opacity="0.3"/>
+        <ellipse data-id="23" cx="22" cy="24" rx="17" ry="17" stroke="#D4A857" stroke-width="0.5" opacity="0.5"/>
+        <ellipse data-id="24" cx="22" cy="24" rx="13" ry="13" stroke="#D4A857" stroke-width="0.6" opacity="0.6"/>
+        <path data-id="25" d="M22 4 L40 24 L22 44 L4 24 Z" stroke="#D4A857" stroke-width="1.2" fill="none" opacity="0.9"/>
+        <circle data-id="26" cx="22" cy="24" r="5" stroke="#D4A857" stroke-width="0.6" fill="none" opacity="0.8"/>
+        <circle data-id="27" cx="22" cy="18" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="28" cx="22" cy="30" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="29" cx="16.8" cy="21" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="30" cx="27.2" cy="21" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="31" cx="16.8" cy="27" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <circle data-id="32" cx="27.2" cy="27" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <text data-id="33" x="22" y="50" font-family="Cinzel" font-size="5" fill="#D4A857" text-anchor="middle" letter-spacing="1">ANTHROPOS11</text>
+      </svg>
+      <span data-id="34" class="nav-title">ENERGY FRONTIERS EXPLORER</span>
+    </div>
+    <div data-id="35" class="nav-center">
+      <a data-id="36" class="nav-link-home" href="https://www.anthropos11.com">◆ HOME</a>
+      <div data-id="37" class="nav-home-separator"></div>
+      <a data-id="38" class="nav-link" data-nav="hero">Chamber</a>
+      <a data-id="39" class="nav-link" data-nav="pulse">Pulse</a>
+      <a data-id="40" class="nav-link" data-nav="monitor">Monitor</a>
+      <a data-id="41" class="nav-link" data-nav="tech">Technologies</a>
+      <a data-id="42" class="nav-link" data-nav="timeline">Timeline</a>
+      <a data-id="43" class="nav-link" data-nav="environment">Environment</a>
+      <a data-id="44" class="nav-link" data-nav="grin">Grin</a>
+    </div>
+    <div data-id="45" class="nav-right">
+      <button data-id="46" class="portal-btn" id="portalBtn">PORTAL NETWORK ▾</button>
+      <div data-id="47" class="portal-dropdown" id="portalDropdown">
+        <a data-id="48" href="#">Convergence Portal</a>
+        <a data-id="49" href="#">The Imaginarium</a>
+        <a data-id="50" href="#">The Gift</a>
+        <a data-id="51" href="#">The Healer's Companion</a>
+        <a data-id="52" href="#" class="current">Energy Frontiers Explorer</a>
+      </div>
+    </div>
+    <button data-id="53" class="hamburger" id="hamburgerBtn">≡</button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div data-id="54" class="mobile-menu" id="mobileMenu">
+    <button data-id="55" class="mobile-close" id="mobileClose">×</button>
+    <a data-id="56" href="https://www.anthropos11.com" style="color:var(--gold);font-size:18px;letter-spacing:0.1em;">◆ HOME</a>
+    <div data-id="57" class="mobile-home-separator"></div>
+    <a data-id="58" href="#" data-nav="hero">Chamber</a>
+    <a data-id="59" href="#" data-nav="pulse">Pulse</a>
+    <a data-id="60" href="#" data-nav="monitor">Monitor</a>
+    <a data-id="61" href="#" data-nav="tech">Technologies</a>
+    <a data-id="62" href="#" data-nav="timeline">Timeline</a>
+    <a data-id="63" href="#" data-nav="environment">Environment</a>
+    <a data-id="64" href="#" data-nav="grin">Grin</a>
+    <div data-id="65" style="width:100%;height:1px;background:rgba(212,168,87,0.2);margin:8px 0;"></div>
+    <a data-id="66" href="#">Convergence Portal</a>
+    <a data-id="67" href="#">The Imaginarium</a>
+    <a data-id="68" href="#">The Gift</a>
+    <a data-id="69" href="#">The Healer's Companion</a>
+  </div>
+
+  <main data-id="70" class="section-wrap grin-active-dim" id="mainContent">
+
+    <!-- SECTION 1: HERO -->
+    <section data-id="71" class="hero" id="hero">
+      <div data-id="72" class="ring-container ring-state-amber" id="ringContainer">
+        <svg data-id="73" class="ring-svg" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Concentric rings -->
+          <circle data-id="74" cx="160" cy="160" r="155" stroke="#D4A857" stroke-width="0.5" opacity="0.2"/>
+          <circle data-id="75" cx="160" cy="160" r="140" stroke="#D4A857" stroke-width="0.6" opacity="0.3"/>
+          <circle data-id="76" cx="160" cy="160" r="125" stroke="#D4A857" stroke-width="0.8" opacity="0.4"/>
+          <circle data-id="77" cx="160" cy="160" r="110" stroke="#D4A857" stroke-width="1" opacity="0.5" id="ringMain"/>
+          <circle data-id="78" cx="160" cy="160" r="95" stroke="#D4A857" stroke-width="0.6" opacity="0.3"/>
+          <circle data-id="79" cx="160" cy="160" r="80" stroke="#D4A857" stroke-width="0.4" opacity="0.2"/>
+          <!-- State glow ring -->
+          <circle data-id="80" cx="160" cy="160" r="110" stroke="none" fill="none" id="ringGlow"/>
+          <!-- Orbiting diamonds -->
+          <g data-id="81" class="orbit-group">
+            <polygon data-id="82" points="160,30 165,38 160,46 155,38" fill="#D4A857" opacity="0.7"/>
+            <polygon data-id="83" points="280,130 285,138 280,146 275,138" fill="#D4A857" opacity="0.7"/>
+            <polygon data-id="84" points="280,200 285,208 280,216 275,208" fill="#D4A857" opacity="0.6"/>
+            <polygon data-id="85" points="160,280 165,288 160,296 155,288" fill="#D4A857" opacity="0.7"/>
+            <polygon data-id="86" points="40,200 45,208 40,216 35,208" fill="#D4A857" opacity="0.6"/>
+            <polygon data-id="87" points="40,130 45,138 40,146 35,138" fill="#D4A857" opacity="0.7"/>
+          </g>
+          <!-- Center text -->
+          <text data-id="88" x="160" y="145" font-family="Cinzel" font-size="10" fill="#D4A857" text-anchor="middle" letter-spacing="3" class="ring-label">ENERGY STABILITY RING</text>
+          <text data-id="89" x="160" y="175" font-family="Lato" font-size="20" fill="#FFB45A" text-anchor="middle" font-weight="700" letter-spacing="4" id="ringStateText">TENSION</text>
+          <text data-id="90" x="160" y="195" font-family="Cinzel" font-size="9" fill="#FFB45A" text-anchor="middle" letter-spacing="2" id="ringStateLabel">AMBER · TENSION</text>
+        </svg>
+      </div>
+      <div data-id="91" class="ring-anomaly" id="anomalyDisplay">ANOMALY INDEX · 0.62</div>
+      <p data-id="92" class="hero-quote">"The ring is the single source of truth. Its color is the civilization."</p>
+      <div data-id="93" class="hero-btns">
+        <button data-id="94" class="btn-gold" id="openDiagBtn">CLICK TO OPEN DIAGNOSTIC LAYER</button>
+        <button data-id="95" class="btn-gold" data-nav="pulse">VIEW DAILY PULSE</button>
+      </div>
+      <div data-id="96" class="hero-nav-links">
+        <a data-id="97" class="hero-nav-link" data-nav="monitor">Threat Monitor →</a>
+        <a data-id="98" class="hero-nav-link" data-nav="tech">Technologies →</a>
+        <a data-id="99" class="hero-nav-link" data-nav="timeline">Timeline →</a>
+        <a data-id="100" class="hero-nav-link" data-nav="environment">Environment →</a>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ENERGY PULSE -->
+    <section data-id="101" id="pulse">
+      <h2 data-id="102" class="section-title fade-in">ENERGY PULSE</h2>
+      <p data-id="103" class="section-subtitle fade-in">"The daily heartbeat — today's civilization readout at a glance."</p>
+      <div data-id="104" class="card-grid">
+        <div data-id="105" class="data-card slide-up" style="transition-delay:0.1s">
+          <h3 data-id="106">Ring & Anomaly</h3>
+          <div data-id="107" class="metric"><span data-id="108" class="metric-label">Stability Ring</span><span data-id="109" class="metric-value amber">Amber · Tension</span></div>
+          <div data-id="110" class="metric"><span data-id="111" class="metric-label">Anomaly Index</span><span data-id="112" class="metric-value" id="pulseAnomaly">0.62 of 1.00</span></div>
+          <div data-id="113" class="metric"><span data-id="114" class="metric-label">Threshold to Grin</span><span data-id="115" class="metric-value gold">0.74</span></div>
+        </div>
+        <div data-id="116" class="data-card slide-up" style="transition-delay:0.3s">
+          <h3 data-id="117">Threat & Pressure</h3>
+          <div data-id="118" class="metric"><span data-id="119" class="metric-label">Threat Level</span><span data-id="120" class="metric-value amber">Elevated (Tier 3)</span></div>
+          <div data-id="121" class="metric"><span data-id="122" class="metric-label">Environmental Pressure</span><span data-id="123" class="metric-value amber">High</span></div>
+          <div data-id="124" class="metric"><span data-id="125" class="metric-label">Dominant Driver</span><span data-id="126" class="metric-value">Supply Route Strain</span></div>
+        </div>
+        <div data-id="127" class="data-card slide-up" style="transition-delay:0.5s">
+          <h3 data-id="128">Grin Status</h3>
+          <div data-id="129" class="metric"><span data-id="130" class="metric-label">Status</span><span data-id="131" class="metric-value" id="pulseGrinStatus" style="text-shadow:0 0 8px rgba(212,168,87,0.3)">DORMANT</span></div>
+          <div data-id="132" class="metric"><span data-id="133" class="metric-label">Council Glyph</span><span data-id="134" class="metric-value">Inactive</span></div>
+          <div data-id="135" class="metric"><span data-id="136" class="metric-label">Last Activation</span><span data-id="137" class="metric-value">41 days ago</span></div>
+        </div>
+      </div>
+      <p data-id="138" class="section-subtitle fade-in" style="margin-top:40px">"One pulse per day. The ring's color is the civilization's vital sign."</p>
+      <div data-id="139" class="diamond-glyph">◆</div>
+    </section>
+
+    <!-- SECTION 4: THREAT MONITOR -->
+    <section data-id="140" id="monitor">
+      <h2 data-id="141" class="section-title fade-in">THREAT MONITOR</h2>
+      <p data-id="142" class="section-subtitle fade-in">"Threat is motion, not text. The map reacts before the numbers."</p>
+      <div data-id="143" class="threat-map-container fade-in">
+        <svg data-id="144" viewBox="0 0 900 460" fill="none" xmlns="http://www.w3.org/2000/svg" id="threatMap">
+          <!-- Simplified world map outlines -->
+          <!-- North America -->
+          <path data-id="145" d="M140,120 L180,100 L220,95 L250,105 L270,120 L280,150 L275,180 L260,200 L240,220 L230,250 L225,270 L210,280 L195,260 L180,240 L160,220 L145,200 L130,180 L125,160 L130,140 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- South America -->
+          <path data-id="146" d="M220,280 L240,270 L260,290 L270,320 L265,350 L255,380 L240,400 L225,410 L215,390 L210,360 L205,330 L210,300 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- Europe -->
+          <path data-id="147" d="M410,100 L430,95 L460,100 L480,110 L490,125 L485,140 L470,155 L450,160 L430,155 L415,145 L405,130 L408,115 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- Africa -->
+          <path data-id="148" d="M430,170 L460,165 L490,175 L510,200 L515,240 L510,280 L495,320 L475,345 L455,350 L440,340 L430,310 L425,280 L420,240 L425,200 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- Asia -->
+          <path data-id="149" d="M500,80 L550,70 L600,75 L660,85 L720,95 L760,110 L780,130 L770,155 L740,170 L700,180 L660,175 L620,165 L580,155 L540,145 L510,135 L495,120 L498,100 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- Middle East -->
+          <path data-id="150" d="M510,140 L540,135 L560,150 L555,170 L540,180 L520,175 L510,160 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- Australia -->
+          <path data-id="151" d="M720,300 L760,290 L790,300 L800,325 L790,350 L765,360 L740,355 L725,335 L720,315 Z" stroke="#D4A857" stroke-width="0.8" fill="none" opacity="0.4"/>
+
+          <!-- Threat connection lines -->
+          <line data-id="152" x1="530" y1="155" x2="440" y2="135" stroke="#FFB45A" stroke-width="0.6" opacity="0.4" class="threat-line"/>
+          <line data-id="153" x1="530" y1="155" x2="600" y2="135" stroke="#FFB45A" stroke-width="0.6" opacity="0.4" class="threat-line"/>
+          <line data-id="154" x1="230" y1="240" x2="440" y2="135" stroke="#FFB45A" stroke-width="0.6" opacity="0.3" class="threat-line"/>
+          <line data-id="155" x1="530" y1="155" x2="445" y2="230" stroke="#FFB45A" stroke-width="0.6" opacity="0.4" class="threat-line"/>
+          <line data-id="156" x1="600" y1="135" x2="680" y2="100" stroke="#FFB45A" stroke-width="0.6" opacity="0.3" class="threat-line"/>
+          <line data-id="157" x1="440" y1="135" x2="530" y2="75" stroke="#FFB45A" stroke-width="0.6" opacity="0.3" class="threat-line"/>
+
+          <!-- Energy nodes -->
+          <circle data-id="158" cx="530" cy="155" r="8" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:0s"><title data-id="159">Strait of Hormuz</title></circle>
+          <circle data-id="160" cx="440" cy="135" r="7" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:0.3s"><title data-id="161">North Sea</title></circle>
+          <circle data-id="162" cx="230" cy="240" r="7" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:0.6s"><title data-id="163">Gulf of Mexico</title></circle>
+          <circle data-id="164" cx="680" cy="140" r="7" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:0.9s"><title data-id="165">South China Sea</title></circle>
+          <circle data-id="166" cx="600" cy="135" r="6" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:1.2s"><title data-id="167">Caspian</title></circle>
+          <circle data-id="168" cx="530" cy="75" r="6" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:1.5s"><title data-id="169">Arctic</title></circle>
+          <circle data-id="170" cx="445" cy="230" r="6" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:1.8s"><title data-id="171">Gulf of Guinea</title></circle>
+          <circle data-id="172" cx="520" cy="160" r="5" fill="#1A2E5F" stroke="#FFB45A" stroke-width="1" class="threat-node" style="animation-delay:2.1s"><title data-id="173">Middle East</title></circle>
+
+          <!-- Node labels -->
+          <text data-id="174" x="530" y="175" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">Hormuz</text>
+          <text data-id="175" x="440" y="125" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">North Sea</text>
+          <text data-id="176" x="230" y="258" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">Gulf of Mexico</text>
+          <text data-id="177" x="680" y="158" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">S. China Sea</text>
+          <text data-id="178" x="600" y="125" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">Caspian</text>
+          <text data-id="179" x="530" y="67" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">Arctic</text>
+          <text data-id="180" x="445" y="248" font-family="Lato" font-size="8" fill="#D4A857" text-anchor="middle" opacity="0.7">Gulf of Guinea</text>
+        </svg>
+      </div>
+      <div data-id="181" class="layer-toggles">
+        <button data-id="182" class="layer-toggle" data-layer="geo">GEOPOLITICAL TENSION</button>
+        <button data-id="183" class="layer-toggle" data-layer="supply">SUPPLY CHAIN FRAGILITY</button>
+        <button data-id="184" class="layer-toggle" data-layer="cyber">CYBER INTERFERENCE</button>
+        <button data-id="185" class="layer-toggle" data-layer="env">ENVIRONMENTAL PRESSURE</button>
+      </div>
+      <p data-id="186" class="layer-desc" id="layerDesc"></p>
+      <p data-id="187" class="section-subtitle" style="margin-top:24px">"Map shakes subtly on tension spikes. Nodes flicker. Glyphs rearrange."</p>
+    </section>
+
+    <!-- SECTION 5: FUTURE TECHNOLOGIES -->
+    <section data-id="188" id="tech">
+      <h2 data-id="189" class="section-title fade-in">FUTURE TECHNOLOGIES</h2>
+      <p data-id="190" class="section-subtitle fade-in">"Holographic tablet cards: mythic symbol · timeline projection · risk score · civilization impact"</p>
+      <div data-id="191" class="tech-grid">
+        <div data-id="192" class="tech-card slide-up" style="transition-delay:0.1s">
+          <div data-id="193" class="tech-symbol">⊕</div>
+          <h3 data-id="194">FUSION</h3>
+          <div data-id="195" class="tech-detail"><span data-id="196" style="color:rgba(248,248,242,0.5)">Timeline</span><span data-id="197">2035–2045</span></div>
+          <div data-id="198" class="tech-detail"><span data-id="199" style="color:rgba(248,248,242,0.5)">Risk Score</span><span data-id="200" style="color:var(--blood)">HIGH</span></div>
+          <div data-id="201" class="tech-detail"><span data-id="202" style="color:rgba(248,248,242,0.5)">Impact</span><span data-id="203" style="color:var(--gold)">CIVILIZATION-LEVEL (V)</span></div>
+        </div>
+        <div data-id="204" class="tech-card slide-up" style="transition-delay:0.2s">
+          <div data-id="205" class="tech-symbol">△</div>
+          <h3 data-id="206">DEEP GEOTHERMAL</h3>
+          <div data-id="207" class="tech-detail"><span data-id="208" style="color:rgba(248,248,242,0.5)">Timeline</span><span data-id="209">2028–2035</span></div>
+          <div data-id="210" class="tech-detail"><span data-id="211" style="color:rgba(248,248,242,0.5)">Risk Score</span><span data-id="212" style="color:var(--ember)">MEDIUM</span></div>
+          <div data-id="213" class="tech-detail"><span data-id="214" style="color:rgba(248,248,242,0.5)">Impact</span><span data-id="215" style="color:var(--gold)">REGIONAL (III)</span></div>
+        </div>
+        <div data-id="216" class="tech-card slide-up" style="transition-delay:0.3s">
+          <div data-id="217" class="tech-symbol">◇</div>
+          <h3 data-id="218">HYDROGEN CYCLES</h3>
+          <div data-id="219" class="tech-detail"><span data-id="220" style="color:rgba(248,248,242,0.5)">Timeline</span><span data-id="221">2027–2034</span></div>
+          <div data-id="222" class="tech-detail"><span data-id="223" style="color:rgba(248,248,242,0.5)">Risk Score</span><span data-id="224" style="color:var(--ember)">MEDIUM-HIGH</span></div>
+          <div data-id="225" class="tech-detail"><span data-id="226" style="color:rgba(248,248,242,0.5)">Impact</span><span data-id="227" style="color:var(--gold)">INDUSTRIAL (III)</span></div>
+        </div>
+        <div data-id="228" class="tech-card slide-up" style="transition-delay:0.4s">
+          <div data-id="229" class="tech-symbol">◈</div>
+          <h3 data-id="230">SMRs</h3>
+          <div data-id="231" class="tech-detail"><span data-id="232" style="color:rgba(248,248,242,0.5)">Timeline</span><span data-id="233">2027–2033</span></div>
+          <div data-id="234" class="tech-detail"><span data-id="235" style="color:rgba(248,248,242,0.5)">Risk Score</span><span data-id="236" style="color:var(--ember)">MEDIUM</span></div>
+          <div data-id="237" class="tech-detail"><span data-id="238" style="color:rgba(248,248,242,0.5)">Impact</span><span data-id="239" style="color:var(--gold)">DISTRIBUTED (II)</span></div>
+        </div>
+        <div data-id="240" class="tech-card slide-up" style="transition-delay:0.5s">
+          <div data-id="241" class="tech-symbol">○</div>
+          <h3 data-id="242">ORBITAL SOLAR ARRAYS</h3>
+          <div data-id="243" class="tech-detail"><span data-id="244" style="color:rgba(248,248,242,0.5)">Timeline</span><span data-id="245">2040–2055</span></div>
+          <div data-id="246" class="tech-detail"><span data-id="247" style="color:rgba(248,248,242,0.5)">Risk Score</span><span data-id="248" style="color:var(--blood)">VERY HIGH</span></div>
+          <div data-id="249" class="tech-detail"><span data-id="250" style="color:rgba(248,248,242,0.5)">Impact</span><span data-id="251" style="color:var(--gold)">PLANETARY (V)</span></div>
+        </div>
+        <div data-id="252" class="tech-card slide-up" style="transition-delay:0.6s">
+          <div data-id="253" class="tech-symbol">⬡</div>
+          <h3 data-id="254">AI-OPTIMIZED GRIDS</h3>
+          <div data-id="255" class="tech-detail"><span data-id="256" style="color:rgba(248,248,242,0.5)">Timeline</span><span data-id="257">2026–2030</span></div>
+          <div data-id="258" class="tech-detail"><span data-id="259" style="color:rgba(248,248,242,0.5)">Risk Score</span><span data-id="260" style="color:#44cc66">LOW</span></div>
+          <div data-id="261" class="tech-detail"><span data-id="262" style="color:rgba(248,248,242,0.5)">Impact</span><span data-id="263" style="color:var(--gold)">SYSTEMIC (IV)</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: OIL RESERVE TIMELINE -->
+    <section data-id="264" id="timeline">
+      <h2 data-id="265" class="section-title fade-in">OIL RESERVE TIMELINE</h2>
+      <p data-id="266" class="section-subtitle fade-in">"The Fading Constellation"</p>
+      <div data-id="267" class="timeline-container fade-in">
+        <svg data-id="268" class="timeline-svg" viewBox="0 0 800 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Star grid background -->
+          <g data-id="269" opacity="0.1">
+            <circle data-id="270" cx="50" cy="30" r="1" fill="#D4A857"/><circle data-id="271" cx="150" cy="50" r="0.8" fill="#D4A857"/>
+            <circle data-id="272" cx="250" cy="25" r="1" fill="#D4A857"/><circle data-id="273" cx="350" cy="60" r="0.8" fill="#D4A857"/>
+            <circle data-id="274" cx="450" cy="35" r="1" fill="#D4A857"/><circle data-id="275" cx="550" cy="55" r="0.8" fill="#D4A857"/>
+            <circle data-id="276" cx="650" cy="30" r="1" fill="#D4A857"/><circle data-id="277" cx="750" cy="45" r="0.8" fill="#D4A857"/>
+            <circle data-id="278" cx="100" cy="90" r="0.8" fill="#D4A857"/><circle data-id="279" cx="200" cy="110" r="1" fill="#D4A857"/>
+            <circle data-id="280" cx="300" cy="80" r="0.8" fill="#D4A857"/><circle data-id="281" cx="400" cy="100" r="1" fill="#D4A857"/>
+            <circle data-id="282" cx="500" cy="85" r="0.8" fill="#D4A857"/><circle data-id="283" cx="600" cy="105" r="1" fill="#D4A857"/>
+            <circle data-id="284" cx="700" cy="95" r="0.8" fill="#D4A857"/><circle data-id="285" cx="80" cy="200" r="0.8" fill="#D4A857"/>
+            <circle data-id="286" cx="720" cy="190" r="1" fill="#D4A857"/><circle data-id="287" cx="380" cy="210" r="0.8" fill="#D4A857"/>
+          </g>
+          <!-- Axis line -->
+          <line data-id="288" x1="60" y1="220" x2="760" y2="220" stroke="#D4A857" stroke-width="0.5" opacity="0.3"/>
+          <!-- Year markers -->
+          <text data-id="289" x="80" y="245" font-family="Cinzel" font-size="11" fill="#D4A857" text-anchor="middle">2025</text>
+          <text data-id="290" x="220" y="245" font-family="Cinzel" font-size="11" fill="#D4A857" text-anchor="middle">2030</text>
+          <text data-id="291" x="360" y="245" font-family="Cinzel" font-size="11" fill="#D4A857" text-anchor="middle">2035</text>
+          <text data-id="292" x="500" y="245" font-family="Cinzel" font-size="11" fill="#D4A857" text-anchor="middle">2042</text>
+          <text data-id="293" x="640" y="245" font-family="Cinzel" font-size="11" fill="#D4A857" text-anchor="middle">2050</text>
+          <!-- Vertical markers -->
+          <line data-id="294" x1="80" y1="215" x2="80" y2="225" stroke="#D4A857" stroke-width="1" opacity="0.5"/>
+          <line data-id="295" x1="220" y1="215" x2="220" y2="225" stroke="#D4A857" stroke-width="1" opacity="0.5"/>
+          <line data-id="296" x1="360" y1="215" x2="360" y2="225" stroke="#D4A857" stroke-width="1" opacity="0.5"/>
+          <line data-id="297" x1="500" y1="215" x2="500" y2="225" stroke="#D4A857" stroke-width="1" opacity="0.5"/>
+          <line data-id="298" x1="640" y1="215" x2="640" y2="225" stroke="#D4A857" stroke-width="1" opacity="0.5"/>
+          <!-- Falling star curve -->
+          <path data-id="299" d="M80,60 C140,65 180,85 220,105 C280,135 320,155 360,170 C420,190 460,198 500,203 C560,208 600,210 640,212" stroke="#D4A857" stroke-width="2" fill="none" opacity="0.8"/>
+          <!-- Gradient fill below curve -->
+          <path data-id="300" d="M80,60 C140,65 180,85 220,105 C280,135 320,155 360,170 C420,190 460,198 500,203 C560,208 600,210 640,212 L640,220 L80,220 Z" fill="url(#curveGrad)" opacity="0.15"/>
+          <defs data-id="301">
+            <linearGradient data-id="302" id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop data-id="303" offset="0%" stop-color="#D4A857"/>
+              <stop data-id="304" offset="100%" stop-color="#00010A"/>
+            </linearGradient>
+          </defs>
+          <!-- Pressure points (ember red below critical) -->
+          <circle data-id="305" cx="360" cy="200" r="12" fill="#FFB45A" opacity="0.1"><animate data-id="306" attributeName="r" values="10;15;10" dur="3s" repeatCount="indefinite"/></circle>
+          <circle data-id="307" cx="500" cy="210" r="12" fill="#CC2200" opacity="0.1"><animate data-id="308" attributeName="r" values="10;15;10" dur="2.5s" repeatCount="indefinite"/></circle>
+          <!-- Diamond glyphs on curve -->
+          <polygon data-id="309" points="80,55 85,60 80,65 75,60" fill="#D4A857" opacity="0.8"/>
+          <polygon data-id="310" points="220,100 225,105 220,110 215,105" fill="#D4A857" opacity="0.8"/>
+          <polygon data-id="311" points="360,165 365,170 360,175 355,170" fill="#D4A857" class="critical-diamond"/>
+          <polygon data-id="312" points="500,198 505,203 500,208 495,203" fill="#D4A857" class="critical-diamond"/>
+          <polygon data-id="313" points="640,207 645,212 640,217 635,212" fill="#D4A857" opacity="0.8"/>
+        </svg>
+      </div>
+      <div data-id="314" class="timeline-desc fade-in">
+        <div data-id="315" class="timeline-item"><div data-id="316" class="timeline-year">2025</div><div data-id="317" class="timeline-text">Current baseline — estimated 1.65 trillion barrels</div></div>
+        <div data-id="318" class="timeline-item"><div data-id="319" class="timeline-year">2030</div><div data-id="320" class="timeline-text">Tension zone — demand peaks, alternatives lag</div></div>
+        <div data-id="321" class="timeline-item timeline-critical"><div data-id="322" class="timeline-year">2035</div><div data-id="323" class="timeline-text">CRITICAL THRESHOLD — supply route fragility begins</div></div>
+        <div data-id="324" class="timeline-item timeline-critical"><div data-id="325" class="timeline-year">2042</div><div data-id="326" class="timeline-text">PRESSURE APEX — depletion accelerates</div></div>
+        <div data-id="327" class="timeline-item"><div data-id="328" class="timeline-year">2050</div><div data-id="329" class="timeline-text">Convergence horizon — future energy must carry civilization</div></div>
+      </div>
+      <p data-id="330" class="section-subtitle fade-in" style="margin-top:32px">"The timeline scrolls like a cosmic river."</p>
+    </section>
+
+    <!-- SECTION 7: ENVIRONMENTAL LAYER -->
+    <section data-id="331" id="environment">
+      <h2 data-id="332" class="section-title fade-in">ENVIRONMENTAL LAYER</h2>
+      <p data-id="333" class="section-subtitle fade-in">"Stress is never a chart. It is a change in the light."</p>
+      <div data-id="334" class="env-grid fade-in">
+        <div data-id="335" class="env-card gold-card">
+          <h3 data-id="336">Climate Pressure Zones</h3>
+          <p data-id="337">Equatorial and sub-arctic regions show accelerating thermal variance. Pressure redistribution models indicate cascading effects on energy infrastructure within 8-year windows.</p>
+        </div>
+        <div data-id="338" class="env-card ember-card">
+          <h3 data-id="339">Extreme Weather Risk</h3>
+          <p data-id="340">Category 4+ storm frequency has increased 34% since baseline measurements. Coastal energy installations face mounting retrofit and relocation costs.</p>
+        </div>
+        <div data-id="341" class="env-card navy-card">
+          <h3 data-id="342">Oceanic Instability</h3>
+          <p data-id="343">Deep-water current disruptions detected across three major gyres. Subsea infrastructure integrity assessments now required on 18-month cycles.</p>
+        </div>
+        <div data-id="344" class="env-card dim-gold-card">
+          <h3 data-id="345">Arctic Melt Index</h3>
+          <p data-id="346">Permafrost retreat has opened new extraction corridors while destabilizing existing pipeline routes. Net effect on supply: uncertain, trending negative.</p>
+        </div>
+      </div>
+      <div data-id="347" style="max-width:700px;margin:40px auto;padding:24px;text-align:center;" class="fade-in">
+        <p data-id="348" style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:16px;">"The entire UI dims as instability rises. Glyphs flicker. The Stability Ring tightens."</p>
+      </div>
+      <div data-id="349" class="instability-control fade-in">
+        <div data-id="350" class="instability-label">INSTABILITY LEVEL: <span data-id="351" id="instabilityValue">0</span></div>
+        <input data-id="352" type="range" min="0" max="100" value="0" class="instability-slider" id="instabilitySlider" />
+      </div>
+    </section>
+
+    <!-- SECTION 8: THE BOOGEYMAN'S GRIN -->
+    <section data-id="353" id="grin" class="grin-section">
+      <h2 data-id="354" class="section-title fade-in grin-title">THE BOOGEYMAN'S GRIN</h2>
+      <p data-id="355" class="section-subtitle fade-in">"A golden crescent smile and two faint geometric eyes — barely visible until the anomaly threshold is crossed."</p>
+
+      <div data-id="356" class="grin-conditions slide-up">
+        <h3 data-id="357">TRIGGER CONDITIONS</h3>
+        <ul data-id="358">
+          <li data-id="359">Data manipulation</li>
+          <li data-id="360">Artificial optimism</li>
+          <li data-id="361">Cyber interference</li>
+          <li data-id="362">Geopolitical deception</li>
+          <li data-id="363">Environmental instability spikes</li>
+          <li data-id="364">Council-level disturbances</li>
+        </ul>
+      </div>
+
+      <div data-id="365" class="grin-visual fade-in">
+        <svg data-id="366" class="grin-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background star field -->
+          <circle data-id="367" cx="30" cy="40" r="0.8" fill="#D4A857" opacity="0.15"/>
+          <circle data-id="368" cx="170" cy="30" r="0.6" fill="#D4A857" opacity="0.1"/>
+          <circle data-id="369" cx="50" cy="170" r="0.7" fill="#D4A857" opacity="0.12"/>
+          <circle data-id="370" cx="160" cy="160" r="0.8" fill="#D4A857" opacity="0.1"/>
+          <circle data-id="371" cx="100" cy="20" r="0.5" fill="#D4A857" opacity="0.08"/>
+
+          <!-- Council Glyph (9-node) -->
+          <g data-id="372" class="council-glyph-bg" id="councilGlyphBg" opacity="0">
+            <circle data-id="373" cx="100" cy="100" r="70" stroke="#D4A857" stroke-width="0.4" fill="none"/>
+            <circle data-id="374" cx="100" cy="30" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="375" cx="160" cy="55" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="376" cx="165" cy="115" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="377" cx="135" cy="165" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="378" cx="65" cy="165" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="379" cx="35" cy="115" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="380" cx="40" cy="55" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="381" cx="80" cy="35" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <circle data-id="382" cx="120" cy="35" r="3" stroke="#D4A857" stroke-width="0.5" fill="none"/>
+            <!-- Connecting lines -->
+            <line data-id="383" x1="100" y1="30" x2="160" y2="55" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="384" x1="160" y1="55" x2="165" y2="115" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="385" x1="165" y1="115" x2="135" y2="165" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="386" x1="135" y1="165" x2="65" y2="165" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="387" x1="65" y1="165" x2="35" y2="115" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="388" x1="35" y1="115" x2="40" y2="55" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="389" x1="40" y1="55" x2="80" y2="35" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="390" x1="80" y1="35" x2="120" y2="35" stroke="#D4A857" stroke-width="0.3"/>
+            <line data-id="391" x1="120" y1="35" x2="100" y2="30" stroke="#D4A857" stroke-width="0.3"/>
+          </g>
+
+          <!-- Eyes (diamonds) -->
+          <polygon data-id="392" points="75,80 80,87 75,94 70,87" fill="#D4A857" class="grin-eye" id="grinEyeL" opacity="0.15"/>
+          <polygon data-id="393" points="125,80 130,87 125,94 120,87" fill="#D4A857" class="grin-eye" id="grinEyeR" opacity="0.15"/>
+
+          <!-- Smile (crescent arc) -->
+          <path data-id="394" d="M65,115 Q100,145 135,115" stroke="#D4A857" stroke-width="1.5" fill="none" class="grin-smile" id="grinSmile" opacity="0.15"/>
+        </svg>
+      </div>
+
+      <div data-id="395" style="text-align:center;margin:24px 0;">
+        <button data-id="396" class="btn-gold" id="simulateGrinBtn">SIMULATE GRIN ACTIVATION</button>
+      </div>
+
+      <div data-id="397" class="grin-warning" id="grinWarning">⚠ ANOMALY THRESHOLD CROSSED — GRIN ACTIVE</div>
+
+      <div data-id="398" class="r2-message" id="r2Message">
+        "Mario… the Grin watches. The field is shifting. Proceed with caution."
+      </div>
+
+      <div data-id="399" class="shadow-mode" id="shadowMode">
+        <div data-id="400" class="shadow-mode-label">SHADOW MODE: CIVILIZATION UNDER ANOMALY REVIEW</div>
+        <p data-id="401" class="shadow-mode-text">"Shadow Mode does not report. It reviews."</p>
+      </div>
+
+      <div data-id="402" style="text-align:center;margin:24px 0;display:none;" id="deactivateWrap">
+        <button data-id="403" class="btn-gold" id="deactivateGrinBtn">DEACTIVATE GRIN</button>
+      </div>
+    </section>
+
+    <!-- SECTION 9: COUNCIL DIRECTIVE -->
+    <section data-id="404" id="council" class="council-section">
+      <div data-id="405" class="gold-separator fade-in" style="width:200px;"></div>
+      <div data-id="406" class="council-glyph-container fade-in">
+        <svg data-id="407" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+          <g data-id="408" class="council-rotate">
+            <circle data-id="409" cx="60" cy="60" r="50" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+            <circle data-id="410" cx="60" cy="10" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="411" cx="103" cy="35" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="412" cx="103" cy="85" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="413" cx="60" cy="110" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="414" cx="17" cy="85" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="415" cx="17" cy="35" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="416" cx="40" cy="13" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="417" cx="80" cy="13" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <circle data-id="418" cx="60" cy="60" r="3" stroke="#D4A857" stroke-width="0.6" fill="none"/>
+            <line data-id="419" x1="60" y1="10" x2="103" y2="35" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="420" x1="103" y1="35" x2="103" y2="85" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="421" x1="103" y1="85" x2="60" y2="110" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="422" x1="60" y1="110" x2="17" y2="85" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="423" x1="17" y1="85" x2="17" y2="35" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="424" x1="17" y1="35" x2="40" y2="13" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="425" x1="40" y1="13" x2="80" y2="13" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="426" x1="80" y1="13" x2="60" y2="10" stroke="#D4A857" stroke-width="0.3" opacity="0.5"/>
+            <line data-id="427" x1="60" y1="60" x2="60" y2="10" stroke="#D4A857" stroke-width="0.2" opacity="0.3"/>
+            <line data-id="428" x1="60" y1="60" x2="103" y2="85" stroke="#D4A857" stroke-width="0.2" opacity="0.3"/>
+            <line data-id="429" x1="60" y1="60" x2="17" y2="85" stroke="#D4A857" stroke-width="0.2" opacity="0.3"/>
+          </g>
+        </svg>
+      </div>
+      <h2 data-id="430" class="section-title fade-in">COUNCIL DIRECTIVE</h2>
+      <div data-id="431" class="council-text fade-in">
+        ENERGY FRONTIERS EXPLORER<br data-id="432"/>
+        IS APPROVED FOR COSMIC DEPLOYMENT<br data-id="433"/><br data-id="434"/>
+        Let the ring keep its watch. Let the Grin stay unseen.<br data-id="435"/>
+        Light is spent only as signal — and the record holds.
+      </div>
+      <div data-id="436" class="council-sig fade-in">R2 · SHERIFF R2 · SEAL OF THE COUNCIL</div>
+      <div data-id="437" class="diamond-glyph" style="margin-top:32px;">◆</div>
+    </section>
+
+  </main>
+
+  <!-- DIAGNOSTIC OVERLAY -->
+  <div data-id="438" class="diagnostic-overlay" id="diagOverlay">
+    <button data-id="439" class="diag-close" id="diagCloseTop">×</button>
+    <div data-id="440" class="diag-inner">
+      <h2 data-id="441" class="diag-title">THE OPENED RING</h2>
+      <p data-id="442" class="diag-subtitle">Entered by clicking the Stability Ring. Every layer of the civilization readout, unfolded.</p>
+      <div data-id="443" style="text-align:center;">
+        <div data-id="444" class="diag-badge" id="diagBadge" style="color:var(--ember);border-color:rgba(255,180,90,0.4);box-shadow:0 0 15px rgba(255,180,90,0.15);">
+          STABILITY · AMBER · TENSION
+        </div>
+      </div>
+      <div data-id="445" style="text-align:center;color:var(--gold);font-size:36px;margin:20px 0;">◆</div>
+      <div data-id="446" class="diag-columns">
+        <div data-id="447" class="diag-panel overlay-panel">
+          <h3 data-id="448">DIAGNOSTIC OVERLAYS</h3>
+          <ul data-id="449">
+            <li data-id="450">◆ Route integrity</li>
+            <li data-id="451">◆ Conflict index</li>
+            <li data-id="452">◆ Fusion readiness</li>
+            <li data-id="453">◆ Climate load</li>
+          </ul>
+        </div>
+        <div data-id="454" class="diag-panel anomaly-panel">
+          <h3 data-id="455">ANOMALY INDICATORS</h3>
+          <ul data-id="456">
+            <li data-id="457">⚠ Data manipulation</li>
+            <li data-id="458">⚠ Artificial optimism</li>
+            <li data-id="459">⚠ Cyber interference</li>
+          </ul>
+        </div>
+      </div>
+      <div data-id="460" class="gold-separator"></div>
+      <div data-id="461" class="threshold-section">
+        GRIN THRESHOLD · ANOMALY INDEX ≥ 0.74
+        <div data-id="462" class="threshold-sub">"Cross the threshold and the ring turns Black-Gold."</div>
+      </div>
+      <div data-id="463" class="progress-bar-container">
+        <div data-id="464" class="progress-fill" id="diagProgressFill" style="width:62%"></div>
+        <div data-id="465" class="threshold-marker"></div>
+        <div data-id="466" class="threshold-marker-label">0.74</div>
+      </div>
+      <div data-id="467" style="text-align:center;margin:16px 0;">
+        <input data-id="468" type="range" min="0" max="100" value="62" class="anomaly-slider" id="anomalySlider" />
+        <div data-id="469" class="anomaly-readout">ANOMALY INDEX: <span data-id="470" id="anomalyReadout">0.62</span></div>
+      </div>
+      <div data-id="471" style="text-align:center;margin:24px 0;">
+        <button data-id="472" class="btn-gold" id="diagCloseBottom">CLOSE DIAGNOSTIC LAYER</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer data-id="473" class="site-footer">
+    <div data-id="474" class="footer-inner">
+      <div data-id="475">
+        <svg data-id="476" width="44" height="52" viewBox="0 0 44 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse data-id="477" cx="22" cy="24" rx="21" ry="21" stroke="#D4A857" stroke-width="0.4" opacity="0.3"/>
+          <ellipse data-id="478" cx="22" cy="24" rx="17" ry="17" stroke="#D4A857" stroke-width="0.5" opacity="0.5"/>
+          <ellipse data-id="479" cx="22" cy="24" rx="13" ry="13" stroke="#D4A857" stroke-width="0.6" opacity="0.6"/>
+          <path data-id="480" d="M22 4 L40 24 L22 44 L4 24 Z" stroke="#D4A857" stroke-width="1.2" fill="none" opacity="0.9"/>
+          <circle data-id="481" cx="22" cy="24" r="5" stroke="#D4A857" stroke-width="0.6" fill="none" opacity="0.8"/>
+          <circle data-id="482" cx="22" cy="18" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+          <circle data-id="483" cx="22" cy="30" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+          <circle data-id="484" cx="16.8" cy="21" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+          <circle data-id="485" cx="27.2" cy="21" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+          <circle data-id="486" cx="16.8" cy="27" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+          <circle data-id="487" cx="27.2" cy="27" r="5" stroke="#D4A857" stroke-width="0.4" fill="none" opacity="0.5"/>
+          <text data-id="488" x="22" y="50" font-family="Cinzel" font-size="5" fill="#D4A857" text-anchor="middle" letter-spacing="1">ANTHROPOS11</text>
+        </svg>
+      </div>
+      <div data-id="489" class="footer-links">
+        <a data-id="490" href="#">Convergence Portal</a>
+        <a data-id="491" href="#">The Imaginarium</a>
+        <a data-id="492" href="#">The Gift</a>
+        <a data-id="493" href="#">The Healer's Companion</a>
+        <a data-id="494" href="#" style="color:var(--gold);">Energy Frontiers Explorer</a>
+      </div>
+      <div data-id="495" class="footer-url">WWW.ANTHROPOS11.COM</div>
+    </div>
+    <div data-id="496" class="footer-bottom">
+      ENERGY FRONTIERS EXPLORER · MYTH-TECH EDITION · ANTHROPOS II · MMXXVI
+    </div>
+    <div data-id="497" class="footer-copilot">Made by Copilot</div>
+  </footer>
+
+  <script>
+    // === STARFIELD ===
+    (function() {
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      let animId;
+      let speedMultiplier = 1;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      function init() {
+        resize();
+        stars = [];
+        for (let i = 0; i < 200; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.2 + 0.3,
+            dx: (Math.random() - 0.5) * 0.15,
+            dy: (Math.random() - 0.5) * 0.1,
+            o: Math.random() * 0.4 + 0.1
+          });
+        }
+      }
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(function(s) {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(212,168,87,' + s.o + ')';
+          ctx.fill();
+          s.x += s.dx * speedMultiplier;
+          s.y += s.dy * speedMultiplier;
+          if (s.x < 0) s.x = canvas.width;
+          if (s.x > canvas.width) s.x = 0;
+          if (s.y < 0) s.y = canvas.height;
+          if (s.y > canvas.height) s.y = 0;
+        });
+        animId = requestAnimationFrame(draw);
+      }
+      window.addEventListener('resize', resize);
+      init();
+      draw();
+      window.starfield = { setSpeed: function(m) { speedMultiplier = m; } };
+    })();
+
+    // === INTERSECTION OBSERVER ===
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      document.querySelectorAll('.fade-in, .slide-up').forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+
+    // === NAVIGATION ===
+    (function() {
+      // Smooth scroll for nav links
+      document.querySelectorAll('[data-nav]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          e.preventDefault();
+          var target = document.getElementById(el.getAttribute('data-nav'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          // Close mobile menu if open
+          document.getElementById('mobileMenu').classList.remove('open');
+        });
+      });
+
+      // Portal dropdown
+      document.getElementById('portalBtn').addEventListener('click', function() {
+        document.getElementById('portalDropdown').classList.toggle('open');
+      });
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-right')) {
+          document.getElementById('portalDropdown').classList.remove('open');
+        }
+      });
+
+      // Mobile menu
+      document.getElementById('hamburgerBtn').addEventListener('click', function() {
+        document.getElementById('mobileMenu').classList.add('open');
+      });
+      document.getElementById('mobileClose').addEventListener('click', function() {
+        document.getElementById('mobileMenu').classList.remove('open');
+      });
+    })();
+
+    // === RING STATE MACHINE ===
+    var ringState = {
+      current: 'amber',
+      anomalyIndex: 0.62,
+      states: {
+        gold:  { label: 'STABLE', color: '#D4A857', stateLabel: 'GOLD · STABLE', cssClass: 'ring-state-gold' },
+        amber: { label: 'TENSION', color: '#FFB45A', stateLabel: 'AMBER · TENSION', cssClass: 'ring-state-amber' },
+        red:   { label: 'CRITICAL', color: '#CC2200', stateLabel: 'RED · CRITICAL', cssClass: 'ring-state-red' },
+        grin:  { label: 'GRIN ACTIVE', color: '#D4A857', stateLabel: 'BLACK-GOLD · GRIN', cssClass: 'ring-state-grin' }
+      },
+      setState: function(newState) {
+        var container = document.getElementById('ringContainer');
+        var stateText = document.getElementById('ringStateText');
+        var stateLabel = document.getElementById('ringStateLabel');
+        var s = this.states[newState];
+        // Remove all state classes
+        Object.values(this.states).forEach(function(st) {
+          container.classList.remove(st.cssClass);
+        });
+        container.classList.add(s.cssClass);
+        stateText.textContent = s.label;
+        stateText.style.fill = s.color;
+        stateLabel.textContent = s.stateLabel;
+        stateLabel.style.fill = s.color;
+        this.current = newState;
+      },
+      setAnomaly: function(val) {
+        this.anomalyIndex = val;
+        document.getElementById('anomalyDisplay').textContent = 'ANOMALY INDEX · ' + val.toFixed(2);
+        document.getElementById('pulseAnomaly').textContent = val.toFixed(2) + ' of 1.00';
+        // Determine state from anomaly
+        if (val >= 0.74) {
+          this.setState('grin');
+          activateGrin();
+        } else if (val >= 0.5) {
+          this.setState('amber');
+          deactivateGrin();
+        } else if (val >= 0.3) {
+          this.setState('gold');
+          deactivateGrin();
+        } else {
+          this.setState('gold');
+          deactivateGrin();
+        }
+      }
+    };
+
+    // === DIAGNOSTIC OVERLAY ===
+    (function() {
+      var overlay = document.getElementById('diagOverlay');
+      var ring = document.getElementById('ringContainer');
+      var openBtn = document.getElementById('openDiagBtn');
+      var closeTop = document.getElementById('diagCloseTop');
+      var closeBottom = document.getElementById('diagCloseBottom');
+      var slider = document.getElementById('anomalySlider');
+      var readout = document.getElementById('anomalyReadout');
+      var progressFill = document.getElementById('diagProgressFill');
+
+      function openDiag() { overlay.classList.add('open'); }
+      function closeDiag() { overlay.classList.remove('open'); }
+
+      ring.addEventListener('click', openDiag);
+      openBtn.addEventListener('click', openDiag);
+      closeTop.addEventListener('click', closeDiag);
+      closeBottom.addEventListener('click', closeDiag);
+
+      slider.addEventListener('input', function() {
+        var val = parseInt(this.value) / 100;
+        readout.textContent = val.toFixed(2);
+        progressFill.style.width = this.value + '%';
+        ringState.setAnomaly(val);
+      });
+    })();
+
+    // === GRIN ACTIVATION ===
+    var grinActive = false;
+    function activateGrin() {
+      if (grinActive) return;
+      grinActive = true;
+      document.body.classList.add('grin-active');
+      document.getElementById('grinEyeL').setAttribute('opacity', '0.9');
+      document.getElementById('grinEyeR').setAttribute('opacity', '0.9');
+      document.getElementById('grinSmile').setAttribute('opacity', '0.9');
+      document.getElementById('councilGlyphBg').setAttribute('opacity', '0.7');
+      document.getElementById('grinWarning').classList.add('visible');
+      document.getElementById('r2Message').classList.add('visible');
+      document.getElementById('shadowMode').classList.add('visible');
+      document.getElementById('deactivateWrap').style.display = 'block';
+      document.getElementById('pulseGrinStatus').textContent = 'ACTIVE';
+      document.getElementById('pulseGrinStatus').style.color = 'var(--blood)';
+      window.starfield.setSpeed(0.1);
+
+      var constellationOverlay = document.getElementById('constellationOverlay');
+      constellationOverlay.style.opacity = '0.15';
+    }
+    function deactivateGrin() {
+      if (!grinActive) return;
+      grinActive = false;
+      document.body.classList.remove('grin-active');
+      document.getElementById('grinEyeL').setAttribute('opacity', '0.15');
+      document.getElementById('grinEyeR').setAttribute('opacity', '0.15');
+      document.getElementById('grinSmile').setAttribute('opacity', '0.15');
+      document.getElementById('councilGlyphBg').setAttribute('opacity', '0');
+      document.getElementById('grinWarning').classList.remove('visible');
+      document.getElementById('r2Message').classList.remove('visible');
+      document.getElementById('shadowMode').classList.remove('visible');
+      document.getElementById('deactivateWrap').style.display = 'none';
+      document.getElementById('pulseGrinStatus').textContent = 'DORMANT';
+      document.getElementById('pulseGrinStatus').style.color = 'var(--solar)';
+      window.starfield.setSpeed(1);
+
+      var constellationOverlay = document.getElementById('constellationOverlay');
+      constellationOverlay.style.opacity = '0.05';
+    }
+
+    document.getElementById('simulateGrinBtn').addEventListener('click', function() {
+      ringState.anomalyIndex = 0.82;
+      ringState.setState('grin');
+      document.getElementById('anomalyDisplay').textContent = 'ANOMALY INDEX · 0.82';
+      document.getElementById('anomalySlider').value = 82;
+      document.getElementById('anomalyReadout').textContent = '0.82';
+      document.getElementById('diagProgressFill').style.width = '82%';
+      activateGrin();
+      document.getElementById('grin').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('deactivateGrinBtn').addEventListener('click', function() {
+      ringState.anomalyIndex = 0.62;
+      ringState.setAnomaly(0.62);
+      document.getElementById('anomalySlider').value = 62;
+      document.getElementById('anomalyReadout').textContent = '0.62';
+      document.getElementById('diagProgressFill').style.width = '62%';
+    });
+
+    // === THREAT MONITOR LAYER TOGGLES ===
+    (function() {
+      var layerDescs = {
+        geo: 'Geopolitical tension mapping: sovereignty disputes, trade corridor pressures, and alliance fractures overlaid on primary energy nodes.',
+        supply: 'Supply chain fragility index: port congestion, refinery bottleneck status, and pipeline vulnerability assessments across 47 monitored corridors.',
+        cyber: 'Cyber interference detection: state-sponsored intrusion attempts on grid SCADA systems, with 23 active threat vectors currently monitored.',
+        env: 'Environmental pressure overlay: climate-driven infrastructure stress, extreme weather corridor mapping, and adaptive capacity scoring.'
+      };
+      var activeLayers = {};
+      document.querySelectorAll('.layer-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var layer = btn.getAttribute('data-layer');
+          btn.classList.toggle('active');
+          activeLayers[layer] = !activeLayers[layer];
+
+          // Update description
+          var activeKeys = Object.keys(activeLayers).filter(function(k) { return activeLayers[k]; });
+          var desc = activeKeys.map(function(k) { return layerDescs[k]; }).join(' ');
+          document.getElementById('layerDesc').textContent = desc || '';
+
+          // Pulse threat lines
+          var lines = document.querySelectorAll('.threat-line');
+          var intensity = activeKeys.length > 0 ? (0.3 + activeKeys.length * 0.15) : 0.4;
+          lines.forEach(function(line) {
+            line.setAttribute('opacity', Math.min(intensity, 0.9));
+            line.setAttribute('stroke-width', activeKeys.length > 0 ? '1.2' : '0.6');
+          });
+        });
+      });
+    })();
+
+    // === ENVIRONMENTAL INSTABILITY SLIDER ===
+    (function() {
+      var slider = document.getElementById('instabilitySlider');
+      var valueDisplay = document.getElementById('instabilityValue');
+      var warning = document.getElementById('envWarning');
+      var mainContent = document.getElementById('mainContent');
+      var constellationOverlay = document.getElementById('constellationOverlay');
+
+      slider.addEventListener('input', function() {
+        var val = parseInt(this.value);
+        valueDisplay.textContent = val;
+
+        // Dim page
+        var brightness = 1 - (val / 100) * 0.4;
+        if (!grinActive) {
+          mainContent.style.filter = 'brightness(' + brightness + ')';
+        }
+
+        // Constellation overlay opacity
+        var overlayOp = 0.05 + (val / 100) * 0.15;
+        if (!grinActive) {
+          constellationOverlay.style.opacity = overlayOp;
+        }
+
+        // Warning banner
+        if (val > 70) {
+          warning.classList.add('visible');
+        } else {
+          warning.classList.remove('visible');
+        }
+      });
+    })();
+
+    // === LUCIDE ICONS ===
+    if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

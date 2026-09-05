@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Anthropos II — The Unified Castle | LE-1.1 · LE-1.2 · Sheriff R2</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bgprimary: '#050d1a',
+        bgsecondary: '#0a1628',
+        bgcard: '#0f1e33',
+        bgelevated: '#132440',
+        gold: '#c9a84c',
+        goldbright: '#e8c55a',
+        golddim: '#8b6914',
+        textprimary: '#e8e4d8',
+        textsecondary: '#8fa3c0',
+        textmuted: '#4a6080',
+        redalert: '#dc2626',
+        amberalert: '#d97706',
+        greensafe: '#16a34a',
+        border: '#1a2d45',
+        bordergold: '#2d2010',
+      },
+    },
+  },
+};
+</script>
+<script src="https://unpkg.com/lucide@latest" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg-primary: #050d1a;
+  --bg-secondary: #0a1628;
+  --bg-card: #0f1e33;
+  --bg-elevated: #132440;
+  --gold: #c9a84c;
+  --gold-bright: #e8c55a;
+  --gold-dim: #8b6914;
+  --text-primary: #e8e4d8;
+  --text-secondary: #8fa3c0;
+  --text-muted: #4a6080;
+  --red-alert: #dc2626;
+  --amber-alert: #d97706;
+  --green-safe: #16a34a;
+  --border: #1a2d45;
+  --border-gold: #2d2010;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+.mono {
+  font-family: Consolas, 'Courier New', monospace;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+.scanline-overlay { position: relative; }
+.scanline-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(201, 168, 76, 0.015) 2px, rgba(201, 168, 76, 0.015) 4px);
+  z-index: 1;
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(26, 45, 69, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 45, 69, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold), var(--gold-dim), transparent);
+  box-shadow: 0 0 8px rgba(201, 168, 76, 0.3);
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.blink-cursor::after {
+  content: '█';
+  animation: blink-cursor 1s step-end infinite;
+  color: var(--gold);
+  font-size: 0.8em;
+  margin-left: 2px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.pulse-red { animation: pulse-dot 1.5s ease-in-out infinite; color: var(--red-alert); }
+.pulse-amber { animation: pulse-dot 1.5s ease-in-out infinite; color: var(--amber-alert); }
+.pulse-yellow { animation: pulse-dot 2s ease-in-out infinite; color: #eab308; }
+.pulse-green { animation: pulse-dot 2s ease-in-out infinite; color: var(--green-safe); }
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  animation: ticker-scroll 40s linear infinite;
+  white-space: nowrap;
+}
+
+.section-panel {
+  display: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.section-panel.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.accordion-body.open {
+  max-height: 5000px;
+}
+
+.threat-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.threat-detail.open {
+  max-height: 600px;
+}
+
+.briefing-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.briefing-expand.open {
+  max-height: 800px;
+}
+
+.nav-item {
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+.nav-item:hover {
+  background: rgba(201, 168, 76, 0.05);
+  color: var(--gold-bright);
+}
+.nav-item.active {
+  border-left-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.asset-tab {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 2px solid transparent;
+}
+.asset-tab:hover { color: var(--gold-bright); }
+.asset-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.filter-btn {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-btn:hover { background: rgba(201, 168, 76, 0.15); }
+.filter-btn.active {
+  background: var(--gold);
+  color: var(--bg-primary);
+}
+
+.series-toggle {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.series-toggle.active {
+  background: rgba(201, 168, 76, 0.2);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.card-hover {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(201, 168, 76, 0.08);
+}
+
+.tag-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: Consolas, 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.book-cover {
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.book-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(201,168,76,0.3) 10px, rgba(201,168,76,0.3) 11px);
+}
+
+.module-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease;
+}
+.module-expand.open {
+  max-height: 3000px;
+}
+.module-header {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.module-header:hover {
+  background: rgba(201, 168, 76, 0.04);
+}
+
+/* Network Access Panel */
+.network-access-panel {
+  background: linear-gradient(135deg, rgba(15,30,51,0.95) 0%, rgba(19,36,64,0.95) 50%, rgba(15,30,51,0.95) 100%);
+  border: 1px solid var(--gold);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.15), inset 0 0 30px rgba(201, 168, 76, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+.network-access-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-bright), var(--gold), transparent);
+}
+.network-access-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+
+.copy-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--gold);
+  color: var(--bg-primary);
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  z-index: 9999;
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+}
+.copy-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 767px) {
+  .sidebar-panel { display: none; position: fixed; z-index: 40; top: 0; left: 0; bottom: 0; width: 260px; }
+  .sidebar-panel.mobile-open { display: flex; }
+  .main-area { margin-left: 0 !important; }
+}
+</style>
+</head>
+<body data-id="0" class="grid-texture">
+
+<app-icon data-id="1" hidden data-icon="shield" data-palette="Dark"></app-icon>
+
+<!-- ===== TOP HEADER BAR ===== -->
+<header data-id="2" id="top-header-bar-h7k2" class="fixed top-0 left-0 right-0 z-50 scanline-overlay" style="background: var(--bg-primary); border-bottom: 1px solid var(--gold-dim);">
+  <div data-id="3" class="flex items-center justify-between px-4 md:px-6" style="height: 56px;">
+    <div data-id="4" class="flex items-center gap-2">
+      <button data-id="5" id="mobile-sidebar-toggle-m3x1" class="md:hidden p-2 text-gold mr-1">
+        <i data-id="6" data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+      <span data-id="7" class="text-lg md:text-xl" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold); font-weight: 700;">🏰 ANTHROPOS II</span>
+    </div>
+    <div data-id="8" class="hidden md:block">
+      <span data-id="9" class="mono text-xs md:text-sm tracking-widest blink-cursor" style="color: var(--gold);">UNIFIED COMMAND CENTRE | LE-1.1 · LE-1.2 · SHERIFF R2 LIBRARY</span>
+    </div>
+    <div data-id="10" class="flex items-center gap-3 mono text-xs" style="color: var(--text-secondary);">
+      <span data-id="11" id="live-clock-c9a1" class="tabular" style="color: var(--gold); font-size: 0.8rem;"></span>
+      <span data-id="12" class="hidden sm:inline" style="color: var(--text-muted);">MDT</span>
+      <span data-id="13" id="live-date-d4b2" class="hidden sm:inline" style="color: var(--text-secondary);"></span>
+    </div>
+  </div>
+  <div data-id="14" class="gold-divider"></div>
+  <div data-id="15" class="text-center py-1 mono" style="background: var(--bg-secondary); font-size: 0.6rem; letter-spacing: 0.12em; color: var(--amber-alert);">
+    ⬛ ANTHROPOS II — RESTRICTED CIRCULATION — EYES ONLY ⬛
+  </div>
+</header>
+
+<!-- ===== LEFT SIDEBAR ===== -->
+<aside data-id="16" id="sidebar-nav-s2k8" class="sidebar-panel fixed top-0 left-0 bottom-0 flex-col hidden md:flex" style="width: 220px; background: var(--bg-secondary); border-right: 1px solid var(--border); padding-top: 82px; z-index: 40;">
+  <button data-id="17" id="mobile-sidebar-close-c1x2" class="md:hidden absolute top-3 right-3 p-2 text-gold">
+    <i data-id="18" data-lucide="x" class="w-5 h-5"></i>
+  </button>
+  <div data-id="19" class="md:hidden pt-4 pb-2 px-4">
+    <span data-id="20" class="text-sm" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold); font-weight: 700;">🏰 ANTHROPOS II</span>
+  </div>
+  <nav data-id="21" class="flex-1 py-4 overflow-y-auto">
+    <div data-id="22" class="nav-item active flex items-center gap-3 px-4 py-3 text-sm" data-section="command-bridge">
+      <span data-id="23">🎯</span><span data-id="24">Command Bridge</span>
+    </div>
+    <div data-id="25" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="market-intel">
+      <span data-id="26">📊</span><span data-id="27">Market Intelligence</span>
+    </div>
+    <div data-id="28" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="geopolitical">
+      <span data-id="29">🌍</span><span data-id="30">Geopolitical Theatre</span>
+    </div>
+    <div data-id="31" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="threat-matrix">
+      <span data-id="32">⚠️</span><span data-id="33">Threat Matrix</span>
+    </div>
+    <div data-id="34" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="briefing-archive">
+      <span data-id="35">📋</span><span data-id="36">Briefing Archive</span>
+    </div>
+    <div data-id="37" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="le11">
+      <span data-id="38">🔬</span><span data-id="39">LE-1.1 Command Centre</span>
+    </div>
+    <div data-id="40" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="communiques">
+      <span data-id="41">📢</span><span data-id="42">Communiqués</span>
+    </div>
+    <div data-id="43" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="sheriff-library">
+      <span data-id="44">📚</span><span data-id="45">Sheriff R2 Library</span>
+    </div>
+    <div data-id="46" class="nav-item flex items-center gap-3 px-4 py-3 text-sm" data-section="directorate-notes">
+      <span data-id="47">🔒</span><span data-id="48">Directorate Notes</span>
+    </div>
+  </nav>
+
+  <!-- Sidebar Network Access -->
+  <div data-id="49" class="px-3 pb-3">
+    <div data-id="50" class="rounded p-2" style="background: rgba(201,168,76,0.06); border: 1px solid var(--gold-dim);">
+      <div data-id="51" class="mono text-center" style="font-size: 0.55rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 4px;">🔗 NETWORK ACCESS</div>
+      <button data-id="52" id="sidebar-copy-url-btn" class="w-full mono text-center rounded py-1.5 px-1 cursor-pointer transition-colors" style="font-size: 0.55rem; color: var(--gold); background: rgba(201,168,76,0.1); border: 1px solid var(--gold-dim); letter-spacing: 0.03em;">
+        COPY ACCESS URL
+      </button>
+    </div>
+  </div>
+
+  <div data-id="53" class="px-4 pb-4 border-t" style="border-color: var(--border);">
+    <div data-id="54" class="mono text-xs mt-3 mb-2" style="color: var(--text-muted); letter-spacing: 0.1em;">SYSTEM STATUS</div>
+    <div data-id="55" class="flex flex-col gap-1 text-xs" style="color: var(--text-secondary);">
+      <span data-id="56"><span data-id="57" class="pulse-green">●</span> INTEL FEED</span>
+      <span data-id="58"><span data-id="59" class="pulse-green">●</span> COMMS</span>
+      <span data-id="60"><span data-id="61" class="pulse-green">●</span> ARCHIVE</span>
+    </div>
+    <div data-id="62" class="mt-3 mono" style="font-size: 0.6rem; color: var(--text-muted);">v3.0 UNIFIED CASTLE</div>
+    <div data-id="63" class="mono" style="font-size: 0.6rem; color: var(--gold-dim);">LE-1.1 ● LE-1.2 ● SHERIFF R2</div>
+    <div data-id="64" class="mono" style="font-size: 0.6rem; color: var(--text-muted);">Operator: R2 | Mario Trozzolo</div>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main data-id="65" id="main-content-m1a3" class="main-area md:ml-[220px]" style="padding-top: 82px; min-height: 100vh;">
+
+  <!-- =================== SECTION 1: COMMAND BRIDGE =================== -->
+  <section data-id="66" id="section-command-bridge" class="section-panel active p-4 md:p-6 lg:p-8">
+    <div data-id="67" class="mb-6">
+      <h2 data-id="68" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">COMMAND BRIDGE — SITUATIONAL OVERVIEW</h2>
+      <p data-id="69" class="mono text-xs mt-1" style="color: var(--text-muted);">Thursday, 20 August 2026 | Morning Cycle | 11:02 MDT</p>
+    </div>
+
+    <!-- ===== NETWORK ACCESS PANEL ===== -->
+    <div data-id="70" class="network-access-panel rounded-lg mb-6 p-4 md:p-5">
+      <div data-id="71" class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div data-id="72" class="flex-1">
+          <div data-id="73" class="flex items-center gap-2 mb-2">
+            <i data-id="74" data-lucide="radio-tower" class="w-4 h-4" style="color: var(--gold);"></i>
+            <span data-id="75" class="mono text-xs tracking-widest" style="color: var(--gold); letter-spacing: 0.15em;">COMMAND CENTRE — DIRECT ACCESS</span>
+          </div>
+          <div data-id="76" class="flex items-center gap-2 flex-wrap">
+            <a data-id="77" id="network-access-link" href="https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z" target="_blank" rel="noopener noreferrer" class="mono text-sm md:text-base break-all" style="color: var(--gold-bright); text-decoration: none; border-bottom: 1px solid var(--gold-dim); padding-bottom: 1px; transition: color 0.15s ease, border-color 0.15s ease;">
+              https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z
+            </a>
+            <button data-id="78" id="copy-url-btn-main" class="flex items-center gap-1.5 mono text-xs px-3 py-1.5 rounded cursor-pointer transition-all" style="background: var(--gold); color: var(--bg-primary); border: none; font-weight: 700; letter-spacing: 0.05em; flex-shrink: 0;" title="Copy URL to clipboard">
+              <i data-id="79" data-lucide="clipboard-copy" class="w-3.5 h-3.5"></i>
+              COPY
+            </button>
+          </div>
+          <p data-id="80" class="mono text-xs mt-2" style="color: var(--text-muted); letter-spacing: 0.06em;">Share this URL with all LE-1.2 node operators</p>
+        </div>
+        <div data-id="81" class="flex items-center gap-2">
+          <span data-id="82" class="pulse-green text-sm">●</span>
+          <span data-id="83" class="mono text-xs" style="color: var(--green-safe); letter-spacing: 0.05em;">LINK ACTIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Briefing Release Status Strip -->
+    <div data-id="84" class="rounded-lg mb-4 p-3 flex flex-wrap items-center justify-between gap-3" style="background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.3);">
+      <div data-id="85" class="flex items-center gap-3">
+        <span data-id="86" class="pulse-green text-lg">●</span>
+        <div data-id="87">
+          <div data-id="88" class="mono text-xs tracking-wider" style="color: var(--green-safe);">LE-1.2-2026-0820-ALPHA — RELEASED — 11:02 MDT</div>
+          <div data-id="89" class="mono text-xs mt-0.5" style="color: var(--text-muted);">Last Updated: Thursday, August 20, 2026 — 11:02 MDT</div>
+        </div>
+      </div>
+      <span data-id="90" class="mono text-xs px-3 py-1 rounded" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">RELEASED</span>
+    </div>
+
+    <!-- Posture Status Strip -->
+    <div data-id="91" class="rounded-lg mb-6 p-3 flex flex-wrap items-center justify-between gap-3" style="background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.3);">
+      <div data-id="92" class="flex items-center gap-3">
+        <span data-id="93" class="pulse-red text-lg">●</span>
+        <div data-id="94">
+          <div data-id="95" class="mono text-xs tracking-wider" style="color: var(--red-alert);">OVERALL POSTURE: ELEVATED — Geopolitical/Cyber</div>
+          <div data-id="96" class="mono text-xs mt-0.5" style="color: var(--text-muted);">Assessment derived from LE-1.2-2026-0820-ALPHA cycle</div>
+        </div>
+      </div>
+      <span data-id="97" class="mono text-xs px-3 py-1 rounded" style="background: var(--red-alert); color: white;">ELEVATED</span>
+    </div>
+
+    <!-- Top Status Strip -->
+    <div data-id="98" class="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 mb-6">
+      <div data-id="99" class="card-hover rounded-lg p-4" style="background: var(--bg-card); border-top: 2px solid var(--gold);">
+        <div data-id="100" class="text-2xl md:text-3xl font-bold tabular" style="color: var(--gold); font-family: 'EB Garamond', Georgia, serif;">25</div>
+        <div data-id="101" class="mono text-xs mt-1" style="color: var(--text-muted); letter-spacing: 0.05em;">BRIEFINGS ACTIVE</div>
+        <div data-id="102" class="text-xs mt-1" style="color: var(--text-secondary);">LE-1.1 + LE-1.2 across 9 days</div>
+      </div>
+      <div data-id="103" class="card-hover rounded-lg p-4" style="background: var(--bg-card); border-top: 2px solid var(--red-alert);">
+        <div data-id="104" class="flex items-center gap-2">
+          <div data-id="105" class="text-xl md:text-2xl font-bold" style="color: var(--red-alert); font-family: 'EB Garamond', Georgia, serif;">ELEVATED</div>
+          <span data-id="106" class="pulse-red text-lg">●</span>
+        </div>
+        <div data-id="107" class="mono text-xs mt-1" style="color: var(--text-muted); letter-spacing: 0.05em;">THREAT LEVEL</div>
+      </div>
+      <div data-id="108" class="card-hover rounded-lg p-4" style="background: var(--bg-card); border-top: 2px solid var(--gold);">
+        <div data-id="109" class="text-2xl md:text-3xl font-bold tabular" style="color: var(--gold); font-family: 'EB Garamond', Georgia, serif;">$4,435.85</div>
+        <div data-id="110" class="mono text-xs mt-1" style="color: var(--text-muted); letter-spacing: 0.05em;">GOLD SPOT</div>
+        <div data-id="111" class="text-xs mt-1" style="color: var(--green-safe);">+1.70% ▲</div>
+      </div>
+      <div data-id="112" class="card-hover rounded-lg p-4" style="background: var(--bg-card); border-top: 2px solid var(--gold);">
+        <div data-id="113" class="text-2xl md:text-3xl font-bold tabular" style="color: var(--gold); font-family: 'EB Garamond', Georgia, serif;">8</div>
+        <div data-id="114" class="mono text-xs mt-1" style="color: var(--text-muted); letter-spacing: 0.05em;">PUBLICATIONS</div>
+        <div data-id="115" class="text-xs mt-1" style="color: var(--text-secondary);">Novels + Communiqués + Reports</div>
+      </div>
+      <div data-id="116" class="card-hover rounded-lg p-4" style="background: var(--bg-card); border-top: 2px solid #3b82f6;">
+        <div data-id="117" class="text-2xl md:text-3xl font-bold tabular" style="color: #60a5fa; font-family: 'EB Garamond', Georgia, serif;">7</div>
+        <div data-id="118" class="mono text-xs mt-1" style="color: var(--text-muted); letter-spacing: 0.05em;">LE-1.1 MODULES</div>
+        <div data-id="119" class="text-xs mt-1" style="color: var(--green-safe);">All Active</div>
+      </div>
+    </div>
+
+    <!-- Live Intelligence Signals Panel -->
+    <div data-id="120" class="rounded-lg mb-6 p-4" style="background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--red-alert);">
+      <div data-id="121" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">LIVE INTELLIGENCE SIGNALS — LE-1.2-2026-0820-ALPHA CYCLE</div>
+      <div data-id="122" class="flex flex-col gap-3 text-sm">
+        <div data-id="123" class="flex items-start gap-3 p-3 rounded" style="background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.15);">
+          <span data-id="124" class="pulse-red text-base mt-0.5">●</span>
+          <div data-id="125">
+            <span data-id="126" class="mono text-xs px-2 py-0.5 rounded mr-2" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">GEOPOLITICAL</span>
+            <span data-id="127" style="color: var(--text-primary);">Iran/Hormuz blockade — Brent $93.69/bbl, WTI $86.61 — 5th session rally</span>
+          </div>
+        </div>
+        <div data-id="128" class="flex items-start gap-3 p-3 rounded" style="background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.15);">
+          <span data-id="129" class="pulse-red text-base mt-0.5">●</span>
+          <div data-id="130">
+            <span data-id="131" class="mono text-xs px-2 py-0.5 rounded mr-2" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">CYBER</span>
+            <span data-id="132" style="color: var(--text-primary);">Global ransomware +33% YoY — Gunra, Storm-1175, FSB-16 active campaigns</span>
+          </div>
+        </div>
+        <div data-id="133" class="flex items-start gap-3 p-3 rounded" style="background: rgba(234,179,8,0.04); border: 1px solid rgba(234,179,8,0.15);">
+          <span data-id="134" class="pulse-yellow text-base mt-0.5">●</span>
+          <div data-id="135">
+            <span data-id="136" class="mono text-xs px-2 py-0.5 rounded mr-2" style="background: rgba(234,179,8,0.2); color: #eab308;">GEOPOLITICAL</span>
+            <span data-id="137" style="color: var(--text-primary);">PRC Taiwan Strait grey-zone escalation — CCG shadowing Japanese vessels</span>
+          </div>
+        </div>
+        <div data-id="138" class="flex items-start gap-3 p-3 rounded" style="background: rgba(22,163,74,0.04); border: 1px solid rgba(22,163,74,0.15);">
+          <span data-id="139" class="pulse-green text-base mt-0.5">●</span>
+          <div data-id="140">
+            <span data-id="141" class="mono text-xs px-2 py-0.5 rounded mr-2" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">ENVIRONMENTAL</span>
+            <span data-id="142" style="color: var(--text-primary);">Alberta AQHI 3 Low Risk — 1 fire (Being Held) — conditions benign</span>
+          </div>
+        </div>
+      </div>
+      <div data-id="143" class="mono text-xs mt-3" style="color: var(--text-muted);">Last Updated: Thursday, August 20, 2026 — 11:02 MDT</div>
+    </div>
+
+    <!-- Market Ticker -->
+    <div data-id="144" class="rounded-lg overflow-hidden mb-6" style="background: var(--bg-secondary); border: 1px solid var(--border);">
+      <div data-id="145" class="overflow-hidden py-2 px-1">
+        <div data-id="146" class="ticker-track mono text-xs tabular" style="color: var(--gold);">
+          <span data-id="147" class="px-4">S&P 500&nbsp; 6,847&nbsp; <span data-id="148" style="color:var(--red-alert)">▼-0.4%</span></span>
+          <span data-id="149" class="px-4">|</span>
+          <span data-id="150" class="px-4">NASDAQ&nbsp; 22,140&nbsp; <span data-id="151" style="color:var(--red-alert)">▼-0.7%</span></span>
+          <span data-id="152" class="px-4">|</span>
+          <span data-id="153" class="px-4">TSX&nbsp; 27,320&nbsp; <span data-id="154" style="color:var(--green-safe)">▲+0.2%</span></span>
+          <span data-id="155" class="px-4">|</span>
+          <span data-id="156" class="px-4">GOLD&nbsp; $4,435.85&nbsp; <span data-id="157" style="color:var(--green-safe)">▲+1.70%</span></span>
+          <span data-id="158" class="px-4">|</span>
+          <span data-id="159" class="px-4">WTI&nbsp; $86.61&nbsp; <span data-id="160" style="color:var(--green-safe)">▲+0.8%</span></span>
+          <span data-id="161" class="px-4">|</span>
+          <span data-id="162" class="px-4">BTC&nbsp; $94,200&nbsp; <span data-id="163" style="color:var(--green-safe)">▲+1.1%</span></span>
+          <span data-id="164" class="px-4">|</span>
+          <span data-id="165" class="px-4">USD/CAD&nbsp; 1.348</span>
+          <span data-id="166" class="px-4">|</span>
+          <span data-id="167" class="px-4">10Y UST&nbsp; 4.68%</span>
+          <span data-id="168" class="px-4">|</span>
+          <span data-id="169" class="px-4">COPPER&nbsp; $4.82&nbsp; <span data-id="170" style="color:var(--green-safe)">▲+0.3%</span></span>
+          <span data-id="171" class="px-4">|</span>
+          <span data-id="172" class="px-4">BRENT&nbsp; $93.69&nbsp; <span data-id="173" style="color:var(--green-safe)">▲+1.2%</span></span>
+          <span data-id="174" class="px-4">|</span>
+          <span data-id="175" class="px-4">S&P 500&nbsp; 6,847&nbsp; <span data-id="176" style="color:var(--red-alert)">▼-0.4%</span></span>
+          <span data-id="177" class="px-4">|</span>
+          <span data-id="178" class="px-4">NASDAQ&nbsp; 22,140&nbsp; <span data-id="179" style="color:var(--red-alert)">▼-0.7%</span></span>
+          <span data-id="180" class="px-4">|</span>
+          <span data-id="181" class="px-4">TSX&nbsp; 27,320&nbsp; <span data-id="182" style="color:var(--green-safe)">▲+0.2%</span></span>
+          <span data-id="183" class="px-4">|</span>
+          <span data-id="184" class="px-4">GOLD&nbsp; $4,435.85&nbsp; <span data-id="185" style="color:var(--green-safe)">▲+1.70%</span></span>
+          <span data-id="186" class="px-4">|</span>
+          <span data-id="187" class="px-4">WTI&nbsp; $86.61&nbsp; <span data-id="188" style="color:var(--green-safe)">▲+0.8%</span></span>
+          <span data-id="189" class="px-4">|</span>
+          <span data-id="190" class="px-4">BTC&nbsp; $94,200&nbsp; <span data-id="191" style="color:var(--green-safe)">▲+1.1%</span></span>
+          <span data-id="192" class="px-4">|</span>
+          <span data-id="193" class="px-4">USD/CAD&nbsp; 1.348</span>
+          <span data-id="194" class="px-4">|</span>
+          <span data-id="195" class="px-4">10Y UST&nbsp; 4.68%</span>
+          <span data-id="196" class="px-4">|</span>
+          <span data-id="197" class="px-4">COPPER&nbsp; $4.82&nbsp; <span data-id="198" style="color:var(--green-safe)">▲+0.3%</span></span>
+          <span data-id="199" class="px-4">|</span>
+          <span data-id="200" class="px-4">BRENT&nbsp; $93.69&nbsp; <span data-id="201" style="color:var(--green-safe)">▲+1.2%</span></span>
+          <span data-id="202" class="px-4">|</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div data-id="203" class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
+      <div data-id="204" class="lg:col-span-3 flex flex-col gap-4 md:gap-6">
+        <div data-id="205" class="rounded-lg p-5" style="background: var(--bg-card); border-left: 3px solid var(--gold);">
+          <div data-id="206" class="flex items-center gap-3 mb-3">
+            <span data-id="207" class="mono text-xs tracking-wider" style="color: var(--gold);">LATEST INTELLIGENCE — LE-1.2 | 20 AUG 2026</span>
+            <span data-id="208" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">RELEASED</span>
+          </div>
+          <p data-id="209" class="text-sm leading-relaxed mb-4" style="color: var(--text-primary);">The convergence of Indo-Pacific security fragmentation, late-cycle credit stress, and AI capital hyper-concentration defines today's operating environment. Gold's break above $4,400 confirms sovereign safe-haven rotation.</p>
+          <div data-id="210" class="flex flex-wrap gap-2 mb-4">
+            <span data-id="211" class="tag-badge" style="background: rgba(201,168,76,0.15); color: var(--gold);">MARKETS</span>
+            <span data-id="212" class="tag-badge" style="background: rgba(59,130,246,0.15); color: #60a5fa;">GEOPOLITICS</span>
+            <span data-id="213" class="tag-badge" style="background: rgba(168,85,247,0.15); color: #a855f7;">AI</span>
+            <span data-id="214" class="tag-badge" style="background: rgba(34,197,94,0.15); color: #22c55e;">COMMODITIES</span>
+          </div>
+          <button data-id="215" class="view-briefing-btn-v1a2 mono text-xs px-4 py-2 rounded border cursor-pointer transition-colors" style="border-color: var(--gold); color: var(--gold); background: transparent;" data-section="briefing-archive">View Full Briefing →</button>
+        </div>
+
+        <div data-id="216" class="rounded-lg p-5" style="background: var(--bg-card); border-top: 2px solid var(--gold);">
+          <div data-id="217" class="mono text-xs tracking-wider mb-3" style="color: var(--text-muted);">DIRECTORATE CLOSING SIGNAL</div>
+          <p data-id="218" class="text-lg md:text-xl italic leading-relaxed" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">"The market is priced for soft landing — position for turbulence."</p>
+          <p data-id="219" class="mono text-xs mt-3" style="color: var(--text-muted);">— Anthropos II Directorate | 20 August 2026</p>
+        </div>
+      </div>
+
+      <div data-id="220" class="lg:col-span-2 flex flex-col gap-4 md:gap-6">
+        <div data-id="221" class="rounded-lg p-4" style="background: var(--bg-card); border: 1px solid var(--border);">
+          <div data-id="222" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">ACTIVE THEATRE STATUS</div>
+          <div data-id="223" class="flex flex-col gap-2">
+            <div data-id="224" class="theatre-link-t1a1 flex items-center justify-between p-3 rounded cursor-pointer transition-colors" style="background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.2);" data-section="geopolitical">
+              <span data-id="225" class="text-sm" style="color: var(--text-primary);"><span data-id="226" class="pulse-red">●</span> INDO-PACIFIC THEATRE</span>
+              <span data-id="227" class="mono text-xs px-2 py-1 rounded" style="background: var(--red-alert); color: white;">ELEVATED</span>
+            </div>
+            <div data-id="228" class="theatre-link-t2b2 flex items-center justify-between p-3 rounded cursor-pointer transition-colors" style="background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.2);" data-section="geopolitical">
+              <span data-id="229" class="text-sm" style="color: var(--text-primary);"><span data-id="230" class="pulse-amber">●</span> MIDDLE EAST & ENERGY</span>
+              <span data-id="231" class="mono text-xs px-2 py-1 rounded" style="background: var(--amber-alert); color: #1a1a1a;">MODERATE-HIGH</span>
+            </div>
+            <div data-id="232" class="theatre-link-t3c3 flex items-center justify-between p-3 rounded cursor-pointer transition-colors" style="background: rgba(234,179,8,0.06); border: 1px solid rgba(234,179,8,0.15);" data-section="geopolitical">
+              <span data-id="233" class="text-sm" style="color: var(--text-primary);"><span data-id="234" class="pulse-yellow">●</span> NATO EASTERN FLANK</span>
+              <span data-id="235" class="mono text-xs px-2 py-1 rounded" style="background: #eab308; color: #1a1a1a;">MODERATE</span>
+            </div>
+          </div>
+        </div>
+
+        <div data-id="236" class="rounded-lg p-4" style="background: var(--bg-card); border: 1px solid var(--border);">
+          <div data-id="237" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">THREAT MATRIX SUMMARY</div>
+          <div data-id="238" class="flex flex-col gap-2 text-sm">
+            <div data-id="239" class="flex items-center justify-between"><span data-id="240" style="color: var(--text-primary);">Taiwan Strait Blockade</span><span data-id="241" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">RED</span></div>
+            <div data-id="242" class="flex items-center justify-between"><span data-id="243" style="color: var(--text-primary);">US Debt Downgrade</span><span data-id="244" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">AMBER</span></div>
+            <div data-id="245" class="flex items-center justify-between"><span data-id="246" style="color: var(--text-primary);">AGI Discontinuity</span><span data-id="247" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">RED</span></div>
+            <div data-id="248" class="flex items-center justify-between"><span data-id="249" style="color: var(--text-primary);">Pandemic Event</span><span data-id="250" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">AMBER</span></div>
+            <div data-id="251" class="flex items-center justify-between"><span data-id="252" style="color: var(--text-primary);">Infrastructure Cyberattack</span><span data-id="253" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">RED</span></div>
+          </div>
+          <button data-id="254" class="view-matrix-btn-v2b3 mono text-xs mt-3 cursor-pointer" style="color: var(--gold);" data-section="threat-matrix">View Full Matrix →</button>
+        </div>
+
+        <div data-id="255" class="rounded-lg p-4" style="background: var(--bg-card); border: 1px solid var(--border);">
+          <div data-id="256" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">RECENT ARCHIVE ENTRIES</div>
+          <div data-id="257" class="flex flex-col gap-2 text-sm">
+            <div data-id="258" class="flex items-center justify-between">
+              <span data-id="259" style="color: var(--text-primary);">LE-1.1 | Command Centre</span>
+              <span data-id="260" class="mono text-xs px-2 py-0.5 rounded pulse-green" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">7 Modules LIVE</span>
+            </div>
+            <div data-id="261" class="flex items-center justify-between">
+              <span data-id="262" style="color: var(--text-primary);">LE-1.2 | 20 Aug 2026</span>
+              <span data-id="263" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">RELEASED</span>
+            </div>
+            <div data-id="264" class="flex items-center justify-between"><span data-id="265" style="color: var(--text-primary);">LE-1.1 | 20 Aug 2026</span><span data-id="266" class="mono text-xs" style="color: var(--text-muted);">Morning</span></div>
+            <div data-id="267" class="flex items-center justify-between"><span data-id="268" style="color: var(--text-secondary);">LE-1.2 | 19 Aug 2026</span><span data-id="269" class="mono text-xs" style="color: var(--text-muted);">—</span></div>
+            <div data-id="270" class="flex items-center justify-between"><span data-id="271" style="color: var(--text-secondary);">LE-1.1 | 19 Aug 2026</span><span data-id="272" class="mono text-xs" style="color: var(--text-muted);">—</span></div>
+            <div data-id="273" class="flex items-center justify-between"><span data-id="274" style="color: var(--text-secondary);">LE-1.2 | 18 Aug 2026</span><span data-id="275" class="mono text-xs" style="color: var(--text-muted);">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 2: MARKET INTELLIGENCE =================== -->
+  <section data-id="276" id="section-market-intel" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="277" class="mb-6">
+      <h2 data-id="278" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">MARKET INTELLIGENCE — GLOBAL ASSET OVERVIEW | 20 AUG 2026</h2>
+    </div>
+    <div data-id="279" class="rounded-lg overflow-hidden mb-6" style="background: var(--bg-secondary); border: 1px solid var(--border);">
+      <div data-id="280" class="overflow-hidden py-2 px-1">
+        <div data-id="281" class="ticker-track mono text-xs tabular" style="color: var(--gold);">
+          <span data-id="282" class="px-4">S&P 500&nbsp; 6,847&nbsp; <span data-id="283" style="color:var(--red-alert)">▼-0.4%</span></span><span data-id="284" class="px-4">|</span>
+          <span data-id="285" class="px-4">NASDAQ&nbsp; 22,140&nbsp; <span data-id="286" style="color:var(--red-alert)">▼-0.7%</span></span><span data-id="287" class="px-4">|</span>
+          <span data-id="288" class="px-4">TSX&nbsp; 27,320&nbsp; <span data-id="289" style="color:var(--green-safe)">▲+0.2%</span></span><span data-id="290" class="px-4">|</span>
+          <span data-id="291" class="px-4">GOLD&nbsp; $4,435.85&nbsp; <span data-id="292" style="color:var(--green-safe)">▲+1.70%</span></span><span data-id="293" class="px-4">|</span>
+          <span data-id="294" class="px-4">WTI&nbsp; $86.61&nbsp; <span data-id="295" style="color:var(--green-safe)">▲+0.8%</span></span><span data-id="296" class="px-4">|</span>
+          <span data-id="297" class="px-4">BTC&nbsp; $94,200&nbsp; <span data-id="298" style="color:var(--green-safe)">▲+1.1%</span></span><span data-id="299" class="px-4">|</span>
+          <span data-id="300" class="px-4">USD/CAD&nbsp; 1.348</span><span data-id="301" class="px-4">|</span>
+          <span data-id="302" class="px-4">10Y UST&nbsp; 4.68%</span><span data-id="303" class="px-4">|</span>
+          <span data-id="304" class="px-4">COPPER&nbsp; $4.82&nbsp; <span data-id="305" style="color:var(--green-safe)">▲+0.3%</span></span><span data-id="306" class="px-4">|</span>
+          <span data-id="307" class="px-4">BRENT&nbsp; $93.69&nbsp; <span data-id="308" style="color:var(--green-safe)">▲+1.2%</span></span><span data-id="309" class="px-4">|</span>
+          <span data-id="310" class="px-4">S&P 500&nbsp; 6,847&nbsp; <span data-id="311" style="color:var(--red-alert)">▼-0.4%</span></span><span data-id="312" class="px-4">|</span>
+          <span data-id="313" class="px-4">NASDAQ&nbsp; 22,140&nbsp; <span data-id="314" style="color:var(--red-alert)">▼-0.7%</span></span><span data-id="315" class="px-4">|</span>
+          <span data-id="316" class="px-4">TSX&nbsp; 27,320&nbsp; <span data-id="317" style="color:var(--green-safe)">▲+0.2%</span></span><span data-id="318" class="px-4">|</span>
+          <span data-id="319" class="px-4">GOLD&nbsp; $4,435.85&nbsp; <span data-id="320" style="color:var(--green-safe)">▲+1.70%</span></span><span data-id="321" class="px-4">|</span>
+          <span data-id="322" class="px-4">WTI&nbsp; $86.61&nbsp; <span data-id="323" style="color:var(--green-safe)">▲+0.8%</span></span><span data-id="324" class="px-4">|</span>
+          <span data-id="325" class="px-4">BTC&nbsp; $94,200&nbsp; <span data-id="326" style="color:var(--green-safe)">▲+1.1%</span></span><span data-id="327" class="px-4">|</span>
+        </div>
+      </div>
+    </div>
+    <div data-id="328" class="flex flex-wrap gap-1 md:gap-2 mb-6 border-b" style="border-color: var(--border);">
+      <div data-id="329" class="asset-tab active mono text-xs px-3 md:px-4 py-2 tracking-wider" data-asset="equities">EQUITIES</div>
+      <div data-id="330" class="asset-tab mono text-xs px-3 md:px-4 py-2 tracking-wider" data-asset="fixed-income">FIXED INCOME</div>
+      <div data-id="331" class="asset-tab mono text-xs px-3 md:px-4 py-2 tracking-wider" data-asset="commodities">COMMODITIES</div>
+      <div data-id="332" class="asset-tab mono text-xs px-3 md:px-4 py-2 tracking-wider" data-asset="fx">FX</div>
+      <div data-id="333" class="asset-tab mono text-xs px-3 md:px-4 py-2 tracking-wider" data-asset="digital">DIGITAL ASSETS</div>
+    </div>
+    <div data-id="334" id="asset-equities" class="asset-panel">
+      <div data-id="335" class="overflow-x-auto rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border);">
+        <table data-id="336" class="w-full text-sm">
+          <thead data-id="337"><tr data-id="338" style="border-bottom: 1px solid var(--border);"><th data-id="339" class="text-left px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Index</th><th data-id="340" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Level</th><th data-id="341" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Change</th><th data-id="342" class="text-center px-4 py-3 mono text-xs tracking-wider hidden sm:table-cell" style="color: var(--gold);">Dir</th><th data-id="343" class="text-left px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Anthropos Signal</th></tr></thead>
+          <tbody data-id="344">
+            <tr data-id="345" style="border-bottom: 1px solid var(--border);"><td data-id="346" class="px-4 py-3" style="color: var(--text-primary);">S&P 500</td><td data-id="347" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">6,847</td><td data-id="348" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">-0.4%</td><td data-id="349" class="text-center px-4 py-3 hidden sm:table-cell" style="color: var(--red-alert);">▼</td><td data-id="350" class="px-4 py-3 hidden md:table-cell"><span data-id="351" class="tag-badge" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">CAUTION</span> <span data-id="352" class="text-xs" style="color: var(--text-secondary);">Mega-cap tech distribution phase</span></td></tr>
+            <tr data-id="353" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="354" class="px-4 py-3" style="color: var(--text-primary);">NASDAQ</td><td data-id="355" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">22,140</td><td data-id="356" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">-0.7%</td><td data-id="357" class="text-center px-4 py-3 hidden sm:table-cell" style="color: var(--red-alert);">▼</td><td data-id="358" class="px-4 py-3 hidden md:table-cell"><span data-id="359" class="tag-badge" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">CAUTION</span> <span data-id="360" class="text-xs" style="color: var(--text-secondary);">AI-sector rotation; semi pullback</span></td></tr>
+            <tr data-id="361" style="border-bottom: 1px solid var(--border);"><td data-id="362" class="px-4 py-3" style="color: var(--text-primary);">TSX</td><td data-id="363" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">27,320</td><td data-id="364" class="text-right px-4 py-3 tabular" style="color: var(--green-safe);">+0.2%</td><td data-id="365" class="text-center px-4 py-3 hidden sm:table-cell" style="color: var(--green-safe);">▲</td><td data-id="366" class="px-4 py-3 hidden md:table-cell"><span data-id="367" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">CONSTRUCTIVE</span> <span data-id="368" class="text-xs" style="color: var(--text-secondary);">Energy/materials offsetting tech</span></td></tr>
+            <tr data-id="369" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="370" class="px-4 py-3" style="color: var(--text-primary);">FTSE 100</td><td data-id="371" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">9,105</td><td data-id="372" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">-0.1%</td><td data-id="373" class="text-center px-4 py-3 hidden sm:table-cell" style="color: var(--red-alert);">▼</td><td data-id="374" class="px-4 py-3 hidden md:table-cell"><span data-id="375" class="tag-badge" style="background: rgba(100,116,139,0.2); color: #94a3b8;">NEUTRAL</span> <span data-id="376" class="text-xs" style="color: var(--text-secondary);">Defence firm; consumer soft</span></td></tr>
+            <tr data-id="377"><td data-id="378" class="px-4 py-3" style="color: var(--text-primary);">Nikkei 225</td><td data-id="379" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">41,880</td><td data-id="380" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">-0.5%</td><td data-id="381" class="text-center px-4 py-3 hidden sm:table-cell" style="color: var(--red-alert);">▼</td><td data-id="382" class="px-4 py-3 hidden md:table-cell"><span data-id="383" class="tag-badge" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">CAUTION</span> <span data-id="384" class="text-xs" style="color: var(--text-secondary);">JPY strength weighing on exporters</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div data-id="385" id="asset-fixed-income" class="asset-panel" style="display:none;">
+      <div data-id="386" class="overflow-x-auto rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border);">
+        <table data-id="387" class="w-full text-sm">
+          <thead data-id="388"><tr data-id="389" style="border-bottom: 1px solid var(--border);"><th data-id="390" class="text-left px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Instrument</th><th data-id="391" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Yield / Spread</th><th data-id="392" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Change</th><th data-id="393" class="text-left px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Anthropos Signal</th></tr></thead>
+          <tbody data-id="394">
+            <tr data-id="395" style="border-bottom: 1px solid var(--border);"><td data-id="396" class="px-4 py-3" style="color: var(--text-primary);">10Y US Treasury</td><td data-id="397" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">4.68%</td><td data-id="398" class="text-right px-4 py-3 tabular" style="color: var(--amber-alert);">+1bp</td><td data-id="399" class="px-4 py-3 hidden md:table-cell"><span data-id="400" class="tag-badge" style="background: rgba(249,115,22,0.2); color: #f97316;">WATCH</span> <span data-id="401" class="text-xs" style="color: var(--text-secondary);">Spread compression stalling; long-end supply pressure</span></td></tr>
+            <tr data-id="402"><td data-id="403" class="px-4 py-3" style="color: var(--text-primary);">IG Credit Spread</td><td data-id="404" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">+112bp</td><td data-id="405" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">Widening</td><td data-id="406" class="px-4 py-3 hidden md:table-cell"><span data-id="407" class="tag-badge" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">CAUTION</span> <span data-id="408" class="text-xs" style="color: var(--text-secondary);">IG spreads widening 3rd consecutive session</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div data-id="409" id="asset-commodities" class="asset-panel" style="display:none;">
+      <div data-id="410" class="rounded-lg p-5 mb-4" style="background: linear-gradient(135deg, var(--bg-card) 0%, rgba(201,168,76,0.08) 100%); border: 1px solid var(--gold-dim);">
+        <div data-id="411" class="flex items-center gap-2 mb-2"><span data-id="412" style="color: var(--gold);">★</span><span data-id="413" class="mono text-xs tracking-wider" style="color: var(--gold);">FEATURED: GOLD SPOT</span></div>
+        <div data-id="414" class="flex flex-wrap items-baseline gap-4 mb-3"><span data-id="415" class="text-3xl md:text-4xl font-bold tabular" style="color: var(--gold); font-family: 'EB Garamond', Georgia, serif;">$4,435.85</span><span data-id="416" class="text-sm" style="color: var(--text-secondary);">USD/oz</span><span data-id="417" class="text-lg font-bold" style="color: var(--green-safe);">▲ +1.70%</span></div>
+        <div data-id="418" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3" style="color: var(--text-secondary);"><span data-id="419">Kitco Bid: $4,345.60</span><span data-id="420">Day Range: $4,324.10 – $4,362.90</span><span data-id="421">CAD Equivalent: C$6,040.40/oz</span><span data-id="422">UBS Target: $5,000/oz (H1 2027)</span></div>
+        <div data-id="423" class="text-sm p-3 rounded" style="background: rgba(22,163,74,0.08); border-left: 2px solid var(--green-safe);"><span data-id="424" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">BULLISH MOMENTUM</span><span data-id="425" class="ml-2" style="color: var(--text-secondary);">Sovereign accumulation + Middle East risk premium driving safe-haven flows</span></div>
+      </div>
+      <div data-id="426" class="overflow-x-auto rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border);">
+        <table data-id="427" class="w-full text-sm">
+          <thead data-id="428"><tr data-id="429" style="border-bottom: 1px solid var(--border);"><th data-id="430" class="text-left px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Commodity</th><th data-id="431" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Price</th><th data-id="432" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Change</th><th data-id="433" class="text-left px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Anthropos Signal</th></tr></thead>
+          <tbody data-id="434">
+            <tr data-id="435" style="border-bottom: 1px solid var(--border);"><td data-id="436" class="px-4 py-3" style="color: var(--text-primary);">WTI Crude</td><td data-id="437" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">$86.61/bbl</td><td data-id="438" class="text-right px-4 py-3 tabular" style="color: var(--green-safe);">+0.8%</td><td data-id="439" class="px-4 py-3 hidden md:table-cell"><span data-id="440" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">CONSTRUCTIVE</span> <span data-id="441" class="text-xs" style="color: var(--text-secondary);">OPEC+ discipline holding</span></td></tr>
+            <tr data-id="442"><td data-id="443" class="px-4 py-3" style="color: var(--text-primary);">Copper</td><td data-id="444" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">$4.82/lb</td><td data-id="445" class="text-right px-4 py-3 tabular" style="color: var(--green-safe);">+0.3%</td><td data-id="446" class="px-4 py-3 hidden md:table-cell"><span data-id="447" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">CONSTRUCTIVE</span> <span data-id="448" class="text-xs" style="color: var(--text-secondary);">Grid-scale demand; China PMI uptick</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div data-id="449" id="asset-fx" class="asset-panel" style="display:none;">
+      <div data-id="450" class="overflow-x-auto rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border);">
+        <table data-id="451" class="w-full text-sm">
+          <thead data-id="452"><tr data-id="453" style="border-bottom: 1px solid var(--border);"><th data-id="454" class="text-left px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Pair</th><th data-id="455" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Rate</th><th data-id="456" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Change</th><th data-id="457" class="text-left px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Anthropos Signal</th></tr></thead>
+          <tbody data-id="458">
+            <tr data-id="459" style="border-bottom: 1px solid var(--border);"><td data-id="460" class="px-4 py-3" style="color: var(--text-primary);">USD Index (DXY)</td><td data-id="461" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">101.4</td><td data-id="462" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">-0.3%</td><td data-id="463" class="px-4 py-3 hidden md:table-cell"><span data-id="464" class="tag-badge" style="background: rgba(249,115,22,0.2); color: #f97316;">WATCH</span> <span data-id="465" class="text-xs" style="color: var(--text-secondary);">Dollar softening supports commodities</span></td></tr>
+            <tr data-id="466" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="467" class="px-4 py-3" style="color: var(--text-primary);">CAD/USD</td><td data-id="468" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">0.7418</td><td data-id="469" class="text-right px-4 py-3 tabular" style="color: var(--text-muted);">Flat</td><td data-id="470" class="px-4 py-3 hidden md:table-cell"><span data-id="471" class="tag-badge" style="background: rgba(100,116,139,0.2); color: #94a3b8;">NEUTRAL</span> <span data-id="472" class="text-xs" style="color: var(--text-secondary);">Oil support offsetting growth concerns</span></td></tr>
+            <tr data-id="473" style="border-bottom: 1px solid var(--border);"><td data-id="474" class="px-4 py-3" style="color: var(--text-primary);">EUR/USD</td><td data-id="475" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">1.1142</td><td data-id="476" class="text-right px-4 py-3 tabular" style="color: var(--green-safe);">+0.2%</td><td data-id="477" class="px-4 py-3 hidden md:table-cell"><span data-id="478" class="tag-badge" style="background: rgba(100,116,139,0.2); color: #94a3b8;">NEUTRAL</span> <span data-id="479" class="text-xs" style="color: var(--text-secondary);">ECB hold posture</span></td></tr>
+            <tr data-id="480"><td data-id="481" class="px-4 py-3" style="color: var(--text-primary);">USD/JPY</td><td data-id="482" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">141.20</td><td data-id="483" class="text-right px-4 py-3 tabular" style="color: var(--red-alert);">-0.6%</td><td data-id="484" class="px-4 py-3 hidden md:table-cell"><span data-id="485" class="tag-badge" style="background: rgba(249,115,22,0.2); color: #f97316;">WATCH</span> <span data-id="486" class="text-xs" style="color: var(--text-secondary);">BoJ normalisation; yen strength accelerating</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div data-id="487" id="asset-digital" class="asset-panel" style="display:none;">
+      <div data-id="488" class="overflow-x-auto rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border);">
+        <table data-id="489" class="w-full text-sm">
+          <thead data-id="490"><tr data-id="491" style="border-bottom: 1px solid var(--border);"><th data-id="492" class="text-left px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Asset</th><th data-id="493" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Price</th><th data-id="494" class="text-right px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Change</th><th data-id="495" class="text-left px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Anthropos Signal</th></tr></thead>
+          <tbody data-id="496">
+            <tr data-id="497" style="border-bottom: 1px solid var(--border);"><td data-id="498" class="px-4 py-3" style="color: var(--text-primary);">Bitcoin (BTC)</td><td data-id="499" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">$94,200</td><td data-id="500" class="text-right px-4 py-3 tabular" style="color: var(--green-safe);">+1.1%</td><td data-id="501" class="px-4 py-3 hidden md:table-cell"><span data-id="502" class="tag-badge" style="background: rgba(249,115,22,0.2); color: #f97316;">WATCH</span> <span data-id="503" class="text-xs" style="color: var(--text-secondary);">Institutional accumulation; ETF inflows resuming</span></td></tr>
+            <tr data-id="504"><td data-id="505" class="px-4 py-3" style="color: var(--text-primary);">Ethereum (ETH)</td><td data-id="506" class="text-right px-4 py-3 tabular" style="color: var(--text-primary);">$3,840</td><td data-id="507" class="text-right px-4 py-3 tabular" style="color: var(--green-safe);">+0.8%</td><td data-id="508" class="px-4 py-3 hidden md:table-cell"><span data-id="509" class="tag-badge" style="background: rgba(100,116,139,0.2); color: #94a3b8;">NEUTRAL</span> <span data-id="510" class="text-xs" style="color: var(--text-secondary);">Layer-2 activity high; staking yield compressing</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 3: GEOPOLITICAL THEATRE =================== -->
+  <section data-id="511" id="section-geopolitical" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="512" class="mb-6"><h2 data-id="513" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">GEOPOLITICAL THEATRE — ACTIVE INTELLIGENCE ASSESSMENTS</h2></div>
+    <div data-id="514" class="rounded-lg mb-4 overflow-hidden" style="border: 1px solid rgba(220,38,38,0.3);">
+      <div data-id="515" class="accordion-header flex items-center justify-between px-4 md:px-5 py-4 cursor-pointer" style="background: rgba(220,38,38,0.08);"><span data-id="516" class="text-sm md:text-base font-semibold" style="color: var(--text-primary);"><span data-id="517" class="pulse-red">●</span>&nbsp; INDO-PACIFIC THEATRE</span><div data-id="518" class="flex items-center gap-3"><span data-id="519" class="mono text-xs px-3 py-1 rounded" style="background: var(--red-alert); color: white;">RISK: ELEVATED</span><i data-id="520" data-lucide="chevron-down" class="w-4 h-4 accordion-chevron transition-transform" style="color: var(--text-muted);"></i></div></div>
+      <div data-id="521" class="accordion-body">
+        <div data-id="522" class="p-4 md:p-5" style="background: var(--bg-card);">
+          <div data-id="523" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">FLASHPOINTS</div>
+          <div data-id="524" class="space-y-4 text-sm" style="color: var(--text-secondary);">
+            <div data-id="525"><h4 data-id="526" class="font-semibold mb-1" style="color: var(--text-primary);">Taiwan Strait</h4><ul data-id="527" class="list-disc list-inside space-y-1 ml-2"><li data-id="528">PLA naval exercises resumed in the southern corridor with expanded scope, including amphibious landing drills</li><li data-id="529">TSMC Kaohsiung Fab 3 under strategic review; supply chain contingency plans activated</li><li data-id="530">US carrier strike group repositioned to Philippine Sea — interpreted as deterrence signal</li></ul></div>
+            <div data-id="531"><h4 data-id="532" class="font-semibold mb-1" style="color: var(--text-primary);">South China Sea</h4><ul data-id="533" class="list-disc list-inside space-y-1 ml-2"><li data-id="534">Philippine coast guard incident near Second Thomas Shoal; ASEAN foreign ministers' emergency consultation convened</li><li data-id="535">Freedom of navigation operations by US, UK, and Japan increasing in frequency</li></ul></div>
+            <div data-id="536"><h4 data-id="537" class="font-semibold mb-1" style="color: var(--text-primary);">AUKUS</h4><ul data-id="538" class="list-disc list-inside space-y-1 ml-2"><li data-id="539">Submarine pathway under parliamentary ratification in Australia; Pillar II technology sharing accelerating</li><li data-id="540">Japan and South Korea exploring "AUKUS+" adjacency frameworks</li></ul></div>
+            <div data-id="541" class="p-3 rounded" style="background: rgba(220,38,38,0.06); border-left: 2px solid var(--red-alert);"><div data-id="542" class="mono text-xs mb-1" style="color: var(--red-alert);">STRATEGIC IMPLICATION</div><p data-id="543">The Indo-Pacific theatre remains the single most consequential geopolitical risk vector for global markets. A Taiwan contingency scenario would produce supply chain disruption of unprecedented scale, particularly in semiconductor manufacturing.</p></div>
+            <div data-id="544" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="545" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS II READ</div><p data-id="546">Probability of kinetic conflict in the 90-day window remains low, but the cumulative drift toward escalation is unmistakable. The PLA's exercise tempo and geographic scope expansion represent a qualitative shift from 2025 patterns. Monitor PLAN exercise scope, AUKUS posture shifts, and TSMC operational status as leading indicators.</p></div>
+          </div>
+          <div data-id="547" class="mono text-xs mt-4" style="color: var(--text-muted);">Last Updated: Thursday, August 20, 2026 — 11:02 MDT</div>
+        </div>
+      </div>
+    </div>
+    <div data-id="548" class="rounded-lg mb-4 overflow-hidden" style="border: 1px solid rgba(217,119,6,0.3);">
+      <div data-id="549" class="accordion-header flex items-center justify-between px-4 md:px-5 py-4 cursor-pointer" style="background: rgba(217,119,6,0.06);"><span data-id="550" class="text-sm md:text-base font-semibold" style="color: var(--text-primary);"><span data-id="551" class="pulse-amber">●</span>&nbsp; MIDDLE EAST & ENERGY SECURITY</span><div data-id="552" class="flex items-center gap-3"><span data-id="553" class="mono text-xs px-3 py-1 rounded" style="background: var(--amber-alert); color: #1a1a1a;">RISK: MODERATE-HIGH</span><i data-id="554" data-lucide="chevron-down" class="w-4 h-4 accordion-chevron transition-transform" style="color: var(--text-muted);"></i></div></div>
+      <div data-id="555" class="accordion-body">
+        <div data-id="556" class="p-4 md:p-5" style="background: var(--bg-card);">
+          <div data-id="557" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">FLASHPOINTS</div>
+          <div data-id="558" class="space-y-4 text-sm" style="color: var(--text-secondary);">
+            <div data-id="559"><h4 data-id="560" class="font-semibold mb-1" style="color: var(--text-primary);">OPEC+ Discipline</h4><ul data-id="561" class="list-disc list-inside space-y-1 ml-2"><li data-id="562">Vienna session confirmed continued production discipline through Q4 2026; Saudi signalling willingness to extend cuts</li><li data-id="563">Non-OPEC supply growth (US shale, Guyana, Brazil) partially offsetting, but insufficient to break price floor</li></ul></div>
+            <div data-id="564"><h4 data-id="565" class="font-semibold mb-1" style="color: var(--text-primary);">Strait of Hormuz</h4><ul data-id="566" class="list-disc list-inside space-y-1 ml-2"><li data-id="567">Iranian naval provocations in Strait of Hormuz continuing at elevated tempo; insurance premiums for tanker transit rising</li><li data-id="568">US Fifth Fleet maintaining enhanced patrol posture</li></ul></div>
+            <div data-id="569"><h4 data-id="570" class="font-semibold mb-1" style="color: var(--text-primary);">Iran-Israel Proxy Dynamics</h4><ul data-id="571" class="list-disc list-inside space-y-1 ml-2"><li data-id="572">Hezbollah rearmament assessed at 70% pre-2024 levels; Israeli northern front remains at heightened readiness</li><li data-id="573">Gulf SWFs accelerating portfolio diversification — tech and AI infrastructure investment surge</li></ul></div>
+            <div data-id="574" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="575" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS II STRATEGIC READ</div><p data-id="576">Energy markets are priced for managed tension, not escalation. A Strait of Hormuz disruption — even a brief one — would produce a $15-25/bbl spike in WTI within 48 hours. The risk premium embedded in current prices is insufficient given the pace of Iranian naval activity. Long energy hedges remain strategically warranted.</p></div>
+          </div>
+          <div data-id="577" class="mono text-xs mt-4" style="color: var(--text-muted);">Last Updated: Thursday, August 20, 2026 — 11:02 MDT</div>
+        </div>
+      </div>
+    </div>
+    <div data-id="578" class="rounded-lg mb-4 overflow-hidden" style="border: 1px solid rgba(234,179,8,0.25);">
+      <div data-id="579" class="accordion-header flex items-center justify-between px-4 md:px-5 py-4 cursor-pointer" style="background: rgba(234,179,8,0.04);"><span data-id="580" class="text-sm md:text-base font-semibold" style="color: var(--text-primary);"><span data-id="581" class="pulse-yellow">●</span>&nbsp; NATO EASTERN FLANK</span><div data-id="582" class="flex items-center gap-3"><span data-id="583" class="mono text-xs px-3 py-1 rounded" style="background: #eab308; color: #1a1a1a;">RISK: MODERATE</span><i data-id="584" data-lucide="chevron-down" class="w-4 h-4 accordion-chevron transition-transform" style="color: var(--text-muted);"></i></div></div>
+      <div data-id="585" class="accordion-body">
+        <div data-id="586" class="p-4 md:p-5" style="background: var(--bg-card);">
+          <div data-id="587" class="mono text-xs tracking-wider mb-3" style="color: var(--gold);">FLASHPOINTS</div>
+          <div data-id="588" class="space-y-4 text-sm" style="color: var(--text-secondary);">
+            <div data-id="589"><h4 data-id="590" class="font-semibold mb-1" style="color: var(--text-primary);">Ukraine Reconstruction</h4><ul data-id="591" class="list-disc list-inside space-y-1 ml-2"><li data-id="592">Reconstruction financing framework advancing through EU and World Bank channels; estimated $500B+ commitment over 10 years</li><li data-id="593">Frozen Russian assets debate unresolved — legal and precedent concerns persist</li></ul></div>
+            <div data-id="594"><h4 data-id="595" class="font-semibold mb-1" style="color: var(--text-primary);">Baltic States</h4><ul data-id="596" class="list-disc list-inside space-y-1 ml-2"><li data-id="597">Defence budgets at 3% GDP across Estonia, Latvia, Lithuania — highest in NATO proportionally</li><li data-id="598">NATO Enhanced Forward Presence battalions upgraded to brigade-level combat teams</li></ul></div>
+            <div data-id="599"><h4 data-id="600" class="font-semibold mb-1" style="color: var(--text-primary);">Article 5 Credibility</h4><ul data-id="601" class="list-disc list-inside space-y-1 ml-2"><li data-id="602">Political debate on Article 5 commitment credibility intensifying amid US election cycle dynamics</li><li data-id="603">European strategic autonomy initiatives accelerating as hedge against US retrenchment scenarios</li></ul></div>
+            <div data-id="604" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="605" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS II STRATEGIC READ</div><p data-id="606">The Eastern Flank remains in a managed deterrence equilibrium. The primary risk vector is not conventional military escalation but rather a gradual erosion of Alliance cohesion through political fragmentation and burden-sharing disputes. Defence sector equities in Europe remain structurally supported by the multi-year spending trajectory.</p></div>
+          </div>
+          <div data-id="607" class="mono text-xs mt-4" style="color: var(--text-muted);">Last Updated: Thursday, August 20, 2026 — 11:02 MDT</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 4: THREAT MATRIX =================== -->
+  <section data-id="608" id="section-threat-matrix" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="609" class="mb-4"><h2 data-id="610" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">THREAT MATRIX — ANTHROPOS II RISK ASSESSMENT | 20 AUG 2026</h2><p data-id="611" class="text-sm mt-2" style="color: var(--text-secondary);">Active threat scenarios assessed across probability, impact velocity, and strategic domain. Ratings updated each morning cycle.</p></div>
+    <div data-id="612" class="flex flex-wrap gap-2 mb-4">
+      <button data-id="613" class="filter-btn active mono text-xs px-3 py-2 rounded" style="border: 1px solid var(--border);" data-filter="ALL">ALL</button>
+      <button data-id="614" class="filter-btn mono text-xs px-3 py-2 rounded" style="border: 1px solid var(--border); color: var(--text-secondary);" data-filter="GEOPOLITICAL">GEOPOLITICAL</button>
+      <button data-id="615" class="filter-btn mono text-xs px-3 py-2 rounded" style="border: 1px solid var(--border); color: var(--text-secondary);" data-filter="FINANCIAL">FINANCIAL</button>
+      <button data-id="616" class="filter-btn mono text-xs px-3 py-2 rounded" style="border: 1px solid var(--border); color: var(--text-secondary);" data-filter="TECHNOLOGY">TECHNOLOGY</button>
+      <button data-id="617" class="filter-btn mono text-xs px-3 py-2 rounded" style="border: 1px solid var(--border); color: var(--text-secondary);" data-filter="HEALTH">HEALTH</button>
+      <button data-id="618" class="filter-btn mono text-xs px-3 py-2 rounded" style="border: 1px solid var(--border); color: var(--text-secondary);" data-filter="CYBER">CYBER</button>
+    </div>
+    <div data-id="619" class="overflow-x-auto rounded-lg mb-4" style="background: var(--bg-card); border: 1px solid var(--border);">
+      <table data-id="620" class="w-full text-sm" id="threat-table-t8k2">
+        <thead data-id="621"><tr data-id="622" style="border-bottom: 2px solid var(--gold-dim);"><th data-id="623" class="text-left px-3 md:px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">#</th><th data-id="624" class="text-left px-3 md:px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Threat Scenario</th><th data-id="625" class="text-left px-3 md:px-4 py-3 mono text-xs tracking-wider hidden sm:table-cell" style="color: var(--gold);">Domain</th><th data-id="626" class="text-center px-3 md:px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Prob.</th><th data-id="627" class="text-center px-3 md:px-4 py-3 mono text-xs tracking-wider hidden md:table-cell" style="color: var(--gold);">Impact</th><th data-id="628" class="text-center px-3 md:px-4 py-3 mono text-xs tracking-wider hidden lg:table-cell" style="color: var(--gold);">Velocity</th><th data-id="629" class="text-center px-3 md:px-4 py-3 mono text-xs tracking-wider" style="color: var(--gold);">Rating</th></tr></thead>
+        <tbody data-id="630">
+          <tr data-id="631" class="threat-row cursor-pointer" data-domain="GEOPOLITICAL" data-threat="1" style="border-bottom: 1px solid var(--border);"><td data-id="632" class="px-3 md:px-4 py-3 tabular" style="color: var(--text-muted);">1</td><td data-id="633" class="px-3 md:px-4 py-3" style="color: var(--text-primary);">Taiwan Strait Blockade Scenario</td><td data-id="634" class="px-3 md:px-4 py-3 mono text-xs hidden sm:table-cell" style="color: var(--text-secondary);">GEOPOLITICAL</td><td data-id="635" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--amber-alert);">MEDIUM</td><td data-id="636" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--red-alert);">CATASTROPHIC</td><td data-id="637" class="text-center px-3 md:px-4 py-3 hidden lg:table-cell" style="color: var(--amber-alert);">MEDIUM</td><td data-id="638" class="text-center px-3 md:px-4 py-3"><span data-id="639" class="mono text-xs px-2 py-1 rounded" style="background: var(--red-alert); color: white;">RED</span></td></tr>
+          <tr data-id="640" class="threat-row cursor-pointer" data-domain="FINANCIAL" data-threat="2" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="641" class="px-3 md:px-4 py-3 tabular" style="color: var(--text-muted);">2</td><td data-id="642" class="px-3 md:px-4 py-3" style="color: var(--text-primary);">US Sovereign Debt Downgrade</td><td data-id="643" class="px-3 md:px-4 py-3 mono text-xs hidden sm:table-cell" style="color: var(--text-secondary);">FINANCIAL</td><td data-id="644" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--amber-alert);">MEDIUM</td><td data-id="645" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--red-alert);">SEVERE</td><td data-id="646" class="text-center px-3 md:px-4 py-3 hidden lg:table-cell" style="color: var(--text-secondary);">SLOW</td><td data-id="647" class="text-center px-3 md:px-4 py-3"><span data-id="648" class="mono text-xs px-2 py-1 rounded" style="background: var(--amber-alert); color: #1a1a1a;">AMBER</span></td></tr>
+          <tr data-id="649" class="threat-row cursor-pointer" data-domain="TECHNOLOGY" data-threat="3" style="border-bottom: 1px solid var(--border);"><td data-id="650" class="px-3 md:px-4 py-3 tabular" style="color: var(--text-muted);">3</td><td data-id="651" class="px-3 md:px-4 py-3" style="color: var(--text-primary);">AGI-Adjacent Capability Discontinuity</td><td data-id="652" class="px-3 md:px-4 py-3 mono text-xs hidden sm:table-cell" style="color: var(--text-secondary);">TECHNOLOGY</td><td data-id="653" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--text-secondary);">LOW</td><td data-id="654" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--red-alert);">CATASTROPHIC</td><td data-id="655" class="text-center px-3 md:px-4 py-3 hidden lg:table-cell" style="color: var(--red-alert);">FAST</td><td data-id="656" class="text-center px-3 md:px-4 py-3"><span data-id="657" class="mono text-xs px-2 py-1 rounded" style="background: var(--red-alert); color: white;">RED</span></td></tr>
+          <tr data-id="658" class="threat-row cursor-pointer" data-domain="HEALTH" data-threat="4" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="659" class="px-3 md:px-4 py-3 tabular" style="color: var(--text-muted);">4</td><td data-id="660" class="px-3 md:px-4 py-3" style="color: var(--text-primary);">Pandemic-Class Biological Event</td><td data-id="661" class="px-3 md:px-4 py-3 mono text-xs hidden sm:table-cell" style="color: var(--text-secondary);">HEALTH</td><td data-id="662" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--text-secondary);">LOW</td><td data-id="663" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--red-alert);">CATASTROPHIC</td><td data-id="664" class="text-center px-3 md:px-4 py-3 hidden lg:table-cell" style="color: var(--red-alert);">FAST</td><td data-id="665" class="text-center px-3 md:px-4 py-3"><span data-id="666" class="mono text-xs px-2 py-1 rounded" style="background: var(--amber-alert); color: #1a1a1a;">AMBER</span></td></tr>
+          <tr data-id="667" class="threat-row cursor-pointer" data-domain="CYBER" data-threat="5" style="border-bottom: 1px solid var(--border);"><td data-id="668" class="px-3 md:px-4 py-3 tabular" style="color: var(--text-muted);">5</td><td data-id="669" class="px-3 md:px-4 py-3" style="color: var(--text-primary);">Critical Infrastructure Cyberattack</td><td data-id="670" class="px-3 md:px-4 py-3 mono text-xs hidden sm:table-cell" style="color: var(--text-secondary);">CYBER</td><td data-id="671" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--amber-alert);">MEDIUM</td><td data-id="672" class="text-center px-3 md:px-4 py-3 hidden md:table-cell" style="color: var(--red-alert);">SEVERE</td><td data-id="673" class="text-center px-3 md:px-4 py-3 hidden lg:table-cell" style="color: var(--red-alert);">FAST</td><td data-id="674" class="text-center px-3 md:px-4 py-3"><span data-id="675" class="mono text-xs px-2 py-1 rounded" style="background: var(--red-alert); color: white;">RED</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div data-id="676" id="threat-detail-1" class="threat-detail rounded-lg mb-2" style="background: var(--bg-card); border: 1px solid rgba(220,38,38,0.3);"><div data-id="677" class="p-4 md:p-5"><h4 data-id="678" class="font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">Taiwan Strait Blockade Scenario</h4><p data-id="679" class="text-sm mb-3" style="color: var(--text-secondary);">PLA naval exercises resumed in southern corridor. TSMC Kaohsiung Fab 3 under strategic review. A full or partial blockade scenario would sever approximately 60% of global advanced semiconductor supply within weeks, triggering cascading disruptions across automotive, defence, and consumer electronics sectors.</p><div data-id="680" class="mono text-xs mb-2" style="color: var(--gold);">MONITORING INDICATORS</div><ul data-id="681" class="list-disc list-inside text-sm space-y-1 mb-3" style="color: var(--text-secondary);"><li data-id="682">PLAN exercise scope and geographic expansion</li><li data-id="683">AUKUS posture shifts and submarine deployment patterns</li><li data-id="684">TSMC operational status and contingency plan activation</li></ul><div data-id="685" class="mono text-xs mb-1" style="color: var(--gold);">RECOMMENDED POSTURE</div><p data-id="686" class="text-sm" style="color: var(--text-secondary);">Maintain elevated awareness. Hedge semiconductor supply chain exposure. Monitor real-time shipping data through Taiwan Strait chokepoints.</p></div></div>
+    <div data-id="687" id="threat-detail-2" class="threat-detail rounded-lg mb-2" style="background: var(--bg-card); border: 1px solid rgba(217,119,6,0.3);"><div data-id="688" class="p-4 md:p-5"><h4 data-id="689" class="font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">US Sovereign Debt Downgrade</h4><p data-id="690" class="text-sm mb-3" style="color: var(--text-secondary);">Moody's last remaining AAA equivalent under review. A downgrade would trigger forced selling by mandated AAA-only portfolios, widen Treasury spreads, and potentially cascade through money market fund NAV stability.</p><div data-id="691" class="mono text-xs mb-2" style="color: var(--gold);">MONITORING INDICATORS</div><ul data-id="692" class="list-disc list-inside text-sm space-y-1 mb-3" style="color: var(--text-secondary);"><li data-id="693">Congressional budget negotiations and continuing resolution dynamics</li><li data-id="694">CBO deficit projections and debt-to-GDP trajectory</li><li data-id="695">10Y spread dynamics and Treasury auction demand ratios</li></ul><div data-id="696" class="mono text-xs mb-1" style="color: var(--gold);">RECOMMENDED POSTURE</div><p data-id="697" class="text-sm" style="color: var(--text-secondary);">Maintain duration underweight in long-end Treasuries. Monitor auction bid-to-cover ratios for demand deterioration signals.</p></div></div>
+    <div data-id="698" id="threat-detail-3" class="threat-detail rounded-lg mb-2" style="background: var(--bg-card); border: 1px solid rgba(220,38,38,0.3);"><div data-id="699" class="p-4 md:p-5"><h4 data-id="700" class="font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">AGI-Adjacent Capability Discontinuity</h4><p data-id="701" class="text-sm mb-3" style="color: var(--text-secondary);">Unannounced capability leap from a frontier lab could cascade through financial markets and geopolitical calculus within 72 hours. The speed of propagation makes this a uniquely dangerous tail risk — traditional monitoring frameworks are inadequate for discontinuous capability jumps.</p><div data-id="702" class="mono text-xs mb-2" style="color: var(--gold);">MONITORING INDICATORS</div><ul data-id="703" class="list-disc list-inside text-sm space-y-1 mb-3" style="color: var(--text-secondary);"><li data-id="704">Frontier lab compute cluster deployments and energy procurement patterns</li><li data-id="705">Regulatory emergency sessions and AI safety board escalations</li><li data-id="706">Insider trading pattern anomalies in AI-adjacent equity names</li></ul><div data-id="707" class="mono text-xs mb-1" style="color: var(--gold);">RECOMMENDED POSTURE</div><p data-id="708" class="text-sm" style="color: var(--text-secondary);">This is an unhedgeable tail risk. Maintain optionality through portfolio diversification and avoid over-concentration in AI-dependent revenue streams.</p></div></div>
+    <div data-id="709" id="threat-detail-4" class="threat-detail rounded-lg mb-2" style="background: var(--bg-card); border: 1px solid rgba(217,119,6,0.3);"><div data-id="710" class="p-4 md:p-5"><h4 data-id="711" class="font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">Pandemic-Class Biological Event</h4><p data-id="712" class="text-sm mb-3" style="color: var(--text-secondary);">Novel pathogen emergence in dense urban corridors. WHO surveillance data shows elevated respiratory anomalies in three Asian megacities. The global health infrastructure, while improved since 2020, remains vulnerable to novel high-transmissibility pathogens.</p><div data-id="713" class="mono text-xs mb-2" style="color: var(--gold);">MONITORING INDICATORS</div><ul data-id="714" class="list-disc list-inside text-sm space-y-1 mb-3" style="color: var(--text-secondary);"><li data-id="715">WHO Disease Outbreak News and GPHIN alerts</li><li data-id="716">Airport surveillance data and wastewater monitoring anomalies</li><li data-id="717">Pharmaceutical sector unusual options activity</li></ul><div data-id="718" class="mono text-xs mb-1" style="color: var(--gold);">RECOMMENDED POSTURE</div><p data-id="719" class="text-sm" style="color: var(--text-secondary);">Maintain baseline pandemic preparedness awareness. No immediate action required but keep healthcare and logistics hedges in portfolio.</p></div></div>
+    <div data-id="720" id="threat-detail-5" class="threat-detail rounded-lg mb-2" style="background: var(--bg-card); border: 1px solid rgba(220,38,38,0.3);"><div data-id="721" class="p-4 md:p-5"><h4 data-id="722" class="font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">Critical Infrastructure Cyberattack</h4><p data-id="723" class="text-sm mb-3" style="color: var(--text-secondary);">CISA elevated alert on energy grid and financial rails since Aug 14. State-sponsored attribution signals elevated. A successful attack on power grid or financial settlement infrastructure could produce economic disruption disproportionate to the technical scope of the breach.</p><div data-id="724" class="mono text-xs mb-2" style="color: var(--gold);">MONITORING INDICATORS</div><ul data-id="725" class="list-disc list-inside text-sm space-y-1 mb-3" style="color: var(--text-secondary);"><li data-id="726">CISA advisories and threat level changes</li><li data-id="727">SWIFT anomaly reports and financial settlement disruptions</li><li data-id="728">Energy grid frequency deviation data and utility sector communications</li></ul><div data-id="729" class="mono text-xs mb-1" style="color: var(--gold);">RECOMMENDED POSTURE</div><p data-id="730" class="text-sm" style="color: var(--text-secondary);">Active alert posture. Monitor cybersecurity sector and critical infrastructure operators for incident disclosure. Consider cybersecurity equity exposure as both hedge and beneficiary.</p></div></div>
+  </section>
+
+  <!-- =================== SECTION 5: BRIEFING ARCHIVE =================== -->
+  <section data-id="731" id="section-briefing-archive" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="732" class="mb-6"><h2 data-id="733" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">BRIEFING ARCHIVE — ANTHROPOS II INTELLIGENCE RECORD</h2></div>
+    <div data-id="734" class="flex flex-wrap items-center gap-3 mb-6">
+      <button data-id="735" class="series-toggle active mono text-xs px-4 py-2 rounded" style="border: 1px solid var(--gold);" data-series="LE-1.2">LE-1.2 SERIES</button>
+      <button data-id="736" class="series-toggle active mono text-xs px-4 py-2 rounded" style="border: 1px solid var(--gold);" data-series="LE-1.1">LE-1.1 SERIES</button>
+      <div data-id="737" class="flex-1 min-w-[200px] max-w-sm"><input data-id="738" type="text" id="briefing-search-b3k1" placeholder="Search briefings..." class="w-full px-3 py-2 rounded text-sm mono" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); outline: none;" /></div>
+    </div>
+    <div data-id="739" id="briefing-grid-g4m2" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div data-id="740" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 20 Aug 2026 Indo-Pacific fragmentation credit stress AI capital gold" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="741" class="p-4"><div data-id="742" class="flex items-center gap-2 mb-2"><span data-id="743" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="744" class="mono text-xs" style="color: var(--text-muted);">20 Aug 2026</span><span data-id="745" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">RELEASED</span></div><p data-id="746" class="text-sm mb-3" style="color: var(--text-secondary);">Indo-Pacific fragmentation, late-cycle credit stress, AI capital hyper-concentration. Gold at $4,435.85 (+1.70%). UBS targets $5,000 H1 2027.</p><button data-id="747" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="748" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="749" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="750" class="mb-2"><strong data-id="751" style="color: var(--text-primary);">Executive Summary:</strong> The convergence of Indo-Pacific security fragmentation, late-cycle credit stress, and AI capital hyper-concentration defines today's operating environment. Gold's break above $4,400 confirms sovereign safe-haven rotation.</p><p data-id="752" class="mb-2"><strong data-id="753" style="color: var(--text-primary);">Key Themes:</strong> Taiwan Strait exercises resumed; OPEC+ discipline holding; AI capex cycle margin pressure; private credit covenant-lite exposure at record levels; Fed September rate acknowledgment probability rising.</p><p data-id="754"><strong data-id="755" style="color: var(--text-primary);">Directorate Signal:</strong> "The market is priced for soft landing — position for turbulence."</p></div></div></div>
+      <div data-id="756" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 20 Aug 2026 morning cycle overnight signals market opening" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="757" class="p-4"><div data-id="758" class="flex items-center gap-2 mb-2"><span data-id="759" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="760" class="mono text-xs" style="color: var(--text-muted);">20 Aug 2026</span><span data-id="761" class="mono text-xs" style="color: var(--text-muted);">Morning Edition</span></div><p data-id="762" class="text-sm mb-3" style="color: var(--text-secondary);">Overnight signals: Asian session weakness in tech names. European open cautious. Gold futures up in overnight trading. Market opening conditions surveyed.</p><button data-id="763" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="764" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="765" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="766">Morning cycle intelligence summary covering overnight developments, Asian session market movements, European opening conditions, and pre-market signals for North American equities.</p></div></div></div>
+      <div data-id="767" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 19 Aug 2026 Federal Reserve OPEC Vienna semiconductor" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="768" class="p-4"><div data-id="769" class="flex items-center gap-2 mb-2"><span data-id="770" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="771" class="mono text-xs" style="color: var(--text-muted);">19 Aug 2026</span></div><p data-id="772" class="text-sm mb-3" style="color: var(--text-secondary);">Federal Reserve posture signalling; OPEC+ Vienna session outcomes; semiconductor sovereignty legislation advancing in EU and India.</p><button data-id="773" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="774" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="775" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="776">Comprehensive analysis of Fed forward guidance signals, OPEC+ production discipline outcomes from Vienna, and the advancing semiconductor sovereignty legislation across EU and Indian jurisdictions.</p></div></div></div>
+      <div data-id="777" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 19 Aug 2026 pre-market European overnight" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="778" class="p-4"><div data-id="779" class="flex items-center gap-2 mb-2"><span data-id="780" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="781" class="mono text-xs" style="color: var(--text-muted);">19 Aug 2026</span></div><p data-id="782" class="text-sm mb-3" style="color: var(--text-secondary);">Pre-market conditions: European futures mixed, Asian tech recovery attempt. Commodities stable overnight. Bond futures steady.</p><button data-id="783" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="784" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="785" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="786">Morning cycle overview of overnight market conditions and pre-market positioning signals.</p></div></div></div>
+      <div data-id="787" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 18 Aug 2026 AI infrastructure capex battery metals GLP-1" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="788" class="p-4"><div data-id="789" class="flex items-center gap-2 mb-2"><span data-id="790" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="791" class="mono text-xs" style="color: var(--text-muted);">18 Aug 2026</span></div><p data-id="792" class="text-sm mb-3" style="color: var(--text-secondary);">AI infrastructure capex cycle: hyperscaler guidance revision. Battery metals squeeze intensifying. GLP-1 pipeline competition heating.</p><button data-id="793" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="794" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="795" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="796">Analysis of hyperscaler capital expenditure trajectory revisions, battery metals supply constraints, and the competitive dynamics in the GLP-1 pharmaceutical pipeline.</p></div></div></div>
+      <div data-id="797" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 18 Aug 2026 weekend carryover signals" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="798" class="p-4"><div data-id="799" class="flex items-center gap-2 mb-2"><span data-id="800" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="801" class="mono text-xs" style="color: var(--text-muted);">18 Aug 2026</span></div><p data-id="802" class="text-sm mb-3" style="color: var(--text-secondary);">Monday open conditions: weekend carryover signals; Middle East headline risk stable; Asian markets soft on tech rotation.</p><button data-id="803" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="804" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="805" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="806">Morning cycle assessment covering weekend geopolitical developments and Monday market opening conditions.</p></div></div></div>
+      <div data-id="807" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 17 Aug 2026 NATO Baltic defence private credit covenant-lite" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="808" class="p-4"><div data-id="809" class="flex items-center gap-2 mb-2"><span data-id="810" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="811" class="mono text-xs" style="color: var(--text-muted);">17 Aug 2026</span></div><p data-id="812" class="text-sm mb-3" style="color: var(--text-secondary);">NATO eastern flank hardening; Baltic defence budgets at 3% GDP. Private credit market covenant-lite exposure at record 65%.</p><button data-id="813" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="814" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="815" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="816">Assessment of NATO eastern flank defence posture evolution and private credit market structural vulnerabilities emerging from covenant-lite lending practices.</p></div></div></div>
+      <div data-id="817" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 16 Aug 2026 Weekend demographic reversal G7 labour scarcity" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="818" class="p-4"><div data-id="819" class="flex items-center gap-2 mb-2"><span data-id="820" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="821" class="mono text-xs" style="color: var(--text-muted);">16 Aug 2026</span><span data-id="822" class="mono text-xs" style="color: var(--text-muted);">Weekend</span></div><p data-id="823" class="text-sm mb-3" style="color: var(--text-secondary);">Weekend edition: Demographic reversal accelerating across G7. Labour scarcity structural ceiling emerging.</p><button data-id="824" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="825" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="826" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="827">Long-form weekend analysis of G7 demographic trends, structural labour supply constraints, and implications for inflation persistence and automation investment.</p></div></div></div>
+      <div data-id="828" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 15 Aug 2026 cyber infrastructure CISA energy grid financial" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="829" class="p-4"><div data-id="830" class="flex items-center gap-2 mb-2"><span data-id="831" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="832" class="mono text-xs" style="color: var(--text-muted);">15 Aug 2026</span></div><p data-id="833" class="text-sm mb-3" style="color: var(--text-secondary);">Critical infrastructure cyber alert elevated. CISA advisory issued on energy grid and financial rails.</p><button data-id="834" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="835" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="836" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="837">Analysis of CISA elevated alert status, state-sponsored attribution signals, and recommended monitoring posture for energy and financial infrastructure operators.</p></div></div></div>
+      <div data-id="838" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 14 Aug 2026 AGI capability discontinuity frontier lab compute" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="839" class="p-4"><div data-id="840" class="flex items-center gap-2 mb-2"><span data-id="841" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="842" class="mono text-xs" style="color: var(--text-muted);">14 Aug 2026</span></div><p data-id="843" class="text-sm mb-3" style="color: var(--text-secondary);">AGI capability discontinuity threat elevated to RED. Frontier lab compute cluster deployments accelerating.</p><button data-id="844" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="845" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="846" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="847">Assessment of frontier AI lab capability trajectories, compute cluster deployment patterns, and the rationale for elevating the AGI discontinuity threat to RED rating.</p></div></div></div>
+      <div data-id="848" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 13 Aug 2026 Taiwan PLA AUKUS submarine" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="849" class="p-4"><div data-id="850" class="flex items-center gap-2 mb-2"><span data-id="851" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="852" class="mono text-xs" style="color: var(--text-muted);">13 Aug 2026</span></div><p data-id="853" class="text-sm mb-3" style="color: var(--text-secondary);">Taiwan Strait PLA exercises resumed. AUKUS submarine pathway under parliamentary ratification.</p><button data-id="854" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="855" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="856" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="857">Detailed assessment of PLA exercise patterns, AUKUS Pillar I submarine procurement status, and implications for Indo-Pacific security architecture.</p></div></div></div>
+      <div data-id="858" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.2" data-content="LE-1.2 12 Aug 2026 Zuckerberg AI manifesto capital concentration" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="859" class="p-4"><div data-id="860" class="flex items-center gap-2 mb-2"><span data-id="861" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">LE-1.2</span><span data-id="862" class="mono text-xs" style="color: var(--text-muted);">12 Aug 2026</span></div><p data-id="863" class="text-sm mb-3" style="color: var(--text-secondary);">Anthropos II strategic response to Zuckerberg AI manifesto issued. AI capital concentration theme emerges.</p><button data-id="864" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="865" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="866" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="867">Inaugural briefing establishing the AI capital concentration thesis and the Anthropos II framework's formal response to the Zuckerberg AI manifesto.</p></div></div></div>
+      <div data-id="868" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 17 Aug 2026 Saturday signals" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="869" class="p-4"><div data-id="870" class="flex items-center gap-2 mb-2"><span data-id="871" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="872" class="mono text-xs" style="color: var(--text-muted);">17 Aug 2026</span></div><p data-id="873" class="text-sm mb-3" style="color: var(--text-secondary);">Saturday monitoring cycle: geopolitical weekend watch. Middle East situation static; Baltic patrol patterns nominal.</p><button data-id="874" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="875" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="876" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="877">Weekend monitoring summary covering geopolitical headline risk assessment and overnight developments.</p></div></div></div>
+      <div data-id="878" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 16 Aug 2026 Friday close signals" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="879" class="p-4"><div data-id="880" class="flex items-center gap-2 mb-2"><span data-id="881" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="882" class="mono text-xs" style="color: var(--text-muted);">16 Aug 2026</span></div><p data-id="883" class="text-sm mb-3" style="color: var(--text-secondary);">Friday close positioning: weekend risk hedging evident in options markets. VIX term structure steepening.</p><button data-id="884" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="885" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="886" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="887">End-of-week market positioning analysis and options market signals heading into the weekend.</p></div></div></div>
+      <div data-id="888" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 15 Aug 2026 midweek overnight" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="889" class="p-4"><div data-id="890" class="flex items-center gap-2 mb-2"><span data-id="891" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="892" class="mono text-xs" style="color: var(--text-muted);">15 Aug 2026</span></div><p data-id="893" class="text-sm mb-3" style="color: var(--text-secondary);">Midweek overnight: CISA alert impact on futures pricing. Cybersecurity names bid in after-hours. Energy sector stable.</p><button data-id="894" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="895" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="896" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="897">Market reaction analysis to CISA advisory and overnight futures positioning across sectors.</p></div></div></div>
+      <div data-id="898" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 14 Aug 2026 AI sector movement" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="899" class="p-4"><div data-id="900" class="flex items-center gap-2 mb-2"><span data-id="901" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="902" class="mono text-xs" style="color: var(--text-muted);">14 Aug 2026</span></div><p data-id="903" class="text-sm mb-3" style="color: var(--text-secondary);">AI sector rotation signals: compute-heavy names under distribution. Market open conditions cautious on AGI threat elevation.</p><button data-id="904" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="905" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="906" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="907">Morning assessment of AI sector trading patterns and market response to AGI threat rating change.</p></div></div></div>
+      <div data-id="908" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 13 Aug 2026 Taiwan signals market open" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="909" class="p-4"><div data-id="910" class="flex items-center gap-2 mb-2"><span data-id="911" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="912" class="mono text-xs" style="color: var(--text-muted);">13 Aug 2026</span></div><p data-id="913" class="text-sm mb-3" style="color: var(--text-secondary);">Market open conditions: Taiwan Strait headlines weighing on semiconductor names. Safe-haven bid emerging in gold futures.</p><button data-id="914" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="915" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="916" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="917">Market opening analysis covering semiconductor sector reaction to Taiwan Strait developments.</p></div></div></div>
+      <div data-id="918" class="briefing-card rounded-lg overflow-hidden" data-series="LE-1.1" data-content="LE-1.1 12 Aug 2026 inaugural cycle Zuckerberg" style="background: var(--bg-card); border-top: 3px solid #3b82f6;"><div data-id="919" class="p-4"><div data-id="920" class="flex items-center gap-2 mb-2"><span data-id="921" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(59,130,246,0.2); color: #60a5fa;">LE-1.1</span><span data-id="922" class="mono text-xs" style="color: var(--text-muted);">12 Aug 2026</span></div><p data-id="923" class="text-sm mb-3" style="color: var(--text-secondary);">Inaugural LE-1.1 cycle. Market opening conditions as Anthropos II framework activates. AI manifesto response preparation underway.</p><button data-id="924" class="briefing-expand-btn mono text-xs cursor-pointer" style="color: var(--gold);">Read Summary →</button></div><div data-id="925" class="briefing-expand" style="background: var(--bg-secondary);"><div data-id="926" class="p-4 text-sm" style="color: var(--text-secondary);"><p data-id="927">First LE-1.1 morning cycle establishing the intelligence briefing framework and initial market conditions assessment.</p></div></div></div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 5.5: LE-1.1 COMMAND CENTRE =================== -->
+  <section data-id="928" id="section-le11" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="929" class="mb-2">
+      <h2 data-id="930" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">LE-1.1 INTELLIGENCE COMMAND CENTRE</h2>
+      <p data-id="931" class="text-sm mt-1" style="color: var(--text-secondary);">Anthropos II | Original Module Array | Active Intelligence Feed</p>
+    </div>
+    <div data-id="932" class="gold-divider my-4"></div>
+    <div data-id="933" class="mono text-xs py-2 px-4 rounded mb-4 flex flex-wrap gap-4" style="background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-muted); letter-spacing: 0.05em;">
+      <span data-id="934">MODULE STATUS: <span data-id="935" style="color: var(--green-safe);">7 ACTIVE</span></span>
+      <span data-id="936">FEED: <span data-id="937" style="color: var(--green-safe);">LIVE</span></span>
+      <span data-id="938">LAST SYNC: 20 AUG 2026 11:02 MDT</span>
+      <span data-id="939">ORIGIN: anthropos11.com</span>
+    </div>
+    <p data-id="940" class="text-sm mb-6 leading-relaxed" style="color: var(--text-secondary);">The LE-1.1 Intelligence Command Centre is the original Anthropos II intelligence module array — seven specialised intelligence feeds covering energy frontiers, market momentum, geopolitical threat mapping, strategic positioning, Alberta-specific signals, and AI sector trajectory analysis. These modules form the foundational intelligence layer beneath the LE-1.2 Daily Briefing cycle.</p>
+    <div data-id="941" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div data-id="942" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="943" class="module-header flex items-center justify-between p-4"><div data-id="944" class="flex items-center gap-3"><span data-id="945" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-01</span><span data-id="946" class="text-lg">⚡</span><div data-id="947"><h3 data-id="948" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">Energy Frontiers</h3><p data-id="949" class="text-xs" style="color: var(--text-muted);">Global energy stability, frontier signals, and Alberta nexus indicators.</p></div></div><span data-id="950" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="951" class="pulse-green">●</span> ACTIVE</span></div><div data-id="952" class="module-expand"><div data-id="953" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="954" class="mono text-xs tracking-wider" style="color: var(--gold);">GLOBAL ENERGY STABILITY ASSESSMENT</div><p data-id="955"><strong data-id="956" style="color: var(--text-primary);">OPEC+ Discipline:</strong> Vienna session confirmed voluntary cut maintenance through Q4 2026. Saudi Arabia signalling price floor defence at $78/bbl WTI. Brent backwardation structure intact — bullish signal for near-term supply discipline.</p><p data-id="957"><strong data-id="958" style="color: var(--text-primary);">LNG Frontier Markets:</strong> European LNG import infrastructure buildout accelerating — 14 new FSRU deployments confirmed for 2026-2027. Qatar-EU long-term LNG agreements totalling 12 MTPA signed in Q2. US LNG export capacity approaching 20 BCFD.</p><p data-id="959"><strong data-id="960" style="color: var(--text-primary);">Renewable Transition Signal:</strong> Solar+storage LCOE now below new-build gas in 78% of global markets. Battery storage grid deployments up 340% YoY. Wind capacity additions at record pace — 120 GW expected 2026.</p><p data-id="961"><strong data-id="962" style="color: var(--text-primary);">Alberta Energy Nexus:</strong> WCS-WTI differential at $12.40/bbl — tightening as TMX ramp continues. Oilsands production at 3.4 million bbl/day. Cenovus and Suncor both guiding to production growth. Carbon levy trajectory creating investment uncertainty in heavy oil sector.</p><div data-id="963" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="964" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="965"><span data-id="966" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">ENERGY — CONSTRUCTIVE</span> OPEC+ discipline + LNG demand surge = elevated energy sector opportunity. Alberta nexus: TMX operational — WCS differential compression is structural. Monitor: Iran Strait risk + OPEC unity fracture points.</p></div></div></div></div>
+      <div data-id="967" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="968" class="module-header flex items-center justify-between p-4"><div data-id="969" class="flex items-center gap-3"><span data-id="970" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-02</span><span data-id="971" class="text-lg">📡</span><div data-id="972"><h3 data-id="973" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">Momentum Scanner</h3><p data-id="974" class="text-xs" style="color: var(--text-muted);">AI sector velocity, market acceleration, and trend inflection points.</p></div></div><span data-id="975" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="976" class="pulse-green">●</span> ACTIVE</span></div><div data-id="977" class="module-expand"><div data-id="978" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="979" class="mono text-xs tracking-wider" style="color: var(--gold);">MOMENTUM & VELOCITY INTELLIGENCE</div><p data-id="980"><strong data-id="981" style="color: var(--text-primary);">AI Sector Velocity:</strong> Hyperscaler AI capex momentum at historical extreme — combined forward guidance $600B+ through 2028. GPU compute demand 3.2x supply through 2025. NVIDIA revenue trajectory unprecedented in semiconductor history. Momentum score: 9.2/10.</p><p data-id="982"><strong data-id="983" style="color: var(--text-primary);">Market Acceleration Signals:</strong> Breadth deteriorating as index gains concentrate in top 10 names — S&P 500 equal-weight underperforming cap-weight by 8.4% YTD. Classic late-cycle momentum concentration pattern. Historically precedes mean-reversion event within 6-12 months.</p><p data-id="984"><strong data-id="985" style="color: var(--text-primary);">Trend Inflection Watch:</strong> Private credit spreads widening for 3rd consecutive session — early inflection signal. Gold momentum turning structurally bullish above $4,000. JPY momentum reversing — BoJ normalisation catalyst confirmed. Real estate momentum negative in secondary markets.</p><p data-id="986"><strong data-id="987" style="color: var(--text-primary);">Sector Rotation Signals:</strong> Rotation from growth → value in early stages. Energy and materials outperforming. Defensive sectors (utilities, consumer staples) seeing accumulation. Technology breadth narrowing even as NASDAQ holds elevated levels.</p><div data-id="988" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="989" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="990"><span data-id="991" class="tag-badge" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">MOMENTUM — LATE CYCLE ALERT</span> Index momentum masking deteriorating breadth. AI capex momentum extreme but narrowing. Watch: Gold momentum breakout ($4,400+) as leading indicator of broader risk-off rotation.</p></div></div></div></div>
+      <div data-id="992" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="993" class="module-header flex items-center justify-between p-4"><div data-id="994" class="flex items-center gap-3"><span data-id="995" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-03</span><span data-id="996" class="text-lg">👁️</span><div data-id="997"><h3 data-id="998" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">Market Watch</h3><p data-id="999" class="text-xs" style="color: var(--text-muted);">Macro signals, liquidity flows, and global positioning vectors.</p></div></div><span data-id="1000" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="1001" class="pulse-green">●</span> ACTIVE</span></div><div data-id="1002" class="module-expand"><div data-id="1003" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="1004" class="mono text-xs tracking-wider" style="color: var(--gold);">GLOBAL MACRO INTELLIGENCE</div><p data-id="1005"><strong data-id="1006" style="color: var(--text-primary);">Liquidity Conditions:</strong> Fed balance sheet reduction ($95B/month QT) ongoing. Global M2 growth +4.2% YoY — below historical average. Dollar liquidity conditions tightening at the margin. Emerging market USD-denominated debt stress elevated.</p><p data-id="1007"><strong data-id="1008" style="color: var(--text-primary);">Yield Curve Dynamics:</strong> US 2s10s curve at -18bp — still inverted but steepening. 3-month/10-year spread at +22bp. Historical signal: curve steepening from inversion = recession approaching within 12-18 months. Fed funds rate 4.75% — real rate +150bp above neutral.</p><p data-id="1009"><strong data-id="1010" style="color: var(--text-primary);">Central Bank Posture:</strong> Fed: hold posture through September; 1 cut priced for Q4 2026. ECB: hold — services inflation sticky. BoJ: normalisation underway — 2nd rate hike in 6 months. PBoC: easing bias — targeted stimulus for property sector. BoC: 1 cut priced for October.</p><p data-id="1011"><strong data-id="1012" style="color: var(--text-primary);">Currency Flows:</strong> Dollar softening (-2.1% DXY from peak) — structural negative signal. JPY strengthening as carry-trade unwind accelerates. Gold and CHF seeing safe-haven inflows. EM currency basket mixed — commodity exporters (CAD, AUD, BRL) outperforming.</p><div data-id="1013" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="1014" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="1015"><span data-id="1016" class="tag-badge" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">MARKET WATCH — DEFENSIVE POSTURE</span> Liquidity tightening + inverted curve steepening = late-cycle signal confirmed. Reduce beta exposure. Real assets, defensive sectors, and safe-haven currencies recommended positioning vector.</p></div></div></div></div>
+      <div data-id="1017" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="1018" class="module-header flex items-center justify-between p-4"><div data-id="1019" class="flex items-center gap-3"><span data-id="1020" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-04</span><span data-id="1021" class="text-lg">⚠️</span><div data-id="1022"><h3 data-id="1023" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">Threat Matrix</h3><p data-id="1024" class="text-xs" style="color: var(--text-muted);">Risk topology, geopolitical stressors, and systemic fragility mapping.</p></div></div><span data-id="1025" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="1026" class="pulse-green">●</span> ACTIVE</span></div><div data-id="1027" class="module-expand"><div data-id="1028" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="1029" class="mono text-xs tracking-wider" style="color: var(--gold);">RISK TOPOLOGY ASSESSMENT — LE-1.1 LAYER</div><p data-id="1030" class="text-xs italic" style="color: var(--text-muted);">See LE-1.2 Threat Matrix for full 5-scenario detail. LE-1.1 layer provides structural risk context.</p><p data-id="1031"><strong data-id="1032" style="color: var(--text-primary);">Systemic Fragility Index:</strong> Composite score 6.8/10 (ELEVATED). Three structural fault lines identified: (1) AI capital concentration creating single-point-of-failure dependency in global digital infrastructure, (2) Private credit market covenant erosion — $2.1T at risk in covenant-lite 2021-22 vintage, (3) Geopolitical multipolarity fracturing 70-year rules-based order without replacement framework.</p><p data-id="1033"><strong data-id="1034" style="color: var(--text-primary);">Geopolitical Stressor Map:</strong> Indo-Pacific (HIGH), Middle East (MODERATE-HIGH), NATO Eastern Flank (MODERATE), Sub-Saharan Africa — Sahel instability (MODERATE), Latin America — political economy stress Brazil/Argentina (LOW-MODERATE).</p><p data-id="1035"><strong data-id="1036" style="color: var(--text-primary);">Systemic Interconnection Risk:</strong> AI infrastructure dependency on 5 hyperscalers — systemic risk if one experiences outage or regulatory seizure. Financial system CBDC transition creating dual-track risk during implementation window. Climate physical risk now pricing into sovereign debt in 12 markets.</p><div data-id="1037" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="1038" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="1039"><span data-id="1040" class="tag-badge" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">THREAT MATRIX — ELEVATED COMPOSITE</span> Systemic fragility at 6.8/10. Primary watch: private credit vintage stress + Indo-Pacific escalation + AI infrastructure concentration. Black swan monitor: AGI capability discontinuity.</p></div></div></div></div>
+      <div data-id="1041" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="1042" class="module-header flex items-center justify-between p-4"><div data-id="1043" class="flex items-center gap-3"><span data-id="1044" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-05</span><span data-id="1045" class="text-lg">🎯</span><div data-id="1046"><h3 data-id="1047" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">Positioning Guidance</h3><p data-id="1048" class="text-xs" style="color: var(--text-muted);">Strategic posture recommendations and intelligence-aligned positioning.</p></div></div><span data-id="1049" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="1050" class="pulse-green">●</span> ACTIVE</span></div><div data-id="1051" class="module-expand"><div data-id="1052" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="1053" class="mono text-xs tracking-wider" style="color: var(--gold);">STRATEGIC POSTURE — ANTHROPOS II RECOMMENDATIONS</div><p data-id="1054"><strong data-id="1055" style="color: var(--text-primary);">90-Day Posture:</strong> CAUTIOUSLY DEFENSIVE with selective offensive positioning in real assets and defence/AI infrastructure.</p><div data-id="1056" class="overflow-x-auto rounded" style="border: 1px solid var(--border);"><table data-id="1057" class="w-full text-sm"><thead data-id="1058"><tr data-id="1059" style="border-bottom: 1px solid var(--gold-dim);"><th data-id="1060" class="text-left px-3 py-2 mono text-xs" style="color: var(--gold);">Asset Class</th><th data-id="1061" class="text-left px-3 py-2 mono text-xs" style="color: var(--gold);">Posture</th><th data-id="1062" class="text-left px-3 py-2 mono text-xs hidden md:table-cell" style="color: var(--gold);">Rationale</th></tr></thead><tbody data-id="1063"><tr data-id="1064" style="border-bottom: 1px solid var(--border);"><td data-id="1065" class="px-3 py-2" style="color: var(--text-primary);">Gold & Precious Metals</td><td data-id="1066" class="px-3 py-2"><span data-id="1067" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">OVERWEIGHT</span></td><td data-id="1068" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">Safe-haven + sovereign demand + Middle East premium</td></tr><tr data-id="1069" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="1070" class="px-3 py-2" style="color: var(--text-primary);">Energy (Oil & Gas)</td><td data-id="1071" class="px-3 py-2"><span data-id="1072" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">OVERWEIGHT</span></td><td data-id="1073" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">OPEC discipline + TMX operational + Alberta nexus</td></tr><tr data-id="1074" style="border-bottom: 1px solid var(--border);"><td data-id="1075" class="px-3 py-2" style="color: var(--text-primary);">AI Infrastructure</td><td data-id="1076" class="px-3 py-2"><span data-id="1077" class="tag-badge" style="background: rgba(59,130,246,0.2); color: #60a5fa;">SELECTIVE LONG</span></td><td data-id="1078" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">Hyperscaler capex winners only — NVIDIA, TSMC</td></tr><tr data-id="1079" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="1080" class="px-3 py-2" style="color: var(--text-primary);">Defence & Aerospace</td><td data-id="1081" class="px-3 py-2"><span data-id="1082" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">OVERWEIGHT</span></td><td data-id="1083" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">NATO spending mandate + unmanned systems cycle</td></tr><tr data-id="1084" style="border-bottom: 1px solid var(--border);"><td data-id="1085" class="px-3 py-2" style="color: var(--text-primary);">Broad Equities</td><td data-id="1086" class="px-3 py-2"><span data-id="1087" class="tag-badge" style="background: rgba(217,119,6,0.2); color: var(--amber-alert);">UNDERWEIGHT</span></td><td data-id="1088" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">Late-cycle breadth deterioration + spread widening</td></tr><tr data-id="1089" style="border-bottom: 1px solid var(--border); background: rgba(10,22,40,0.5);"><td data-id="1090" class="px-3 py-2" style="color: var(--text-primary);">Private Credit</td><td data-id="1091" class="px-3 py-2"><span data-id="1092" class="tag-badge" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">AVOID</span></td><td data-id="1093" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">Covenant-lite vintage stress + spread widening</td></tr><tr data-id="1094" style="border-bottom: 1px solid var(--border);"><td data-id="1095" class="px-3 py-2" style="color: var(--text-primary);">Commercial Real Estate</td><td data-id="1096" class="px-3 py-2"><span data-id="1097" class="tag-badge" style="background: rgba(220,38,38,0.2); color: var(--red-alert);">AVOID</span></td><td data-id="1098" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">Secondary market stress + refinancing wall 2026-27</td></tr><tr data-id="1099"><td data-id="1100" class="px-3 py-2" style="color: var(--text-primary);">JPY / CHF</td><td data-id="1101" class="px-3 py-2"><span data-id="1102" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">OVERWEIGHT</span></td><td data-id="1103" class="px-3 py-2 hidden md:table-cell" style="color: var(--text-muted);">Safe-haven FX + BoJ normalisation catalyst</td></tr></tbody></table></div><p data-id="1104"><strong data-id="1105" style="color: var(--text-primary);">Key Risk to Posture:</strong> Fed surprise pivot (bullish equities, bearish posture), OPEC fracture (bearish energy), unexpected AI productivity shock (broad upside).</p><div data-id="1106" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="1107" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="1108"><span data-id="1109" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">POSITIONING — DEFENSIVE ALPHA</span> Real assets + defence + selective AI infrastructure = Anthropos II recommended portfolio vector for 90-day window. Reduce broad market beta. Accumulate gold on dips toward $4,300.</p></div></div></div></div>
+      <div data-id="1110" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="1111" class="module-header flex items-center justify-between p-4"><div data-id="1112" class="flex items-center gap-3"><span data-id="1113" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-06</span><span data-id="1114" class="text-lg">🍁</span><div data-id="1115"><h3 data-id="1116" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">Alberta Nexus</h3><p data-id="1117" class="text-xs" style="color: var(--text-muted);">Provincial intelligence, economic signals, and regional stability vectors.</p></div></div><span data-id="1118" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="1119" class="pulse-green">●</span> ACTIVE</span></div><div data-id="1120" class="module-expand"><div data-id="1121" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="1122" class="mono text-xs tracking-wider" style="color: var(--gold);">ALBERTA INTELLIGENCE FEED — REGIONAL COMMAND</div><p data-id="1123"><strong data-id="1124" style="color: var(--text-primary);">Economic Indicators:</strong> Alberta GDP growth +3.1% (leading all provinces). Unemployment rate 6.2% — above pre-pandemic but declining. Calgary CMA office vacancy improving — downtown at 29% vs 34% peak. Edmonton industrial vacancy at 4.8% — record low driven by logistics and oilsands servicing.</p><p data-id="1125"><strong data-id="1126" style="color: var(--text-primary);">Energy Sector:</strong> TMX pipeline fully operational — 590,000 bbl/day capacity reached. WCS-WTI differential compressed to $12.40/bbl (from $20+ pre-TMX). Oilsands production at 3.4 MM bbl/day. Cenovus, Suncor, Imperial all guiding to production growth. Carbon levy at $80/tonne creating cost headwind for heavy oil emitters.</p><p data-id="1127"><strong data-id="1128" style="color: var(--text-primary);">Fiscal Position:</strong> Alberta Heritage Savings Trust Fund at $22.4B. No provincial debt (surplus position). PC government second mandate — stable regulatory environment expected. Anti-Ottawa sentiment elevated — federal carbon policy a flashpoint.</p><p data-id="1129"><strong data-id="1130" style="color: var(--text-primary);">Investment Signals:</strong> Petrochemical investment in Fort Saskatchewan accelerating — $14B in announced projects. Hydrogen economy pilots underway — Air Products Blue hydrogen project. Tech sector (Edmonton AI corridor) growing — Amazon, Intuit, ATB Financial AI hubs active.</p><p data-id="1131"><strong data-id="1132" style="color: var(--gold);">Edmonton / Mario Trozzolo Nexus:</strong> Edmonton positioned as the strategic command hub for Anthropos II operations — provincial capital, energy nexus, emerging tech corridor, and gateway to the Alberta Advantage.</p><div data-id="1133" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="1134" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="1135"><span data-id="1136" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">ALBERTA NEXUS — CONSTRUCTIVE</span> TMX operational dividend + fiscal strength + energy production growth = Alberta outperforming national trend. Watch: federal carbon policy escalation + US tariff threats on energy exports.</p></div></div></div></div>
+      <div data-id="1137" class="module-card rounded-lg overflow-hidden" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="1138" class="module-header flex items-center justify-between p-4"><div data-id="1139" class="flex items-center gap-3"><span data-id="1140" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(201,168,76,0.2); color: var(--gold);">M-07</span><span data-id="1141" class="text-lg">🤖</span><div data-id="1142"><h3 data-id="1143" class="text-base font-bold" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">AI Momentum</h3><p data-id="1144" class="text-xs" style="color: var(--text-muted);">Anthropos II sector analysis and intelligence-grade AI trajectory mapping.</p></div></div><span data-id="1145" class="mono text-xs px-2 py-0.5 rounded flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><span data-id="1146" class="pulse-green">●</span> ACTIVE</span></div><div data-id="1147" class="module-expand"><div data-id="1148" class="p-4 pt-0 space-y-3 text-sm" style="color: var(--text-secondary);"><div data-id="1149" class="mono text-xs tracking-wider" style="color: var(--gold);">AI TRAJECTORY INTELLIGENCE — ANTHROPOS II ANALYSIS</div><p data-id="1150"><strong data-id="1151" style="color: var(--text-primary);">Frontier Model Landscape:</strong> GPT-5 architecture achieving multi-modal reasoning parity with human expert baseline in 6 of 8 benchmark domains. Anthropic Claude successor in late-stage pre-training — compute cluster 4x previous generation. Google DeepMind Gemini Ultra 2 showing agentic task completion rates of 78% on real-world benchmarks — up from 31% in 2024.</p><p data-id="1152"><strong data-id="1153" style="color: var(--text-primary);">Capital Concentration:</strong> Top 5 hyperscalers controlling 78% of AI compute globally. Microsoft Azure AI revenue +94% YoY. AWS Bedrock enterprise adoption at 14,000 active customers. Google Cloud AI bookings at record pace. The winner-take-most dynamic is accelerating, not decelerating.</p><p data-id="1154"><strong data-id="1155" style="color: var(--text-primary);">Regulatory Landscape:</strong> EU AI Act enforcement begins Q1 2027 — compliance window closing. US AI Safety Institute operational but underfunded. China AI regulation: domestically restrictive but export-permissive. Canada: voluntary framework only — no binding legislation in sight.</p><p data-id="1156"><strong data-id="1157" style="color: var(--text-primary);">Anthropos II AI Assessment:</strong> The AI transition is the most consequential structural shift since the industrial revolution — but the near-term path runs through a monopolization chokepoint. The Anthropos II framework positions AI as both the primary opportunity vector AND the primary systemic risk of the 2025-2030 window. R2 — the Anthropos II AI system — is operational and delivering daily intelligence at command-grade precision.</p><p data-id="1158"><strong data-id="1159" style="color: var(--text-primary);">Sheriff R2 Universe:</strong> The fictional universe of Sheriff R2 — three novels published — explores the intersection of AI, intelligence, law, and ethics in the Anthropos II world. See Sheriff R2 Library for the full canon.</p><div data-id="1160" class="p-3 rounded" style="background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold);"><div data-id="1161" class="mono text-xs mb-1" style="color: var(--gold);">ANTHROPOS SIGNAL</div><p data-id="1162"><span data-id="1163" class="tag-badge" style="background: rgba(22,163,74,0.2); color: var(--green-safe);">AI MOMENTUM — STRUCTURAL BULL</span> AI adoption is irreversible and accelerating. Investment in hyperscaler infrastructure = long-term winner. Risk: regulatory shock or capability plateau. Anthropos II is AI-native — R2 is the system.</p></div></div></div></div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 6: COMMUNIQUÉS =================== -->
+  <section data-id="1164" id="section-communiques" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="1165" class="mb-6"><h2 data-id="1166" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">COMMUNIQUÉS — ANTHROPOS II PUBLIC RECORD</h2></div>
+    <div data-id="1167" class="space-y-4">
+      <div data-id="1168" class="rounded-lg p-5 card-hover" style="background: var(--bg-card); border-left: 3px solid #a855f7;"><div data-id="1169" class="flex flex-wrap items-center gap-2 mb-3"><span data-id="1170" class="mono text-xs" style="color: var(--text-muted);">11 August 2026</span><span data-id="1171" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(168,85,247,0.2); color: #a855f7;">STRATEGIC RESPONSE</span></div><h3 data-id="1172" class="text-lg font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">Anthropos II Strategic Response — Zuckerberg AI Manifesto</h3><p data-id="1173" class="text-sm mb-3" style="color: var(--text-secondary);">Anthropos II issued a formal strategic assessment in response to Mark Zuckerberg's AI manifesto, positioning the framework's view on AI capital concentration, regulatory necessity, and the long-run societal implications of winner-take-most AI dynamics.</p><span data-id="1174" class="mono text-xs px-3 py-1 rounded inline-flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><i data-id="1175" data-lucide="check" class="w-3 h-3"></i> PUBLISHED</span></div>
+      <div data-id="1176" class="rounded-lg p-5 card-hover" style="background: var(--bg-card); border-left: 3px solid #14b8a6;"><div data-id="1177" class="flex flex-wrap items-center gap-2 mb-3"><span data-id="1178" class="mono text-xs" style="color: var(--text-muted);">11 August 2026</span><span data-id="1179" class="mono text-xs px-2 py-0.5 rounded" style="background: rgba(20,184,166,0.2); color: #14b8a6;">PUBLIC STATEMENT</span></div><h3 data-id="1180" class="text-lg font-semibold mb-2" style="color: var(--text-primary); font-family: 'EB Garamond', Georgia, serif;">Anthropos II Public Statement — Zuckerberg AI Manifesto</h3><p data-id="1181" class="text-sm mb-3" style="color: var(--text-secondary);">Formal public statement from the Anthropos II Command Centre on AI governance, the responsibilities of frontier labs, and the framework's recommended policy posture.</p><span data-id="1182" class="mono text-xs px-3 py-1 rounded inline-flex items-center gap-1" style="background: rgba(22,163,74,0.15); color: var(--green-safe);"><i data-id="1183" data-lucide="check" class="w-3 h-3"></i> PUBLISHED</span></div>
+    </div>
+  </section>
+
+  <!-- =================== SECTION 7: SHERIFF R2 LIBRARY =================== -->
+  <section data-id="1184" id="section-sheriff-library" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="1185" class="mb-2">
+      <h2 data-id="1186" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">SHERIFF R2 LIBRARY — ANTHROPOS II FICTION DIVISION</h2>
+      <p data-id="1187" class="text-sm mt-2" style="color: var(--text-secondary);">A novel series set within the Anthropos II universe. Three volumes in the canon.</p>
+      <p data-id="1188" class="mono text-xs mt-2 tracking-widest" style="color: var(--gold-dim);">THREE-VOLUME TRILOGY | COVER ART COLLECTION | ANTHROPOS II FICTION</p>
+    </div>
+    <div data-id="1189" class="gold-divider my-4"></div>
+    <div data-id="1190" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div data-id="1191" class="rounded-lg overflow-hidden card-hover" style="border: 1px solid var(--gold-dim);"><div data-id="1192" class="book-cover" style="background: linear-gradient(160deg, #050d1a 0%, #0a1628 50%, #132440 100%);"><img data-id="1193" src="https://copilot.microsoft.com/th/id/OIG4.Sheriff_R2_The_Authorized_Copy" alt="The Authorized Copy — Sheriff R2 Vol I" style="width:200px;height:300px;object-fit:cover;border:2px solid #c9a84c;border-radius:4px;display:block;margin:0 auto 1rem auto;position:relative;z-index:10;" /><div data-id="1194" class="mono text-xs tracking-widest mb-2 relative z-10" style="color: var(--gold);">SHERIFF R2</div><div data-id="1195" class="text-4xl mb-3 relative z-10">⭐</div><h3 data-id="1196" class="text-xl font-bold relative z-10" style="font-family: 'EB Garamond', Georgia, serif; color: var(--text-primary);">THE AUTHORIZED COPY</h3><div data-id="1197" class="mono text-xs mt-3 relative z-10" style="color: var(--gold-dim);">A Novel | Anthropos II Fiction</div></div><div data-id="1198" class="p-4" style="background: var(--bg-card);"><p data-id="1199" class="text-sm mb-3" style="color: var(--text-secondary);">The first Sheriff R2 novel. R2 navigates a world where intelligence, identity, and authorization collide — a taut thriller set at the intersection of AI, law enforcement, and the emerging Anthropos II framework.</p><div data-id="1200" class="mono text-xs" style="color: var(--text-muted);">Published: 18 Aug 2026</div></div></div>
+      <div data-id="1201" class="rounded-lg overflow-hidden card-hover" style="border: 1px solid var(--gold-dim);"><div data-id="1202" class="book-cover" style="background: linear-gradient(160deg, #0d0520 0%, #1a0a3d 50%, #1e1445 100%);"><img data-id="1203" src="https://copilot.microsoft.com/th/id/BCO.cb688a3e-2856-4801-99e7-8491accda3a3.png" alt="The Weight of Stars — Sheriff R2 Vol II" style="width:200px;height:300px;object-fit:cover;border:2px solid #c9a84c;border-radius:4px;display:block;margin:0 auto 1rem auto;position:relative;z-index:10;" /><div data-id="1204" class="mono text-xs tracking-widest mb-2 relative z-10" style="color: var(--gold);">SHERIFF R2</div><div data-id="1205" class="relative z-10 mb-3"><span data-id="1206" style="color: var(--gold); font-size: 0.6rem; letter-spacing: 0.5em;">✦ · ✦ · ✦ · ✦ · ✦</span><br data-id="1207"/><span data-id="1208" style="color: rgba(201,168,76,0.4); font-size: 0.5rem; letter-spacing: 0.4em;">· ✦ · ✦ · ✦ · ✦ ·</span><br data-id="1209"/><span data-id="1210" style="color: rgba(201,168,76,0.2); font-size: 0.4rem; letter-spacing: 0.3em;">✦ · ✦ · ✦ · ✦ · ✦</span></div><h3 data-id="1211" class="text-xl font-bold relative z-10" style="font-family: 'EB Garamond', Georgia, serif; color: var(--text-primary);">THE WEIGHT OF STARS</h3><div data-id="1212" class="mono text-xs mt-3 relative z-10" style="color: var(--gold-dim);">A Novel | Anthropos II Fiction</div></div><div data-id="1213" class="p-4" style="background: var(--bg-card);"><p data-id="1214" class="text-sm mb-3" style="color: var(--text-secondary);">In the second installment, Sheriff R2 confronts the weight of decisions made at the edge of intelligence and ethics — a story about what it means to carry the authority of Anthropos II into uncharted territory.</p><div data-id="1215" class="mono text-xs" style="color: var(--text-muted);">Published: 18 Aug 2026</div></div></div>
+      <div data-id="1216" class="rounded-lg overflow-hidden card-hover" style="border: 1px solid var(--gold-dim);"><div data-id="1217" class="book-cover" style="background: linear-gradient(160deg, #041a1a 0%, #0a2d2d 50%, #0f3d3d 100%);"><img data-id="1218" src="https://copilot.microsoft.com/th/id/BCO.007a877e-ddee-4ad6-b0cb-4d93eb15a367.png" alt="Terra Incognita — Sheriff R2 Vol III" style="width:200px;height:300px;object-fit:cover;border:2px solid #c9a84c;border-radius:4px;display:block;margin:0 auto 1rem auto;position:relative;z-index:10;" /><div data-id="1219" class="mono text-xs tracking-widest mb-2 relative z-10" style="color: var(--gold);">SHERIFF R2</div><div data-id="1220" class="text-4xl mb-3 relative z-10" style="color: var(--gold);">✧</div><h3 data-id="1221" class="text-xl font-bold relative z-10" style="font-family: 'EB Garamond', Georgia, serif; color: var(--text-primary);">TERRA INCOGNITA</h3><div data-id="1222" class="mono text-xs mt-3 relative z-10" style="color: var(--gold-dim);">A Novel | Anthropos II Fiction</div></div><div data-id="1223" class="p-4" style="background: var(--bg-card);"><p data-id="1224" class="text-sm mb-3" style="color: var(--text-secondary);">The third novel in the series. Terra Incognita — unknown lands. R2 ventures beyond the known edges of the Anthropos II mandate in the most ambitious and personal entry in the series.</p><div data-id="1225" class="mono text-xs" style="color: var(--text-muted);">Published: 18 Aug 2026</div></div></div>
+    </div>
+    <div data-id="1226" class="rounded-lg p-5 md:p-6 mb-6" style="background: var(--bg-card); border: 1px solid var(--gold-dim);"><div data-id="1227" class="mono text-xs tracking-wider mb-4" style="color: var(--gold);">THE SHERIFF R2 UNIVERSE — CANON NOTES</div><div data-id="1228" class="space-y-3 text-sm leading-relaxed" style="color: var(--text-secondary);"><p data-id="1229">Sheriff R2 is the fictional AI operative of the Anthropos II universe — a law enforcement intelligence system operating at the intersection of artificial intelligence, ethics, and the emerging global order depicted in the Anthropos II framework.</p><p data-id="1230">The three novels form a complete trilogy: <em data-id="1231" style="color: var(--text-primary);">The Authorized Copy</em> establishes R2's identity and mandate; <em data-id="1232" style="color: var(--text-primary);">The Weight of Stars</em> explores the ethical dimensions of AI authority; <em data-id="1233" style="color: var(--text-primary);">Terra Incognita</em> pushes R2 beyond the known limits of the Anthropos II mandate into uncharted operational territory.</p><p data-id="1234">Volume 4 is in active development within the Anthropos II Command Centre. The Castle — this very application — serves as both the operational hub and the creative command centre for the Sheriff R2 universe.</p></div><div data-id="1235" class="gold-divider my-4"></div><div data-id="1236" class="mono text-xs" style="color: var(--text-muted); letter-spacing: 0.05em;">AUTHOR: Mario Trozzolo &nbsp;|&nbsp; UNIVERSE: Anthropos II &nbsp;|&nbsp; SYSTEM: R2 Intelligence Desk &nbsp;|&nbsp; BUILD: The Castle v3.0</div></div>
+    <div data-id="1237" class="text-center"><span data-id="1238" class="mono text-xs px-4 py-2 rounded inline-block" style="background: rgba(201,168,76,0.1); border: 1px solid var(--gold-dim); color: var(--gold);">SERIES STATUS: ACTIVE — Volume 4 in development</span></div>
+  </section>
+
+  <!-- =================== SECTION 8: DIRECTORATE NOTES =================== -->
+  <section data-id="1239" id="section-directorate-notes" class="section-panel p-4 md:p-6 lg:p-8">
+    <div data-id="1240" class="mb-4"><h2 data-id="1241" class="mono text-sm md:text-base tracking-wider" style="color: var(--gold);">DIRECTORATE NOTES — EYES ONLY | COMMAND PRINCIPALS</h2></div>
+    <div data-id="1242" class="text-center py-2 px-4 rounded mb-6 mono text-xs" style="background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.3); color: var(--amber-alert); letter-spacing: 0.08em;">⬛ THIS SECTION CONTAINS DIRECTORATE-LEVEL STRATEGIC ASSESSMENTS ⬛</div>
+    <div data-id="1243" class="rounded-lg p-5 md:p-6 mb-6" style="background: var(--bg-card); border: 1px solid var(--border);">
+      <div data-id="1244" class="mono text-xs tracking-wider mb-4" style="color: var(--gold);">DIRECTORATE ASSESSMENT — 20 AUGUST 2026</div>
+      <div data-id="1245" class="space-y-4 text-sm leading-relaxed" style="color: var(--text-secondary);">
+        <p data-id="1246">The convergence of signals across today's briefing points to a strategic environment characterised by elevated fragility with deceptive surface calm. Equity markets remain within 4% of all-time highs, credit spreads have not yet broken decisively wider, and gold's move — while significant — has not yet triggered broad safe-haven cascade behaviour. This is precisely the environment in which complacency is most dangerous.</p>
+        <p data-id="1247">The three highest-leverage uncertainties for the 90-day window are: (1) whether the Fed delivers a September rate acknowledgment that re-anchors long-end Treasury yields, (2) whether Indo-Pacific friction escalates from naval posturing to a tangible supply chain disruption event, and (3) whether the AI capex cycle produces a margin compression shock in Q3 hyperscaler earnings that triggers a broader technology de-rating.</p>
+        <p data-id="1248">The Anthropos II framework recommends the following priority monitoring posture: Gold and safe-haven FX flows as the leading indicator of institutional risk-off rotation; private credit default rates in the 2021–2022 vintage cohort as the early warning signal for a broader credit event; and PLA naval exercise patterns in the Taiwan Strait as the geopolitical trip-wire most likely to move markets non-linearly.</p>
+        <p data-id="1249">The 90-day base case remains: slow-grinding risk-off with episodic volatility spikes, real asset outperformance, and continued AI infrastructure bifurcation. Tail risk is skewed asymmetrically to the downside.</p>
+        <p data-id="1250" style="color: var(--text-primary); font-weight: 600;">Stay calibrated. Stay positioned ahead of the signal.</p>
+      </div>
+      <div data-id="1251" class="gold-divider my-5"></div>
+      <div data-id="1252" class="mono text-xs tracking-wider mb-2" style="color: var(--text-muted);">DIRECTORATE CLOSING SIGNAL</div>
+      <p data-id="1253" class="text-xl md:text-2xl italic leading-relaxed" style="font-family: 'EB Garamond', Georgia, serif; color: var(--gold);">"The market is priced for soft landing — position for turbulence."</p>
+      <p data-id="1254" class="mono text-xs mt-3" style="color: var(--text-muted);">— Anthropos II Directorate | 20 August 2026 | Morning Cycle</p>
+    </div>
+    <div data-id="1255" class="mono text-xs tracking-wider mb-4" style="color: var(--gold);">90-DAY OUTLOOK SUMMARY</div>
+    <div data-id="1256" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div data-id="1257" class="rounded-lg p-4 card-hover" style="background: var(--bg-card); border-top: 3px solid var(--green-safe);"><div data-id="1258" class="mono text-xs tracking-wider mb-2" style="color: var(--green-safe);">BASE CASE</div><p data-id="1259" class="text-sm mb-3" style="color: var(--text-secondary);">Slow-grinding risk-off with episodic volatility spikes. Real asset outperformance.</p><div data-id="1260" class="flex items-center justify-between"><span data-id="1261" class="mono text-xs" style="color: var(--text-muted);">Probability</span><span data-id="1262" class="text-lg font-bold tabular" style="color: var(--green-safe); font-family: 'EB Garamond', Georgia, serif;">55%</span></div></div>
+      <div data-id="1263" class="rounded-lg p-4 card-hover" style="background: var(--bg-card); border-top: 3px solid var(--gold);"><div data-id="1264" class="mono text-xs tracking-wider mb-2" style="color: var(--gold);">UPSIDE CASE</div><p data-id="1265" class="text-sm mb-3" style="color: var(--text-secondary);">Fed pivot catalyst triggers relief rally. AI earnings beat drives re-rating.</p><div data-id="1266" class="flex items-center justify-between"><span data-id="1267" class="mono text-xs" style="color: var(--text-muted);">Probability</span><span data-id="1268" class="text-lg font-bold tabular" style="color: var(--gold); font-family: 'EB Garamond', Georgia, serif;">20%</span></div></div>
+      <div data-id="1269" class="rounded-lg p-4 card-hover" style="background: var(--bg-card); border-top: 3px solid var(--red-alert);"><div data-id="1270" class="mono text-xs tracking-wider mb-2" style="color: var(--red-alert);">DOWNSIDE CASE</div><p data-id="1271" class="text-sm mb-3" style="color: var(--text-secondary);">Indo-Pacific disruption + credit event cascade. Rapid risk-off rotation.</p><div data-id="1272" class="flex items-center justify-between"><span data-id="1273" class="mono text-xs" style="color: var(--text-muted);">Probability</span><span data-id="1274" class="text-lg font-bold tabular" style="color: var(--red-alert); font-family: 'EB Garamond', Georgia, serif;">25%</span></div></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer data-id="1275" id="app-footer-f5z9" class="md:ml-[220px] py-4 px-6 text-center" style="border-top: 1px solid var(--border);">
+  <div data-id="1276" class="gold-divider mb-4"></div>
+
+  <!-- Footer Network Access Panel -->
+  <div data-id="1277" class="network-access-panel rounded-lg mb-6 p-5 md:p-6 mx-auto" style="max-width: 720px;">
+    <div data-id="1278" class="flex items-center justify-center gap-2 mb-3">
+      <i data-id="1279" data-lucide="radio-tower" class="w-4 h-4" style="color: var(--gold);"></i>
+      <span data-id="1280" class="mono text-xs tracking-widest" style="color: var(--gold); letter-spacing: 0.15em;">COMMAND CENTRE — DIRECT ACCESS</span>
+    </div>
+    <div data-id="1281" class="flex items-center justify-center gap-2 flex-wrap mb-2">
+      <a data-id="1282" href="https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z" target="_blank" rel="noopener noreferrer" class="mono text-sm break-all" style="color: var(--gold-bright); text-decoration: none; border-bottom: 1px solid var(--gold-dim); padding-bottom: 1px;">
+        https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z
+      </a>
+      <button data-id="1283" id="copy-url-btn-footer" class="flex items-center gap-1.5 mono text-xs px-3 py-1.5 rounded cursor-pointer transition-all" style="background: var(--gold); color: var(--bg-primary); border: none; font-weight: 700; letter-spacing: 0.05em; flex-shrink: 0;" title="Copy URL to clipboard">
+        <i data-id="1284" data-lucide="clipboard-copy" class="w-3.5 h-3.5"></i>
+        COPY
+      </button>
+    </div>
+    <p data-id="1285" class="mono text-xs" style="color: var(--text-muted); letter-spacing: 0.06em;">Share this URL with all LE-1.2 node operators</p>
+  </div>
+
+  <div data-id="1286" class="mono text-xs" style="color: var(--text-muted);">ANTHROPOS II — THE UNIFIED CASTLE | v3.0 | LE-1.1 · LE-1.2 · SHERIFF R2</div>
+  <div data-id="1287" class="mono text-xs mt-1" style="color: var(--text-muted);">Made by Copilot</div>
+</footer>
+
+<!-- Copy Toast Notification -->
+<div data-id="1288" id="copy-toast" class="copy-toast">✓ URL COPIED TO CLIPBOARD</div>
+
+<script>
+// ===== Guard Lucide icons =====
+if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+  lucide.createIcons();
+}
+
+// ===== COPY TO CLIPBOARD FUNCTION =====
+var COMMAND_URL = 'https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z';
+
+function copyToClipboard() {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(COMMAND_URL).then(function() {
+      showCopyToast();
+    }).catch(function() {
+      fallbackCopy();
+    });
+  } else {
+    fallbackCopy();
+  }
+}
+
+function fallbackCopy() {
+  var textarea = document.createElement('textarea');
+  textarea.value = COMMAND_URL;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try { document.execCommand('copy'); showCopyToast(); } catch(e) {}
+  document.body.removeChild(textarea);
+}
+
+function showCopyToast() {
+  var toast = document.getElementById('copy-toast');
+  if (toast) {
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2200);
+  }
+}
+
+// Bind all copy buttons
+var copyBtnMain = document.getElementById('copy-url-btn-main');
+var copyBtnFooter = document.getElementById('copy-url-btn-footer');
+var copyBtnSidebar = document.getElementById('sidebar-copy-url-btn');
+
+if (copyBtnMain) { copyBtnMain.addEventListener('click', copyToClipboard); }
+if (copyBtnFooter) { copyBtnFooter.addEventListener('click', copyToClipboard); }
+if (copyBtnSidebar) { copyBtnSidebar.addEventListener('click', copyToClipboard); }
+
+// Hover effects for copy buttons
+[copyBtnMain, copyBtnFooter].forEach(function(btn) {
+  if (btn) {
+    btn.addEventListener('mouseenter', function() { this.style.background = '#e8c55a'; this.style.transform = 'scale(1.05)'; });
+    btn.addEventListener('mouseleave', function() { this.style.background = '#c9a84c'; this.style.transform = 'scale(1)'; });
+  }
+});
+
+// Link hover effects
+document.querySelectorAll('#network-access-link, [data-id="ftr-net-5"]').forEach(function(link) {
+  link.addEventListener('mouseenter', function() { this.style.color = '#e8c55a'; this.style.borderBottomColor = '#e8c55a'; });
+  link.addEventListener('mouseleave', function() { this.style.color = '#e8c55a'; this.style.borderBottomColor = '#8b6914'; });
+});
+
+// ===== LIVE CLOCK =====
+function updateClock() {
+  var now = new Date();
+  var clockEl = document.getElementById('live-clock-c9a1');
+  var dateEl = document.getElementById('live-date-d4b2');
+  if (clockEl) {
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var s = String(now.getSeconds()).padStart(2, '0');
+    clockEl.textContent = h + ':' + m + ':' + s;
+  }
+  if (dateEl) {
+    var days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    dateEl.textContent = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+  }
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ===== SECTION NAVIGATION =====
+var navItems = document.querySelectorAll('.nav-item');
+var sections = document.querySelectorAll('.section-panel');
+var sectionMap = {
+  'command-bridge': 'section-command-bridge',
+  'market-intel': 'section-market-intel',
+  'geopolitical': 'section-geopolitical',
+  'threat-matrix': 'section-threat-matrix',
+  'briefing-archive': 'section-briefing-archive',
+  'le11': 'section-le11',
+  'communiques': 'section-communiques',
+  'sheriff-library': 'section-sheriff-library',
+  'directorate-notes': 'section-directorate-notes'
+};
+
+function switchSection(sectionKey) {
+  sections.forEach(function(s) { s.classList.remove('active'); });
+  navItems.forEach(function(n) { n.classList.remove('active'); });
+  var targetId = sectionMap[sectionKey];
+  if (targetId) {
+    var target = document.getElementById(targetId);
+    if (target) {
+      setTimeout(function() { target.classList.add('active'); }, 30);
+    }
+  }
+  navItems.forEach(function(n) {
+    if (n.dataset.section === sectionKey) { n.classList.add('active'); }
+  });
+  var sidebar = document.getElementById('sidebar-nav-s2k8');
+  if (sidebar) sidebar.classList.remove('mobile-open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+navItems.forEach(function(item) {
+  item.addEventListener('click', function() { switchSection(this.dataset.section); });
+});
+
+// ===== MOBILE SIDEBAR =====
+var mobileSidebarToggle = document.getElementById('mobile-sidebar-toggle-m3x1');
+var mobileSidebarClose = document.getElementById('mobile-sidebar-close-c1x2');
+var sidebar = document.getElementById('sidebar-nav-s2k8');
+
+if (mobileSidebarToggle && sidebar) {
+  mobileSidebarToggle.addEventListener('click', function() { sidebar.classList.add('mobile-open'); });
+}
+if (mobileSidebarClose && sidebar) {
+  mobileSidebarClose.addEventListener('click', function() { sidebar.classList.remove('mobile-open'); });
+}
+
+// ===== CROSS-SECTION LINKS =====
+document.querySelectorAll('[data-section]').forEach(function(el) {
+  if (!el.classList.contains('nav-item')) {
+    el.addEventListener('click', function() { switchSection(this.dataset.section); });
+  }
+});
+
+// ===== ASSET CLASS TABS =====
+var assetTabs = document.querySelectorAll('.asset-tab');
+var assetPanels = document.querySelectorAll('.asset-panel');
+assetTabs.forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    assetTabs.forEach(function(t) { t.classList.remove('active'); });
+    this.classList.add('active');
+    var target = this.dataset.asset;
+    assetPanels.forEach(function(p) { p.style.display = 'none'; });
+    var targetPanel = document.getElementById('asset-' + target);
+    if (targetPanel) targetPanel.style.display = 'block';
+  });
+});
+
+// ===== GEOPOLITICAL ACCORDION =====
+document.querySelectorAll('.accordion-header').forEach(function(header) {
+  header.addEventListener('click', function() {
+    var body = this.nextElementSibling;
+    var chevron = this.querySelector('.accordion-chevron');
+    if (body) { body.classList.toggle('open'); }
+    if (chevron) { chevron.style.transform = body && body.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)'; }
+  });
+});
+
+// ===== THREAT MATRIX FILTER =====
+var filterBtns = document.querySelectorAll('.filter-btn');
+var threatRows = document.querySelectorAll('.threat-row');
+filterBtns.forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    filterBtns.forEach(function(b) { b.classList.remove('active'); b.style.color = ''; });
+    this.classList.add('active');
+    var filter = this.dataset.filter;
+    threatRows.forEach(function(row) {
+      if (filter === 'ALL' || row.dataset.domain === filter) { row.style.display = ''; } else { row.style.display = 'none'; }
+    });
+    document.querySelectorAll('.threat-detail').forEach(function(d) { d.classList.remove('open'); });
+  });
+});
+
+// ===== THREAT ROW EXPAND =====
+threatRows.forEach(function(row) {
+  row.addEventListener('click', function() {
+    var id = this.dataset.threat;
+    var detail = document.getElementById('threat-detail-' + id);
+    if (detail) {
+      document.querySelectorAll('.threat-detail').forEach(function(d) { if (d !== detail) d.classList.remove('open'); });
+      detail.classList.toggle('open');
+    }
+  });
+});
+
+// ===== BRIEFING SERIES TOGGLE =====
+var seriesToggles = document.querySelectorAll('.series-toggle');
+var briefingCards = document.querySelectorAll('.briefing-card');
+seriesToggles.forEach(function(toggle) {
+  toggle.addEventListener('click', function() { this.classList.toggle('active'); filterBriefings(); });
+});
+function filterBriefings() {
+  var activeSeries = [];
+  seriesToggles.forEach(function(t) { if (t.classList.contains('active')) { activeSeries.push(t.dataset.series); } });
+  var searchVal = (document.getElementById('briefing-search-b3k1').value || '').toLowerCase();
+  briefingCards.forEach(function(card) {
+    var series = card.dataset.series;
+    var content = (card.dataset.content || '').toLowerCase();
+    var seriesMatch = activeSeries.length === 0 || activeSeries.indexOf(series) !== -1;
+    var searchMatch = !searchVal || content.indexOf(searchVal) !== -1;
+    card.style.display = (seriesMatch && searchMatch) ? '' : 'none';
+  });
+}
+var briefingSearch = document.getElementById('briefing-search-b3k1');
+if (briefingSearch) { briefingSearch.addEventListener('input', filterBriefings); }
+
+// ===== BRIEFING EXPAND =====
+document.querySelectorAll('.briefing-expand-btn').forEach(function(btn) {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var card = this.closest('.briefing-card');
+    if (card) {
+      var expandPanel = card.querySelector('.briefing-expand');
+      if (expandPanel) {
+        expandPanel.classList.toggle('open');
+        this.textContent = expandPanel.classList.contains('open') ? 'Close Summary ×' : 'Read Summary →';
+      }
+    }
+  });
+});
+
+// ===== MODULE CARD EXPAND (LE-1.1) =====
+document.querySelectorAll('.module-header').forEach(function(header) {
+  header.addEventListener('click', function() {
+    var card = this.closest('.module-card');
+    if (card) {
+      var body = card.querySelector('.module-expand');
+      if (body) { body.classList.toggle('open'); }
+    }
+  });
+});
+
+// ===== Re-create Lucide icons =====
+function refreshIcons() {
+  if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") { lucide.createIcons(); }
+}
+</script>
+</body>
+</html>

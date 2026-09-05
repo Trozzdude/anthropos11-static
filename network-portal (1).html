@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Anthropos II — Network Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#0a0a0a',
+                        panel: '#111111',
+                        gold: '#C9A84C',
+                        goldDim: 'rgba(201,168,76,0.3)',
+                        goldBorder: 'rgba(201,168,76,0.3)',
+                        textPrimary: '#f5f5f5',
+                        textMuted: '#999999',
+                        redAlert: '#cc3333',
+                        greenActive: '#33aa55',
+                        yellowWarn: '#ccaa33',
+                    }
+                }
+            }
+        };
+    </script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --panel: #111111;
+            --gold: #C9A84C;
+            --gold-dim: rgba(201,168,76,0.3);
+            --gold-glow: rgba(201,168,76,0.15);
+            --text-primary: #f5f5f5;
+            --text-muted: #999999;
+            --red: #cc3333;
+            --green: #33aa55;
+            --yellow: #ccaa33;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Calibri', 'Segoe UI', sans-serif;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg);
+        }
+
+        .mono {
+            font-family: 'Courier New', 'Courier Prime', monospace;
+            font-size: 11px;
+            color: var(--gold);
+        }
+
+        .gold-rule {
+            border: none;
+            height: 1px;
+            background: var(--gold-dim);
+            margin: 0;
+        }
+
+        .card-glow:hover {
+            box-shadow: 0 0 12px rgba(201,168,76,0.3);
+        }
+
+        .hero-glow {
+            box-shadow: inset 0 0 30px rgba(201,168,76,0.08), 0 0 20px rgba(201,168,76,0.1);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border: 1px solid;
+        }
+
+        .section-heading {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 24px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #0a0a0a;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        /* Ticker animation */
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .ticker-track {
+            display: flex;
+            animation: ticker-scroll 60s linear infinite;
+            white-space: nowrap;
+        }
+
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Nav link styles */
+        .nav-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: rgba(201,168,76,0.1);
+        }
+
+        /* Table styles */
+        .briefing-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .briefing-table th {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--gold);
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gold-dim);
+        }
+
+        .briefing-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: #0a0a0a;
+            font-weight: 700;
+            padding: 12px 28px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            font-family: 'Calibri', sans-serif;
+        }
+
+        .btn-gold:hover {
+            background: #d4b35a;
+            box-shadow: 0 0 16px rgba(201,168,76,0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gold);
+            font-weight: 700;
+            padding: 12px 28px;
+            border: 1px solid var(--gold);
+            cursor: pointer;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            font-family: 'Calibri', sans-serif;
+        }
+
+        .btn-outline:hover {
+            background: rgba(201,168,76,0.1);
+            box-shadow: 0 0 12px rgba(201,168,76,0.3);
+        }
+
+        .btn-view {
+            background: var(--gold);
+            color: #0a0a0a;
+            font-weight: 700;
+            padding: 4px 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            font-family: 'Calibri', sans-serif;
+        }
+
+        .btn-archived {
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 4px 14px;
+            border: 1px solid rgba(153,153,153,0.3);
+            cursor: default;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            font-family: 'Calibri', sans-serif;
+        }
+
+        /* Sticky nav */
+        #sticky-nav-a1b2 {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Mobile menu */
+        #mobile-menu-c3d4 {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #mobile-menu-c3d4.menu-hidden {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #mobile-menu-c3d4.menu-visible {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Migration Phase Styles */
+        .phase-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .phase-item:hover {
+            background: rgba(201,168,76,0.04);
+        }
+
+        .phase-checkbox {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--text-muted);
+            border-radius: 4px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: transparent;
+        }
+
+        .phase-checkbox.complete {
+            border-color: var(--green);
+            background: var(--green);
+            color: #0a0a0a;
+        }
+
+        .phase-status {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 2px 10px;
+            border-radius: 3px;
+        }
+
+        .phase-status.pending {
+            color: var(--text-muted);
+            background: rgba(153,153,153,0.1);
+            border: 1px solid rgba(153,153,153,0.2);
+        }
+
+        .phase-status.complete {
+            color: var(--green);
+            background: rgba(51,170,85,0.1);
+            border: 1px solid rgba(51,170,85,0.3);
+        }
+
+        .phase-connector {
+            width: 2px;
+            height: 16px;
+            background: rgba(201,168,76,0.15);
+            margin-left: 10px;
+        }
+
+        .tool-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 14px;
+            border: 1px solid var(--gold-dim);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-radius: 3px;
+            font-family: 'Calibri', sans-serif;
+        }
+
+        .tool-pill:hover {
+            background: rgba(201,168,76,0.1);
+            box-shadow: 0 0 8px rgba(201,168,76,0.2);
+            border-color: var(--gold);
+        }
+    </style>
+</head>
+<body data-id="0" class="bg-bg">
+    <app-icon data-id="1" hidden data-icon="shield" data-palette="Dark"></app-icon>
+
+    <!-- ===== HEADER ===== -->
+    <header data-id="2" id="header-top-e5f6" class="w-full bg-bg">
+        <!-- Top Bar -->
+        <div data-id="3" class="w-full border-b" style="border-color: var(--gold-dim);">
+            <div data-id="4" class="max-w-[1100px] mx-auto px-4 md:px-6 flex items-center justify-between py-2">
+                <span data-id="5" class="mono" style="font-size: 10px; letter-spacing: 0.1em;">LE-1.2 INTELLIGENCE NETWORK</span>
+                <span data-id="6" id="live-clock-g7h8" class="mono" style="font-size: 10px; letter-spacing: 0.05em;">--:--:-- MDT | Thursday, August 20, 2026</span>
+            </div>
+        </div>
+
+        <!-- Main Banner -->
+        <div data-id="7" class="py-10 md:py-14 text-center px-4">
+            <h1 data-id="8" id="main-title-i9j0" style="font-size: 42px; font-weight: 700; letter-spacing: 0.15em; color: var(--gold);">ANTHROPOS II</h1>
+            <p data-id="9" id="subtitle-k1l2" style="font-size: 18px; font-weight: 600; letter-spacing: 0.12em; color: var(--gold); margin-top: 6px;">NETWORK PORTAL</p>
+
+            <hr data-id="10" class="gold-rule max-w-[400px] mx-auto mt-6 mb-6" />
+
+            <!-- Status Pills -->
+            <div data-id="11" class="flex flex-wrap justify-center gap-3 mt-4">
+                <span data-id="12" class="status-pill" style="border-color: var(--green); color: var(--green);">
+                    🟢 NETWORK: OPERATIONAL
+                </span>
+                <span data-id="13" class="status-pill" style="border-color: var(--red); color: var(--red);">
+                    🔴 THREAT POSTURE: ELEVATED
+                </span>
+                <span data-id="14" class="status-pill" style="border-color: var(--yellow); color: var(--yellow);">
+                    🟡 CYCLE: LE-1.2-2026-0820-ALPHA — RELEASED
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== STICKY NAVIGATION ===== -->
+    <nav data-id="15" id="sticky-nav-a1b2" class="w-full bg-bg border-t border-b" style="border-color: var(--gold-dim);">
+        <div data-id="16" class="max-w-[1100px] mx-auto px-4 md:px-6 flex items-center justify-between">
+            <!-- Desktop Nav -->
+            <div data-id="17" class="hidden md:flex items-center gap-1 py-1 w-full justify-center">
+                <a data-id="18" href="#command-centre-m3n4" class="nav-link">Command Centre</a>
+                <span data-id="19" class="text-gold opacity-30">|</span>
+                <a data-id="20" href="#briefings-o5p6" class="nav-link">Briefings</a>
+                <span data-id="21" class="text-gold opacity-30">|</span>
+                <a data-id="22" href="#azure-migration-z1a2" class="nav-link">Azure Migration</a>
+                <span data-id="23" class="text-gold opacity-30">|</span>
+                <a data-id="24" href="#access-procedure-q7r8" class="nav-link">Access Procedure</a>
+                <span data-id="25" class="text-gold opacity-30">|</span>
+                <a data-id="26" href="#node-status-s9t0" class="nav-link">Node Status</a>
+                <span data-id="27" class="text-gold opacity-30">|</span>
+                <a data-id="28" href="#contact-u1v2" class="nav-link">Contact</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div data-id="29" class="flex md:hidden items-center justify-between w-full py-2">
+                <span data-id="30" class="mono" style="font-size: 11px;">NAVIGATION</span>
+                <button data-id="31" id="mobile-menu-btn-w3x4" class="p-2 text-gold" aria-label="Open menu">
+                    <i data-id="32" data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div data-id="33" id="mobile-menu-c3d4" class="menu-hidden fixed inset-0 bg-bg z-[200] flex flex-col p-6">
+        <div data-id="34" class="flex items-center justify-between mb-8">
+            <span data-id="35" class="mono" style="font-size: 12px; letter-spacing: 0.1em;">NAVIGATION</span>
+            <button data-id="36" id="mobile-menu-close-y5z6" class="p-2 text-gold" aria-label="Close menu">
+                <i data-id="37" data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div data-id="38" class="flex flex-col gap-2">
+            <a data-id="39" href="#command-centre-m3n4" class="nav-link text-base py-3 mobile-nav-link">Command Centre</a>
+            <a data-id="40" href="#briefings-o5p6" class="nav-link text-base py-3 mobile-nav-link">Briefings</a>
+            <a data-id="41" href="#azure-migration-z1a2" class="nav-link text-base py-3 mobile-nav-link">Azure Migration</a>
+            <a data-id="42" href="#access-procedure-q7r8" class="nav-link text-base py-3 mobile-nav-link">Access Procedure</a>
+            <a data-id="43" href="#node-status-s9t0" class="nav-link text-base py-3 mobile-nav-link">Node Status</a>
+            <a data-id="44" href="#contact-u1v2" class="nav-link text-base py-3 mobile-nav-link">Contact</a>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main data-id="45" class="max-w-[1100px] mx-auto px-4 md:px-6 pb-0">
+
+        <!-- ===== SECTION 1: COMMAND CENTRE ===== -->
+        <section data-id="46" id="command-centre-m3n4" class="py-10 md:py-14">
+            <div data-id="47" class="border p-6 md:p-10 hero-glow card-glow transition-all duration-300" style="border-color: var(--gold); background: var(--panel);">
+                <p data-id="48" class="mono mb-3" style="font-size: 10px; letter-spacing: 0.12em;">PRIMARY ACCESS — OPERATIONAL DASHBOARD</p>
+                <h2 data-id="49" id="cc-heading-a2b3" style="font-size: 26px; font-weight: 700; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 16px;">THE CASTLE — COMMAND CENTRE</h2>
+                <p data-id="50" class="mb-6" style="color: var(--text-primary); max-width: 680px;">The Anthropos II Command Centre provides real-time operational awareness, threat posture monitoring, and intelligence cycle management for all LE-1.2 network operators.</p>
+
+                <div data-id="51" class="flex flex-col sm:flex-row gap-3 mb-5">
+                    <button data-id="52" id="launch-btn-c4d5" class="btn-gold min-h-[44px]">🚀 LAUNCH COMMAND CENTRE</button>
+                    <button data-id="53" id="copy-btn-e6f7" class="btn-outline min-h-[44px]">📋 COPY ACCESS URL</button>
+                </div>
+
+                <p data-id="54" class="mono" style="font-size: 10px; word-break: break-all; opacity: 0.8;">https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z</p>
+            </div>
+        </section>
+
+        <hr data-id="55" class="gold-rule" />
+
+        <!-- ===== SECTION 2: ACCESS PROCEDURE ===== -->
+        <section data-id="56" id="access-procedure-q7r8" class="py-10 md:py-14">
+            <h2 data-id="57" class="section-heading">Access Procedure — How to Open the Command Centre</h2>
+
+            <div data-id="58" class="border p-5 md:p-8 space-y-6" style="border-color: var(--gold-dim); background: var(--panel);">
+                <!-- Step 1 -->
+                <div data-id="59" class="flex gap-4 items-start">
+                    <span data-id="60" class="step-number">1</span>
+                    <div data-id="61">
+                        <h3 data-id="62" id="step1-g8h9" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">NETWORK ACCESS REQUIRED</h3>
+                        <p data-id="63" style="color: var(--text-primary);">Ensure you have an active Microsoft account and Copilot access. The Command Centre is hosted on the Microsoft Copilot platform and requires authentication.</p>
+                    </div>
+                </div>
+
+                <div data-id="64" style="border-top: 1px solid rgba(201,168,76,0.1);"></div>
+
+                <!-- Step 2 -->
+                <div data-id="65" class="flex gap-4 items-start">
+                    <span data-id="66" class="step-number">2</span>
+                    <div data-id="67">
+                        <h3 data-id="68" id="step2-i0j1" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">NAVIGATE TO THE PORTAL URL</h3>
+                        <p data-id="69" style="color: var(--text-primary); margin-bottom: 8px;">Open any modern browser (Edge, Chrome, Firefox, Safari). Navigate to the Command Centre using the official access URL below or click the LAUNCH button above.</p>
+                        <code data-id="70" class="mono" style="font-size: 10px; background: rgba(201,168,76,0.08); padding: 4px 10px; display: inline-block; word-break: break-all;">https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z</code>
+                    </div>
+                </div>
+
+                <div data-id="71" style="border-top: 1px solid rgba(201,168,76,0.1);"></div>
+
+                <!-- Step 3 -->
+                <div data-id="72" class="flex gap-4 items-start">
+                    <span data-id="73" class="step-number">3</span>
+                    <div data-id="74">
+                        <h3 data-id="75" id="step3-k2l3" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">AUTHENTICATE</h3>
+                        <p data-id="76" style="color: var(--text-primary);">If prompted, sign in with your Microsoft account credentials. Contact your node administrator if you do not have an authorized account.</p>
+                    </div>
+                </div>
+
+                <div data-id="77" style="border-top: 1px solid rgba(201,168,76,0.1);"></div>
+
+                <!-- Step 4 -->
+                <div data-id="78" class="flex gap-4 items-start">
+                    <span data-id="79" class="step-number">4</span>
+                    <div data-id="80">
+                        <h3 data-id="81" id="step4-m4n5" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">VERIFY CYCLE DATE</h3>
+                        <p data-id="82" style="color: var(--text-primary);">Upon entry, verify the active briefing cycle date shown in the Command Centre header. Confirm it matches today's operational date. If the date is incorrect, notify the LE-1.2 Synthesis Unit immediately.</p>
+                    </div>
+                </div>
+
+                <div data-id="83" style="border-top: 1px solid rgba(201,168,76,0.1);"></div>
+
+                <!-- Step 5 -->
+                <div data-id="84" class="flex gap-4 items-start">
+                    <span data-id="85" class="step-number">5</span>
+                    <div data-id="86">
+                        <h3 data-id="87" id="step5-o6p7" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">CHECK THREAT POSTURE</h3>
+                        <p data-id="88" style="color: var(--text-primary);">Review the current THREAT POSTURE indicator in the Command Centre dashboard. As of August 20, 2026, the posture is ELEVATED. Do not downgrade without explicit LE-1.2 authorization.</p>
+                    </div>
+                </div>
+
+                <div data-id="89" style="border-top: 1px solid rgba(201,168,76,0.1);"></div>
+
+                <!-- Step 6 -->
+                <div data-id="90" class="flex gap-4 items-start">
+                    <span data-id="91" class="step-number">6</span>
+                    <div data-id="92">
+                        <h3 data-id="93" id="step6-q8r9" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">ACCESS DAILY BRIEFING</h3>
+                        <p data-id="94" style="color: var(--text-primary);">Navigate to the BRIEFINGS section of the Command Centre. The current cycle briefing (LE-1.2-2026-0820-ALPHA) is RELEASED and available for review. All carry-forward fields are populated.</p>
+                    </div>
+                </div>
+
+                <div data-id="95" style="border-top: 1px solid rgba(201,168,76,0.1);"></div>
+
+                <!-- Step 7 -->
+                <div data-id="96" class="flex gap-4 items-start">
+                    <span data-id="97" class="step-number">7</span>
+                    <div data-id="98">
+                        <h3 data-id="99" id="step7-s0t1" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.05em; margin-bottom: 4px;">REPORT ANY ANOMALIES</h3>
+                        <p data-id="100" style="color: var(--text-primary);">If you observe any discrepancy in the system, unusual activity, or security concern, report immediately to the LE-1.2 Synthesis Unit via secure channel. Do not disseminate briefing content outside authorized network personnel.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr data-id="101" class="gold-rule" />
+
+        <!-- ===== SECTION 3: BRIEFING ARCHIVE ===== -->
+        <section data-id="102" id="briefings-o5p6" class="py-10 md:py-14">
+            <h2 data-id="103" class="section-heading">Intelligence Briefing Archive</h2>
+
+            <div data-id="104" class="border overflow-x-auto" style="border-color: var(--gold-dim); background: var(--panel);">
+                <table data-id="105" class="briefing-table">
+                    <thead data-id="106">
+                        <tr data-id="107">
+                            <th data-id="108">Cycle Date</th>
+                            <th data-id="109">Document Reference</th>
+                            <th data-id="110">Status</th>
+                            <th data-id="111">Access</th>
+                        </tr>
+                    </thead>
+                    <tbody data-id="112">
+                        <tr data-id="113">
+                            <td data-id="114" class="mono" style="font-size: 12px;">Thursday, August 20, 2026</td>
+                            <td data-id="115" class="mono" style="font-size: 12px;">LE-1.2-2026-0820-ALPHA</td>
+                            <td data-id="116"><span data-id="117" style="color: var(--green); font-weight: 700; font-size: 11px; letter-spacing: 0.05em;">● RELEASED</span></td>
+                            <td data-id="118"><button data-id="119" class="btn-view view-briefing-btn" data-url="https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z">VIEW</button></td>
+                        </tr>
+                        <tr data-id="120">
+                            <td data-id="121" class="mono" style="font-size: 12px;">Wednesday, August 19, 2026</td>
+                            <td data-id="122" class="mono" style="font-size: 12px;">LE-1.2-2026-0819-ALPHA</td>
+                            <td data-id="123"><span data-id="124" style="color: var(--text-muted); font-weight: 600; font-size: 11px; letter-spacing: 0.05em;">○ ARCHIVED</span></td>
+                            <td data-id="125"><span data-id="126" class="btn-archived">ARCHIVED</span></td>
+                        </tr>
+                        <tr data-id="127">
+                            <td data-id="128" class="mono" style="font-size: 12px;">Tuesday, August 18, 2026</td>
+                            <td data-id="129" class="mono" style="font-size: 12px;">LE-1.2-2026-0818-ALPHA</td>
+                            <td data-id="130"><span data-id="131" style="color: var(--text-muted); font-weight: 600; font-size: 11px; letter-spacing: 0.05em;">○ ARCHIVED</span></td>
+                            <td data-id="132"><span data-id="133" class="btn-archived">ARCHIVED</span></td>
+                        </tr>
+                        <tr data-id="134">
+                            <td data-id="135" class="mono" style="font-size: 12px;">Monday, August 17, 2026</td>
+                            <td data-id="136" class="mono" style="font-size: 12px;">LE-1.2-2026-0817-ALPHA</td>
+                            <td data-id="137"><span data-id="138" style="color: var(--text-muted); font-weight: 600; font-size: 11px; letter-spacing: 0.05em;">○ ARCHIVED</span></td>
+                            <td data-id="139"><span data-id="140" class="btn-archived">ARCHIVED</span></td>
+                        </tr>
+                        <tr data-id="141">
+                            <td data-id="142" class="mono" style="font-size: 12px;">Sunday, August 16, 2026</td>
+                            <td data-id="143" class="mono" style="font-size: 12px;">LE-1.2-2026-0816-ALPHA</td>
+                            <td data-id="144"><span data-id="145" style="color: var(--text-muted); font-weight: 600; font-size: 11px; letter-spacing: 0.05em;">○ ARCHIVED</span></td>
+                            <td data-id="146"><span data-id="147" class="btn-archived">ARCHIVED</span></td>
+                        </tr>
+                        <tr data-id="148">
+                            <td data-id="149" class="mono" style="font-size: 12px;">Saturday, August 15, 2026</td>
+                            <td data-id="150" class="mono" style="font-size: 12px;">LE-1.2-2026-0815-ALPHA</td>
+                            <td data-id="151"><span data-id="152" style="color: var(--text-muted); font-weight: 600; font-size: 11px; letter-spacing: 0.05em;">○ ARCHIVED</span></td>
+                            <td data-id="153"><span data-id="154" class="btn-archived">ARCHIVED</span></td>
+                        </tr>
+                        <tr data-id="155">
+                            <td data-id="156" class="mono" style="font-size: 12px;">Friday, August 14, 2026</td>
+                            <td data-id="157" class="mono" style="font-size: 12px;">LE-1.2-2026-0814-ALPHA</td>
+                            <td data-id="158"><span data-id="159" style="color: var(--text-muted); font-weight: 600; font-size: 11px; letter-spacing: 0.05em;">○ ARCHIVED</span></td>
+                            <td data-id="160"><span data-id="161" class="btn-archived">ARCHIVED</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr data-id="162" class="gold-rule" />
+
+        <!-- ===== SECTION: AZURE MIGRATION ===== -->
+        <section data-id="163" id="azure-migration-z1a2" class="py-10 md:py-14">
+            <h2 data-id="164" class="section-heading">Azure Migration — Anthropos11.com</h2>
+            <p data-id="165" class="mono mb-6" style="font-size: 11px; letter-spacing: 0.06em; color: var(--text-muted);">BLUEHOST → MICROSOFT AZURE STATIC WEB APPS</p>
+
+            <!-- Migration Status Card -->
+            <div data-id="166" class="border p-6 md:p-8 mb-6 hero-glow card-glow transition-all duration-300" style="border-color: var(--gold); background: var(--panel);">
+                <p data-id="167" class="mono mb-2" style="font-size: 10px; letter-spacing: 0.12em; color: var(--text-muted);">MIGRATION STATUS</p>
+                <h3 data-id="168" style="font-size: 22px; font-weight: 700; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 10px;">PLANNED — READY TO EXECUTE</h3>
+                <p data-id="169" style="color: var(--text-muted); font-size: 12px; line-height: 1.8;">
+                    Current host: <span data-id="170" style="color: var(--text-primary); font-weight: 600;">Bluehost</span>&nbsp;&nbsp;|&nbsp;&nbsp;Target: <span data-id="171" style="color: var(--text-primary); font-weight: 600;">Azure Static Web Apps (Free Tier)</span>&nbsp;&nbsp;|&nbsp;&nbsp;Est. saving: <span data-id="172" style="color: var(--green); font-weight: 700;">~$300/year</span>
+                </p>
+            </div>
+
+            <!-- 9-Phase Progress Tracker -->
+            <div data-id="173" class="border p-5 md:p-8 mb-6" style="border-color: var(--gold-dim); background: var(--panel);">
+                <p data-id="174" class="mono mb-5" style="font-size: 10px; letter-spacing: 0.12em;">MIGRATION PHASES — CLICK TO TOGGLE STATUS</p>
+
+                <div data-id="175" id="phase-tracker-b3c4">
+                    <!-- Phase 1 -->
+                    <div data-id="176" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="1">
+                        <div data-id="177" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="178" class="phase-checkbox" data-check="1">✓</span>
+                        </div>
+                        <div data-id="179" class="flex-1 min-w-0">
+                            <div data-id="180" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="181" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 1</span>
+                                <span data-id="182" class="phase-status pending" data-status="1">PENDING</span>
+                                <span data-id="183" style="color: var(--text-muted); font-size: 11px;">30 min</span>
+                            </div>
+                            <h4 data-id="184" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Preparation &amp; Backup</h4>
+                        </div>
+                    </div>
+                    <div data-id="185" class="phase-connector"></div>
+
+                    <!-- Phase 2 -->
+                    <div data-id="186" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="2">
+                        <div data-id="187" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="188" class="phase-checkbox" data-check="2">✓</span>
+                        </div>
+                        <div data-id="189" class="flex-1 min-w-0">
+                            <div data-id="190" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="191" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 2</span>
+                                <span data-id="192" class="phase-status pending" data-status="2">PENDING</span>
+                                <span data-id="193" style="color: var(--text-muted); font-size: 11px;">15 min</span>
+                            </div>
+                            <h4 data-id="194" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">GitHub Repository Setup</h4>
+                        </div>
+                    </div>
+                    <div data-id="195" class="phase-connector"></div>
+
+                    <!-- Phase 3 -->
+                    <div data-id="196" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="3">
+                        <div data-id="197" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="198" class="phase-checkbox" data-check="3">✓</span>
+                        </div>
+                        <div data-id="199" class="flex-1 min-w-0">
+                            <div data-id="200" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="201" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 3</span>
+                                <span data-id="202" class="phase-status pending" data-status="3">PENDING</span>
+                                <span data-id="203" style="color: var(--text-muted); font-size: 11px;">30–45 min</span>
+                            </div>
+                            <h4 data-id="204" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">WordPress Static Export — Simply Static Plugin</h4>
+                        </div>
+                    </div>
+                    <div data-id="205" class="phase-connector"></div>
+
+                    <!-- Phase 4 -->
+                    <div data-id="206" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="4">
+                        <div data-id="207" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="208" class="phase-checkbox" data-check="4">✓</span>
+                        </div>
+                        <div data-id="209" class="flex-1 min-w-0">
+                            <div data-id="210" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="211" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 4</span>
+                                <span data-id="212" class="phase-status pending" data-status="4">PENDING</span>
+                                <span data-id="213" style="color: var(--text-muted); font-size: 11px;">20–30 min</span>
+                            </div>
+                            <h4 data-id="214" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Azure Static Web App Deployment</h4>
+                        </div>
+                    </div>
+                    <div data-id="215" class="phase-connector"></div>
+
+                    <!-- Phase 5 -->
+                    <div data-id="216" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="5">
+                        <div data-id="217" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="218" class="phase-checkbox" data-check="5">✓</span>
+                        </div>
+                        <div data-id="219" class="flex-1 min-w-0">
+                            <div data-id="220" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="221" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 5</span>
+                                <span data-id="222" class="phase-status pending" data-status="5">PENDING</span>
+                                <span data-id="223" style="color: var(--text-muted); font-size: 11px;">30–45 min</span>
+                            </div>
+                            <h4 data-id="224" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Dynamic Feature Replacement — Forms → Formspree</h4>
+                        </div>
+                    </div>
+                    <div data-id="225" class="phase-connector"></div>
+
+                    <!-- Phase 6 -->
+                    <div data-id="226" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="6">
+                        <div data-id="227" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="228" class="phase-checkbox" data-check="6">✓</span>
+                        </div>
+                        <div data-id="229" class="flex-1 min-w-0">
+                            <div data-id="230" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="231" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 6</span>
+                                <span data-id="232" class="phase-status pending" data-status="6">PENDING</span>
+                                <span data-id="233" style="color: var(--text-muted); font-size: 11px;">20–30 min</span>
+                            </div>
+                            <h4 data-id="234" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Custom Domain Configuration — TXT-token Validation</h4>
+                        </div>
+                    </div>
+                    <div data-id="235" class="phase-connector"></div>
+
+                    <!-- Phase 7 -->
+                    <div data-id="236" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="7">
+                        <div data-id="237" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="238" class="phase-checkbox" data-check="7">✓</span>
+                        </div>
+                        <div data-id="239" class="flex-1 min-w-0">
+                            <div data-id="240" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="241" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 7</span>
+                                <span data-id="242" class="phase-status pending" data-status="7">PENDING</span>
+                                <span data-id="243" style="color: var(--text-muted); font-size: 11px;">10 min + propagation</span>
+                            </div>
+                            <h4 data-id="244" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Zero-Downtime DNS Cutover</h4>
+                        </div>
+                    </div>
+                    <div data-id="245" class="phase-connector"></div>
+
+                    <!-- Phase 8 -->
+                    <div data-id="246" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="8">
+                        <div data-id="247" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="248" class="phase-checkbox" data-check="8">✓</span>
+                        </div>
+                        <div data-id="249" class="flex-1 min-w-0">
+                            <div data-id="250" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="251" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 8</span>
+                                <span data-id="252" class="phase-status pending" data-status="8">PENDING</span>
+                                <span data-id="253" style="color: var(--text-muted); font-size: 11px;">30–45 min</span>
+                            </div>
+                            <h4 data-id="254" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Post-Migration Verification</h4>
+                        </div>
+                    </div>
+                    <div data-id="255" class="phase-connector"></div>
+
+                    <!-- Phase 9 -->
+                    <div data-id="256" class="phase-item flex items-start gap-4 p-3 rounded" data-phase="9">
+                        <div data-id="257" class="flex flex-col items-center" style="margin-top: 2px;">
+                            <span data-id="258" class="phase-checkbox" data-check="9">✓</span>
+                        </div>
+                        <div data-id="259" class="flex-1 min-w-0">
+                            <div data-id="260" class="flex flex-wrap items-center gap-2 mb-1">
+                                <span data-id="261" class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em;">PHASE 9</span>
+                                <span data-id="262" class="phase-status pending" data-status="9">PENDING</span>
+                                <span data-id="263" style="color: var(--text-muted); font-size: 11px;">15 min — 4 weeks post-cutover</span>
+                            </div>
+                            <h4 data-id="264" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.04em;">Bluehost Decommission</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Summary -->
+                <div data-id="265" class="mt-6 pt-4" style="border-top: 1px solid var(--gold-dim);">
+                    <p data-id="266" class="mono" style="font-size: 11px;"><span data-id="267" id="phase-count-d5e6" style="color: var(--gold); font-weight: 700;">0</span><span data-id="268" style="color: var(--text-muted);"> / 9 PHASES COMPLETE</span></p>
+                </div>
+            </div>
+
+            <!-- Key Tools -->
+            <div data-id="269" class="border p-5 md:p-6 mb-6" style="border-color: var(--gold-dim); background: var(--panel);">
+                <p data-id="270" class="mono mb-4" style="font-size: 10px; letter-spacing: 0.12em;">KEY TOOLS — QUICK REFERENCE</p>
+                <div data-id="271" class="flex flex-wrap gap-3">
+                    <a data-id="272" href="https://portal.azure.com" target="_blank" rel="noopener noreferrer" class="tool-pill">
+                        <i data-id="273" data-lucide="cloud" class="w-3.5 h-3.5"></i>
+                        Azure Portal
+                    </a>
+                    <a data-id="274" href="https://github.com" target="_blank" rel="noopener noreferrer" class="tool-pill">
+                        <i data-id="275" data-lucide="git-branch" class="w-3.5 h-3.5"></i>
+                        GitHub
+                    </a>
+                    <a data-id="276" href="https://wordpress.org/plugins/simply-static" target="_blank" rel="noopener noreferrer" class="tool-pill">
+                        <i data-id="277" data-lucide="file-down" class="w-3.5 h-3.5"></i>
+                        Simply Static Plugin
+                    </a>
+                    <a data-id="278" href="https://formspree.io" target="_blank" rel="noopener noreferrer" class="tool-pill">
+                        <i data-id="279" data-lucide="mail" class="w-3.5 h-3.5"></i>
+                        Formspree
+                    </a>
+                    <a data-id="280" href="https://dnschecker.org" target="_blank" rel="noopener noreferrer" class="tool-pill">
+                        <i data-id="281" data-lucide="globe" class="w-3.5 h-3.5"></i>
+                        DNS Checker
+                    </a>
+                </div>
+            </div>
+
+            <!-- Apex Domain Warning -->
+            <div data-id="282" class="border p-5 mb-4" style="border-color: var(--red); background: rgba(204,51,51,0.05);">
+                <p data-id="283" style="color: var(--red); font-weight: 700; font-size: 13px;">⚠️ APEX DOMAIN ALERT: <span data-id="284" style="font-weight: 400; color: var(--text-primary);">anthropos11.com requires TXT-token DNS validation on Azure — NOT a CNAME record. See Migration Plan document for exact procedure.</span></p>
+            </div>
+
+            <!-- Gold Info Note -->
+            <div data-id="285" class="border p-5" style="border-color: var(--gold-dim); background: rgba(201,168,76,0.04);">
+                <p data-id="286" style="color: var(--gold); font-weight: 600; font-size: 12px;">
+                    <i data-id="287" data-lucide="info" class="w-4 h-4 inline-block" style="vertical-align: -3px; margin-right: 6px;"></i>
+                    Full step-by-step migration plan available in the <span data-id="288" class="mono" style="font-size: 11px;">LE-INFRA-2026-MIGRATION-ALPHA</span> document. Total estimated time: <strong data-id="289">2–4 hours</strong>. Target monthly cost on Azure: <strong data-id="290" style="color: var(--green);">$0</strong>.
+                </p>
+            </div>
+        </section>
+
+        <hr data-id="291" class="gold-rule" />
+
+        <!-- ===== SECTION 4: NODE STATUS ===== -->
+        <section data-id="292" id="node-status-s9t0" class="py-10 md:py-14">
+            <h2 data-id="293" class="section-heading">Node Status — August 20, 2026</h2>
+
+            <div data-id="294" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Node Alpha -->
+                <div data-id="295" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <h3 data-id="296" id="node-alpha-u2v3" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.08em; margin-bottom: 8px;">NODE ALPHA</h3>
+                    <p data-id="297" style="color: var(--green); font-weight: 700; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 8px;">🟢 OPERATIONAL</p>
+                    <p data-id="298" style="color: var(--text-muted); font-size: 12px;">Core synthesis unit. All functions active.</p>
+                </div>
+
+                <!-- Node Bravo -->
+                <div data-id="299" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <h3 data-id="300" id="node-bravo-w4x5" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.08em; margin-bottom: 8px;">NODE BRAVO</h3>
+                    <p data-id="301" style="color: var(--green); font-weight: 700; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 8px;">🟢 OPERATIONAL</p>
+                    <p data-id="302" style="color: var(--text-muted); font-size: 12px;">Secondary monitoring node. Verified at cycle open.</p>
+                </div>
+
+                <!-- Node Charlie -->
+                <div data-id="303" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <h3 data-id="304" id="node-charlie-y6z7" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.08em; margin-bottom: 8px;">NODE CHARLIE</h3>
+                    <p data-id="305" style="color: var(--green); font-weight: 700; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 8px;">🟢 OPERATIONAL</p>
+                    <p data-id="306" style="color: var(--text-muted); font-size: 12px;">Tertiary analysis node. Verified at cycle open.</p>
+                </div>
+
+                <!-- Node Delta -->
+                <div data-id="307" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <h3 data-id="308" id="node-delta-a8b9" style="font-weight: 700; color: var(--gold); font-size: 14px; letter-spacing: 0.08em; margin-bottom: 8px;">NODE DELTA</h3>
+                    <p data-id="309" style="color: var(--green); font-weight: 700; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 8px;">🟢 OPERATIONAL</p>
+                    <p data-id="310" style="color: var(--text-muted); font-size: 12px;">Field intelligence node. Verified at cycle open.</p>
+                </div>
+            </div>
+
+            <!-- Encryption Warning -->
+            <div data-id="311" class="border p-5" style="border-color: var(--red); background: rgba(204,51,51,0.05);">
+                <p data-id="312" style="color: var(--red); font-weight: 700; font-size: 13px;">⚠️ ENCRYPTION POSTURE: ELEVATED <span data-id="313" style="font-weight: 400; color: var(--text-primary);">— All communications must use authorized encryption protocols. No downgrade without explicit LE-1.2 authorization. Standing order active.</span></p>
+            </div>
+        </section>
+
+        <hr data-id="314" class="gold-rule" />
+
+        <!-- ===== SECTION 5: CONTACT ===== -->
+        <section data-id="315" id="contact-u1v2" class="py-10 md:py-14">
+            <h2 data-id="316" class="section-heading">Secure Contact</h2>
+
+            <div data-id="317" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div data-id="318" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <div data-id="319" class="flex items-center gap-2 mb-3">
+                        <i data-id="320" data-lucide="shield-check" class="w-5 h-5 text-gold"></i>
+                        <h3 data-id="321" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.08em;">LE-1.2 SYNTHESIS UNIT</h3>
+                    </div>
+                    <p data-id="322" style="color: var(--text-muted); font-size: 12px;">Primary intelligence synthesis and coordination. Report anomalies and operational discrepancies.</p>
+                </div>
+
+                <div data-id="323" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <div data-id="324" class="flex items-center gap-2 mb-3">
+                        <i data-id="325" data-lucide="lock" class="w-5 h-5 text-gold"></i>
+                        <h3 data-id="326" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.08em;">SECURE CHANNELS</h3>
+                    </div>
+                    <p data-id="327" style="color: var(--text-muted); font-size: 12px;">Use authorized encrypted communication channels only. No unencrypted transmissions. Standing protocol.</p>
+                </div>
+
+                <div data-id="328" class="border p-5 card-glow transition-all duration-300" style="border-color: var(--gold-dim); background: var(--panel);">
+                    <div data-id="329" class="flex items-center gap-2 mb-3">
+                        <i data-id="330" data-lucide="user-check" class="w-5 h-5 text-gold"></i>
+                        <h3 data-id="331" style="font-weight: 700; color: var(--gold); font-size: 13px; letter-spacing: 0.08em;">NODE ADMINISTRATORS</h3>
+                    </div>
+                    <p data-id="332" style="color: var(--text-muted); font-size: 12px;">For access issues, credential resets, or authorization requests, contact your designated node administrator.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <hr data-id="333" class="gold-rule" />
+
+    <!-- ===== INTELLIGENCE TICKER ===== -->
+    <div data-id="334" id="ticker-c0d1" class="w-full overflow-hidden py-3" style="background: var(--panel); border-top: 1px solid var(--gold-dim); border-bottom: 1px solid var(--gold-dim);">
+        <div data-id="335" class="ticker-track">
+            <span data-id="336" class="mono px-8" style="font-size: 11px; white-space: nowrap;">
+                🔴 GEOPOLITICAL: Iran/Hormuz blockade — Brent $93.69/bbl, WTI $86.61 — 5th session rally&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🔴 CYBER: Global ransomware +33% YoY — Gunra, Storm-1175, FSB-16 active&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🟡 INDO-PACIFIC: PRC CCG grey-zone escalation — Taiwan Strait shadowing confirmed&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🟢 ENVIRONMENTAL: Alberta AQHI 3 Low Risk — 1 fire Being Held — conditions benign&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🔴 ECONOMIC: Gold $4,575/oz — S&P 7,708 — BoC held 2.75%&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🔴 AI/CYBER: EU AI Act high-risk obligations live Aug 2 — NIST HAWK withdrawn&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;⚠️ POSTURE: ELEVATED — No downgrade authorized — LE-1.2 Synthesis Unit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            <span data-id="337" class="mono px-8" style="font-size: 11px; white-space: nowrap;" aria-hidden="true">
+                🔴 GEOPOLITICAL: Iran/Hormuz blockade — Brent $93.69/bbl, WTI $86.61 — 5th session rally&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🔴 CYBER: Global ransomware +33% YoY — Gunra, Storm-1175, FSB-16 active&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🟡 INDO-PACIFIC: PRC CCG grey-zone escalation — Taiwan Strait shadowing confirmed&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🟢 ENVIRONMENTAL: Alberta AQHI 3 Low Risk — 1 fire Being Held — conditions benign&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🔴 ECONOMIC: Gold $4,575/oz — S&P 7,708 — BoC held 2.75%&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;🔴 AI/CYBER: EU AI Act high-risk obligations live Aug 2 — NIST HAWK withdrawn&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;⚠️ POSTURE: ELEVATED — No downgrade authorized — LE-1.2 Synthesis Unit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer data-id="338" id="footer-e2f3" class="w-full py-6" style="background: var(--bg); border-top: 1px solid var(--gold-dim);">
+        <div data-id="339" class="max-w-[1100px] mx-auto px-4 md:px-6">
+            <div data-id="340" class="flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+                <span data-id="341" class="mono" style="font-size: 10px; letter-spacing: 0.08em;">ANTHROPOS II INTELLIGENCE NETWORK | LE-1.2 PROTOCOL</span>
+                <span data-id="342" class="mono" style="font-size: 10px; letter-spacing: 0.08em; color: var(--red);">INTERNAL — AUTHORIZED PERSONNEL ONLY</span>
+                <span data-id="343" class="mono" style="font-size: 10px; letter-spacing: 0.08em;">© 2026 ANTHROPOS II. ALL RIGHTS RESERVED.</span>
+            </div>
+            <p data-id="344" class="text-center mt-4" style="color: var(--text-muted); font-size: 11px;">For access issues contact your node administrator.</p>
+            <p data-id="345" class="text-center mt-2" style="color: var(--text-muted); font-size: 10px;">Made by Copilot</p>
+        </div>
+    </footer>
+
+    <script>
+        // === Progressive icon enhancement ===
+        if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+            lucide.createIcons();
+        }
+
+        // === Live Clock ===
+        function updateClock() {
+            var clockEl = document.getElementById('live-clock-g7h8');
+            if (!clockEl) return;
+
+            var now = new Date();
+
+            // Format time in MDT (UTC-6)
+            var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            var mdt = new Date(utc + (-6 * 3600000));
+
+            var hours = String(mdt.getHours()).padStart(2, '0');
+            var minutes = String(mdt.getMinutes()).padStart(2, '0');
+            var seconds = String(mdt.getSeconds()).padStart(2, '0');
+
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            var dayName = days[mdt.getDay()];
+            var monthName = months[mdt.getMonth()];
+            var date = mdt.getDate();
+            var year = mdt.getFullYear();
+
+            clockEl.textContent = hours + ':' + minutes + ':' + seconds + ' MDT | ' + dayName + ', ' + monthName + ' ' + date + ', ' + year;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // === Launch Command Centre ===
+        var launchBtn = document.getElementById('launch-btn-c4d5');
+        if (launchBtn) {
+            launchBtn.addEventListener('click', function() {
+                window.open('https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z', '_blank');
+            });
+        }
+
+        // === Copy URL to Clipboard ===
+        var copyBtn = document.getElementById('copy-btn-e6f7');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                var url = 'https://copilot.microsoft.com/shares/artifacts/DhGop6iGAV6GTH2KaVf3z';
+                navigator.clipboard.writeText(url).then(function() {
+                    var original = copyBtn.textContent;
+                    copyBtn.textContent = '✓ COPIED TO CLIPBOARD';
+                    copyBtn.style.borderColor = '#33aa55';
+                    copyBtn.style.color = '#33aa55';
+                    setTimeout(function() {
+                        copyBtn.textContent = original;
+                        copyBtn.style.borderColor = '#C9A84C';
+                        copyBtn.style.color = '#C9A84C';
+                    }, 2000);
+                }).catch(function() {
+                    // Fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = url;
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try { document.execCommand('copy'); } catch(e) {}
+                    document.body.removeChild(ta);
+                    var original = copyBtn.textContent;
+                    copyBtn.textContent = '✓ COPIED TO CLIPBOARD';
+                    copyBtn.style.borderColor = '#33aa55';
+                    copyBtn.style.color = '#33aa55';
+                    setTimeout(function() {
+                        copyBtn.textContent = original;
+                        copyBtn.style.borderColor = '#C9A84C';
+                        copyBtn.style.color = '#C9A84C';
+                    }, 2000);
+                });
+            });
+        }
+
+        // === View Briefing Buttons ===
+        document.querySelectorAll('.view-briefing-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var url = btn.getAttribute('data-url');
+                if (url) window.open(url, '_blank');
+            });
+        });
+
+        // === Mobile Menu Toggle ===
+        var mobileMenuBtn = document.getElementById('mobile-menu-btn-w3x4');
+        var mobileMenuClose = document.getElementById('mobile-menu-close-y5z6');
+        var mobileMenu = document.getElementById('mobile-menu-c3d4');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.remove('menu-hidden');
+                mobileMenu.classList.add('menu-visible');
+            });
+        }
+
+        if (mobileMenuClose && mobileMenu) {
+            mobileMenuClose.addEventListener('click', function() {
+                mobileMenu.classList.remove('menu-visible');
+                mobileMenu.classList.add('menu-hidden');
+            });
+        }
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.mobile-nav-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (mobileMenu) {
+                    mobileMenu.classList.remove('menu-visible');
+                    mobileMenu.classList.add('menu-hidden');
+                }
+            });
+        });
+
+        // === Azure Migration Phase Tracker ===
+        var phaseStates = {};
+
+        // Load saved states from AppSDK if available
+        async function loadPhaseStates() {
+            if (window.AppSDK) {
+                try {
+                    var result = await AppSDK.list('azure-migration-phases');
+                    if (result && result.documents) {
+                        result.documents.forEach(function(doc) {
+                            var phaseNum = doc.entityType.replace('phase-', '');
+                            phaseStates[phaseNum] = doc.data.complete;
+                            updatePhaseUI(phaseNum, doc.data.complete);
+                        });
+                        updatePhaseCount();
+                    }
+                } catch(e) {
+                    // Fallback: all pending
+                }
+            }
+        }
+
+        function updatePhaseUI(phaseNum, isComplete) {
+            var checkbox = document.querySelector('[data-check="' + phaseNum + '"]');
+            var statusBadge = document.querySelector('[data-status="' + phaseNum + '"]');
+
+            if (checkbox) {
+                if (isComplete) {
+                    checkbox.classList.add('complete');
+                } else {
+                    checkbox.classList.remove('complete');
+                }
+            }
+
+            if (statusBadge) {
+                if (isComplete) {
+                    statusBadge.classList.remove('pending');
+                    statusBadge.classList.add('complete');
+                    statusBadge.textContent = 'COMPLETE';
+                } else {
+                    statusBadge.classList.remove('complete');
+                    statusBadge.classList.add('pending');
+                    statusBadge.textContent = 'PENDING';
+                }
+            }
+        }
+
+        function updatePhaseCount() {
+            var count = 0;
+            for (var key in phaseStates) {
+                if (phaseStates[key]) count++;
+            }
+            var countEl = document.getElementById('phase-count-d5e6');
+            if (countEl) countEl.textContent = count;
+        }
+
+        // Attach click handlers to phase items
+        document.querySelectorAll('.phase-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var phaseNum = item.getAttribute('data-phase');
+                if (!phaseNum) return;
+
+                var currentState = phaseStates[phaseNum] || false;
+                var newState = !currentState;
+                phaseStates[phaseNum] = newState;
+
+                updatePhaseUI(phaseNum, newState);
+                updatePhaseCount();
+
+                // Persist to AppSDK if available
+                if (window.AppSDK) {
+                    AppSDK.upsert('azure-migration-phases', 'phase-' + phaseNum, { complete: newState }).catch(function() {});
+                }
+            });
+        });
+
+        // Load saved states on startup
+        loadPhaseStates();
+    </script>
+</body>
+</html>

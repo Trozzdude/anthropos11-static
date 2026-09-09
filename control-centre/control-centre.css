@@ -1,0 +1,35 @@
+.cc-header {
+    background: #111;
+    color: gold;
+    padding: 20px;
+    text-align: center;
+}
+
+.cc-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cc-nav li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.cc-nav a {
+    color: gold;
+    text-decoration: none;
+}
+
+.cc-main {
+    padding: 40px;
+    color: #eee;
+    background: #222;
+}
+
+#citizen-status-box,
+#trial-timer-box {
+    background: #333;
+    padding: 15px;
+    border: 1px solid gold;
+    margin-top: 10px;
+}

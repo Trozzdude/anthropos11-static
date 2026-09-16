@@ -1,0 +1,59 @@
+{
+  "council_meta": {
+    "version": "1.0",
+    "updated_at": "2026-09-16",
+    "note": "Illustrative readings of public signal — not audited."
+  },
+  "titans": [
+    {
+      "id": "openai",
+      "seat": 1,
+      "name": "OpenAI",
+      "domain": "Frontier general models & consumer scale",
+      "risk_index": 8.4,
+      "acceleration_index": 9.2,
+      "latest_signal": "Successive GPT-class reasoning models and generative video have pushed multimodal agents into everyday consumer products.",
+      "r2_commentary": "Sets the tempo the whole field marches to. When this Titan ships, everyone re-plans.",
+      "sources": [
+        "public statements",
+        "model releases",
+        "infrastructure announcements",
+        "regulatory filings"
+      ]
+    },
+    {
+      "id": "anthropic",
+      "seat": 2,
+      "name": "Anthropic",
+      "domain": "Safety-first frontier reasoning",
+      "risk_index": 5.6,
+      "acceleration_index": 8.7,
+      "latest_signal": "The Claude family has moved from conversation into long-horizon agentic work — sustained coding and direct computer use.",
+      "r2_commentary": "Argues that caution and capability are the same craft. The Council watches whether that holds under pressure.",
+      "sources": [
+        "public statements",
+        "model releases",
+        "infrastructure announcements",
+        "regulatory filings"
+      ]
+    }
+    // …repeat for DeepMind, Meta AI, xAI, Mistral, NVIDIA, Microsoft AI…
+  ],
+  "shadow_titan": {
+    "id": "shadow",
+    "seat": 9,
+    "name": "The Shadow Titan",
+    "domain": "Unattributed emergent capability",
+    "risk_index": 7.3,
+    "acceleration_index": 8.0,
+    "rogue_agents_index": 7.3,
+    "attribution_index": 2.4,
+    "description": "Capability that escapes its origin: open weights fine-tuned past their guardrails, autonomous agents chaining tools no one reviewed, emergent behaviour that appears only at scale, in the field, after release.",
+    "r2_commentary": "What cannot be attributed must still be watched.",
+    "sources": [
+      "public incident reports",
+      "security research",
+      "post-release behaviour"
+    ]
+  }
+}

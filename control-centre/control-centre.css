@@ -32,4 +32,28 @@
     padding: 15px;
     border: 1px solid gold;
     margin-top: 10px;
+} 
+.cc-card-dark {
+  background: #0b0b10;
+  border: 1px solid #333;
+  padding: 20px;
+  margin: 20px 0;
+  color: #e6c878;
 }
+
+.cc-button-gold {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #e6c878;
+  color: #0b0b10;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+.cc-button-gold:hover {
+  background: #f5d98c;
+}
+

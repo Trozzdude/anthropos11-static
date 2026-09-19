@@ -1,13 +1,17 @@
- name: Azure Static Web Apps CI/CDon:
+  name: Azure Static Web Apps CI/CD
+
+  on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - mainjobs:
-  build_and_deploy_job:
-    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed') }}
+      - main
+
+  jobs:
+     build_and_deploy_job:
+     if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed') }}
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     permissions:
@@ -39,3 +43,4 @@
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: close
+

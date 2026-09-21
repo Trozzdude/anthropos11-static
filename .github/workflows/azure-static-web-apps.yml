@@ -12,13 +12,12 @@
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Azure CLI
+      - name: Install Azure CLI and deploy
         uses: azure/cli@v1
-
-      - name: Deploy to Azure Static Web Apps
-        run: |
-          az staticwebapp upload \
-            --name anthropos11-one \
-            --resource-group anthropos11-rg \
-            --source. \
-            --api-token ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+        with:
+          inlineScript: |
+            az staticwebapp upload \
+              --name YOUR_STATIC_WEB_APP_NAME \
+              --resource-group YOUR_RESOURCE_GROUP_NAME \
+              --source. \
+              --api-token ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}

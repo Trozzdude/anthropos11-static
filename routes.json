@@ -1,8 +1,8 @@
-{
+  {
   "routes": [
     {
       "route": "/",
-      "rewrite": "/control-centre/index.html"
+      "rewrite": "/index.html"
     },
     {
       "route": "/control-centre",
@@ -10,3 +10,4 @@
     }
   ]
 }
+

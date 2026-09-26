@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "rewrite": "/control-centre/index.html"
+    },
+    {
+      "route": "/control-centre",
+      "rewrite": "/control-centre/index.html"
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/control-centre/index.html",
+    "exclude": ["/css/*", "/js/*", "/assets/*", "/static/*"]
+  }
+}
